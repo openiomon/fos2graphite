@@ -27,6 +27,8 @@ counter_refresh_interval = 60
 config_refresh_interval = 900
 # Metric configuration file containing metrics to be imported
 metric_file = /opt/fos2graphite/conf/metrics.conf
+# Option to enable (1) or disable (0) SSL certificate verification
+ssl_verfiy_host = 1
 [Fabric_2]
 seedswitch = 192.168.1.3
 user = restuser

@@ -53,7 +53,7 @@ my $watchdog = 300;
 my $maxdelay = ($watchdog*1000*1000*1000)/1000*0.9;
 
 
-my $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0 });
+my $ua;
 my %args;  # variable to store command line options for use with getopts
 my $log; # log4perl logger
 
@@ -202,6 +202,9 @@ sub readconfig {
                     }
                     if($line =~ "^metric_file") {
                         $fabricdetails{$section}{'metric_file'} = $values[1];
+                    }
+                    if($line =~"^ssl_verfiy_host") {
+                        $fabricdetails{$section}{'ssl_verfiy_host'} = $values[1];
                     }
                 }
             }           
@@ -694,6 +697,12 @@ initservice();
 readMetrics();
 
 servicestatus("Discovering fabric...");
+if(fabricdetails{$fabric}{"ssl_verfiy_host"} == 0) {
+    $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0 });
+else {
+    $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 1 });
+}
+
 my $token = restLogin($fabricdetails{$fabric}{"seedswitch"},$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
 
 getFabricSwitches($fabric,$fabricdetails{$fabric}{"seedswitch"},$token);
