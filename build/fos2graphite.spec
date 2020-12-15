@@ -56,6 +56,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %attr(755,openiomon,openiomon) /opt/fos2graphite/bin/*
 %attr(755,openiomon,openiomon) /opt/fos2graphite/lib/perl5/
 %defattr(644,openiomon,openiomon,755)
+/opt/fos2graphite/conf/fos2graphite.conf.example
 /opt/fos2graphite/conf/storage-schemas.conf.example
 /opt/fos2graphite/dashboards/*
 /opt/fos2graphite/log/
