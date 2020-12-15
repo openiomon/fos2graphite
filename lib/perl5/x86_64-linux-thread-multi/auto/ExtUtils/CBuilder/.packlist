@@ -1,0 +1,16 @@
+/root/perl5/lib/perl5/ExtUtils/CBuilder.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Base.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/Unix.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/VMS.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/Windows.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/Windows/BCC.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/Windows/GCC.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/Windows/MSVC.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/aix.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/android.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/cygwin.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/darwin.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/dec_osf.pm
+/root/perl5/lib/perl5/ExtUtils/CBuilder/Platform/os2.pm
+/root/perl5/man/man3/ExtUtils::CBuilder.3pm
+/root/perl5/man/man3/ExtUtils::CBuilder::Platform::Windows.3pm

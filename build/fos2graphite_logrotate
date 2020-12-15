@@ -1,0 +1,9 @@
+/opt/fos2graphite/log/*.log {
+    daily
+    rotate 7
+    missingok
+    dateext
+    copytruncate
+    compress
+    size 100M
+}
