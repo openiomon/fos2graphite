@@ -304,9 +304,13 @@ sub getFabricSwitches {
             foreach my $singleswitch (@singleswitches){
                 my %switchattr = %{$singleswitch};
                 print $switchattr{"switch-user-friendly-name"}."\n";
+                if(($switchattr{"switch-user-friendly-name"} =~ "^fcr") || ($switchattr{"firmware-version"} =~ "AMPOS")) {
+                    next;
+                }
                 $log->info("Discovered switch ".$switchattr{"switch-user-friendly-name"}." (".$switchattr{"ip-address"}.") as member of fabric ".$fabric);
                 $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"IP"} = $switchattr{"ip-address"};
                 $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"NAME"} = $switchattr{"name"};
+                $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"CHASSISNAME"} = $switchattr{"chassis-user-friendly-name"};
                 $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"DOMAINID"} = $switchattr{"domain-id"};
             }
         }
@@ -314,6 +318,8 @@ sub getFabricSwitches {
     } else {
         $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
         $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
+        $log->info("Trying to logout from ".$seedswitch);
+        restLogout($seedswitch,$token);
         $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
         exit(($resp->code)-100);
     }
@@ -374,6 +380,8 @@ sub getFCPortCounters {
     } else {
         $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
         $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
+        $log->info("Trying to logout from ".$switch);
+        restLogout($switch,$token);
         $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
         exit(($resp->code)-100);
     }
@@ -423,6 +431,8 @@ sub getPortSettings {
         } else {
                 $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
                 $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
+                $log->info("Trying to logout from ".$switch);
+                restLogout($switch,$token);
                 $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
                 exit(($resp->code)-100);
         }
@@ -464,6 +474,8 @@ sub getSystemResources {
     } else {
         $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
         $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
+        $log->info("Trying to logout from ".$switch);
+        restLogout($switch,$token);
         $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
         exit(($resp->code)-100);
     }
@@ -526,6 +538,8 @@ sub getMediaCounters {
     } else {
         $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
         $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
+        $log->info("Trying to logout from ".$switch);
+        restLogout($switch,$token);
         $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
         exit(($resp->code)-100);
     }
