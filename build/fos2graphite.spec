@@ -67,7 +67,7 @@ rm -rf ${RPM_BUILD_ROOT}
 ln -s -f /opt/fos2graphite/bin/fos2graphite.pl /bin/fos2graphite
 
 %changelog
-* Tue Dec 15 2020 Timo Drach <timo.drach@openiomon.org>
-- Initial Version for test build
 * Mon Dec 21 2020 Timo Drach <timo.drach@openiomon.org>
 - Added fearures for Target / Initiator logging
+* Tue Dec 15 2020 Timo Drach <timo.drach@openiomon.org>
+- Initial Version for test build
