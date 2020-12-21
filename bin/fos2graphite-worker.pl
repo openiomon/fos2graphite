@@ -26,6 +26,7 @@ use lib '/opt/fos2graphite/lib/perl5/';
 use POSIX qw(strftime);
 use POSIX qw(ceil);
 use Time::HiRes qw(nanosleep usleep gettimeofday tv_interval);
+use Socket;
 use IO::Socket::INET;
 use LWP::UserAgent;
 use constant false => 0;
@@ -101,6 +102,9 @@ my %portsettings;
 my %metrics;
 my %fabricdetails;
 my %pids;
+my %switchfqdns;
+my %nameserver;
+my %aliases;
 
 sub printUsage {
         print("Usage:\n");
@@ -180,7 +184,6 @@ sub readconfig {
                     }
                 }
                 default {
-                    print $section."\n";
                     my @values = split("=",$line);
                     if($line =~ "^seedswitch") {
                         $fabricdetails{$section}{'seedswitch'} = $values[1];
@@ -197,7 +200,7 @@ sub readconfig {
                     if($line =~ "^counter_refresh_interval") {
                         $fabricdetails{$section}{'refresh_interval'} = $values[1];
                     }
-                    if($line =~ "^config_refresh_interval^") {
+                    if($line =~ "^config_refresh_interval") {
                         $fabricdetails{$section}{'config_interval'} = $values[1];
                     }
                     if($line =~ "^metric_file") {
@@ -205,6 +208,9 @@ sub readconfig {
                     }
                     if($line =~"^ssl_verfiy_host") {
                         $fabricdetails{$section}{'ssl_verfiy_host'} = $values[1];
+                    }
+                    if($line =~"^IT_logging") {
+                        $fabricdetails{$section}{'IT_logging'} = uc($values[1]);
                     }
                 }
             }           
@@ -246,7 +252,11 @@ sub restLogin {
     my $user = $_[1];
     my $passwd = $_[2];
     $log->debug("Logging in to ".$switch." with user: ".$user);
-    my $url = 'https://'.$switch.'/rest/login';
+    my $fqdn = $switch;
+    if(defined($switchfqdns{$switch})) {
+        $fqdn = $switchfqdns{$switch};
+    }
+    my $url = 'https://'.$fqdn.'/rest/login';
     my $req = HTTP::Request->new(POST => $url);
     $req->header('Accept' => 'application/yang-data+json');
     $req->header('Content-Type' => 'application/yang-data+json');
@@ -267,8 +277,12 @@ sub restLogin {
 sub restLogout {
     my $switch = $_[0];
     my $token = $_[1];
+    my $fqdn = $switch;
+    if(defined($switchfqdns{$switch})) {
+        $fqdn = $switchfqdns{$switch};
+    }
     $log->debug("Logging out from ".$switch." by removing token: ".$token);
-    my $url = 'https://'.$switch.'/rest/logout';
+    my $url = 'https://'.$fqdn.'/rest/logout';
     my $req = HTTP::Request->new(POST => $url);
         $req->header('Accept' => 'application/yang-data+json');
         $req->header('Content-Type' => 'application/yang-data+json');
@@ -303,12 +317,16 @@ sub getFabricSwitches {
             my @singleswitches = @{$fabricswitch};
             foreach my $singleswitch (@singleswitches){
                 my %switchattr = %{$singleswitch};
-                print $switchattr{"switch-user-friendly-name"}."\n";
-                if(($switchattr{"switch-user-friendly-name"} =~ "^fcr") || ($switchattr{"firmware-version"} =~ "AMPOS")) {
+                #print $switchattr{"switch-user-friendly-name"}."\n";
+                if(($switchattr{"switch-user-friendly-name"} =~ "^fcr") || ($switchattr{"firmware-version"} =~ "AMPOS") || ($switchattr{"ip-address"} eq "0.0.0.0")) {
                     next;
                 }
+                my $dnsname = lc(gethostbyaddr(inet_aton($switchattr{"ip-address"}), AF_INET));
+		        $switchfqdns{$switchattr{"switch-user-friendly-name"}} = $dnsname;
                 $log->info("Discovered switch ".$switchattr{"switch-user-friendly-name"}." (".$switchattr{"ip-address"}.") as member of fabric ".$fabric);
+                $log->info("Will use ".$dnsname." for Switch: ".$switchattr{"switch-user-friendly-name"});
                 $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"IP"} = $switchattr{"ip-address"};
+                $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"FQDN"} = $dnsname;
                 $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"NAME"} = $switchattr{"name"};
                 $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"CHASSISNAME"} = $switchattr{"chassis-user-friendly-name"};
                 $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"DOMAINID"} = $switchattr{"domain-id"};
@@ -331,7 +349,11 @@ sub getFCPortCounters {
     my $switch = $_[1];
     my $token = $_[2];
     $log->debug("Getting port counter for ".$fabric." ".$switch."!");
-    my $url = 'https://'.$switch.'/rest/running/brocade-interface/fibrechannel-statistics/';
+    my $fqdn = $switch;
+    if(defined($switchfqdns{$switch})) {
+        $fqdn = $switchfqdns{$switch};
+    }
+    my $url = 'https://'.$fqdn.'/rest/running/brocade-interface/fibrechannel-statistics/';
     my $req = HTTP::Request->new(GET => $url);
         $req->header('Accept' => 'application/yang-data+json');
         $req->header('Content-Type' => 'application/yang-data+json');
@@ -372,6 +394,25 @@ sub getFCPortCounters {
                         } else {
                             $metricstring = "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$portattr{$keyname}." ".$now;
                             toGraphite($metricstring);
+                            if(defined($fabricdetails{$fabric}{'IT_logging'})) {
+                                if(($fabricdetails{$fabric}{'IT_logging'} eq "ALIAS") || ($fabricdetails{$fabric}{'IT_logging'} eq "WWPN")) {
+                                    my @wwpns = @{$portsettings{$fabric}{$switch}{$slot}{$portnumber}{"neighbors"}};
+                                    foreach my $wwpn (@wwpns) {
+                                        if(defined($nameserver{$wwpn}{'devicetype'})) {
+                                            my $devicetype = $nameserver{$wwpn}{'devicetype'};
+                                            if(($fabricdetails{$fabric}{'IT_logging'} eq "ALIAS") && (defined($aliases{$wwpn}))) {
+                                                $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$aliases{$wwpn}.".".$metricname." ".$portattr{$keyname}." ".$now;
+                                                toGraphite($metricstring);
+                                            } elsif ($fabricdetails{$fabric}{'IT_logging'} eq "WWPN") {
+                                                my $plainwwpn = $wwpn;
+                                                $plainwwpn =~ s/\://g;
+                                                $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$wwpn.".".$metricname." ".$portattr{$keyname}." ".$now;
+                                                toGraphite($metricstring);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -392,7 +433,11 @@ sub getPortSettings {
         my $fabric = $_[0];
         my $switch = $_[1];
         my $token = $_[2];
-        my $url = 'https://'.$switch.'/rest/running/brocade-interface/fibrechannel/';
+        my $fqdn = $switch;
+        if(defined($switchfqdns{$switch})) {
+            $fqdn = $switchfqdns{$switch};
+        }
+        my $url = 'https://'.$fqdn.'/rest/running/brocade-interface/fibrechannel/';
         my $req = HTTP::Request->new(GET => $url);
         $req->header('Accept' => 'application/yang-data+json');
         $req->header('Content-Type' => 'application/yang-data+json');
@@ -422,10 +467,20 @@ sub getPortSettings {
                                 #} else {
                                 #   print $switch." => ".$portname." => ".$porttype."(".$porttypes{$porttype},") => ".$longdistance."(".$distancemodes{$longdistance}.")\n";
                                 #}
+                                my @wwns=();
+                                if(defined($portattr{"neighbor"}{"wwn"})) {
+                                    @wwns = @{$portattr{"neighbor"}{"wwn"}};
+                                    if(($loglevel eq "DEBUG") || ($loglevel eq "TRACE")) {
+                                        foreach my $wwn (@wwns) {
+                                            $log->debug($switch.": ".$slot."/".$portnumber." has attached WWPN: ".$wwn);
+                                        }
+                                    }
+                                }
                                 $log->debug("FCID for ".$portname." of ".$switch." is ".$portattr{"fcid-hex"});
                                 $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"porttype"}=$porttypes{$porttype};
                                 $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"longdistance"}=$distancemodes{$longdistance};
                                 $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"fcid"} = $portattr{"fcid-hex"};
+                                $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"neighbors"} = \@wwns;
                         }
                 }
         } else {
@@ -444,7 +499,11 @@ sub getSystemResources {
     my $switch = $_[1];
     my $token = $_[2];
     $log->debug("Getting system counter for ".$fabric." ".$switch."!");
-    my $url = 'https://'.$switch.'/rest/running/brocade-maps/system-resources/';
+    my $fqdn = $switch;
+    if(defined($switchfqdns{$switch})) {
+        $fqdn = $switchfqdns{$switch};
+    }
+    my $url = 'https://'.$fqdn.'/rest/running/brocade-maps/system-resources/';
     my $req = HTTP::Request->new(GET => $url);
     $req->header('Accept' => 'application/yang-data+json');
     $req->header('Content-Type' => 'application/yang-data+json');
@@ -487,7 +546,11 @@ sub getMediaCounters {
     my $switch = $_[1];
     my $token = $_[2];
     $log->debug("Getting media counter for ".$fabric." ".$switch."!");
-    my $url = 'https://'.$switch.'/rest/running/brocade-media/media-rdp/';
+    my $fqdn = $switch;
+    if(defined($switchfqdns{$switch})) {
+        $fqdn = $switchfqdns{$switch};
+    }
+    my $url = 'https://'.$fqdn.'/rest/running/brocade-media/media-rdp/';
     my $req = HTTP::Request->new(GET => $url);
     $req->header('Accept' => 'application/yang-data+json');
     $req->header('Content-Type' => 'application/yang-data+json');
@@ -527,6 +590,25 @@ sub getMediaCounters {
                                 }
                                 $metricstring = "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname."-dbm ".$dbm." ".$now;
                                 toGraphite($metricstring);
+                                if(defined($fabricdetails{$fabric}{'IT_logging'})) {
+                                    if(($fabricdetails{$fabric}{'IT_logging'} eq "ALIAS") || ($fabricdetails{$fabric}{'IT_logging'} eq "WWPN")) {
+                                        my @wwpns = @{$portsettings{$fabric}{$switch}{$slot}{$portnumber}{"neighbors"}};
+                                        foreach my $wwpn (@wwpns) {
+                                            if(defined($nameserver{$wwpn}{'devicetype'})) {
+                                                my $devicetype = $nameserver{$wwpn}{'devicetype'};
+                                                if(($fabricdetails{$fabric}{'IT_logging'} eq "ALIAS") && (defined($aliases{$wwpn}))) {
+                                                    $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$aliases{$wwpn}.".".$metricname."-dbm ".$dbm." ".$now;
+                                                    toGraphite($metricstring);
+                                                } elsif ($fabricdetails{$fabric}{'IT_logging'} eq "WWPN") {
+                                                    my $plainwwpn = $wwpn;
+                                                    $plainwwpn =~ s/\://g;
+                                                    $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$wwpn.".".$metricname."-dbm ".$dbm." ".$now;
+                                                    toGraphite($metricstring);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             } 
                             $metricstring = "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$mediaattr{$metric}." ".$now;
                             toGraphite($metricstring);
@@ -546,19 +628,126 @@ sub getMediaCounters {
     $log->debug("Finished getting media counter for ".$fabric." ".$switch."!");
 }
 
+sub getNameserver {
+    my $fabric = $_[0];
+    my $switch = $_[1];
+    my $token = $_[2];
+    $log->info("Getting name server config from ".$switch." from fabric: ".$fabric);
+    my $fqdn = $switch;
+    if(defined($switchfqdns{$switch})) {
+        $fqdn = $switchfqdns{$switch};
+    }
+    my $url = 'https://'.$fqdn.'/rest/running/brocade-name-server/fibrechannel-name-server';
+    my $req = HTTP::Request->new(GET => $url);
+    $req->header('Accept' => 'application/yang-data+json');
+    $req->header('Content-Type' => 'application/yang-data+json');
+    $req->header('Authorization' => $token);
+    my $querystart = int (gettimeofday * 1000);
+    my $resp = $ua->request($req);
+    my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
+    my $now = time;
+    my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".brocade-nameserver.duration ".$queryduration." ".$now;
+    toGraphite($statsstring);
+    if ($resp->is_success) {
+        my $responsecontent = $resp->decoded_content;
+        my %json = %{decode_json($responsecontent)};
+        my @nsshow = $json{"Response"}{'fibrechannel-name-server'};
+        %nameserver = ();
+        foreach my $nsarrayref (@nsshow) {
+            my @nsarray = @{$nsarrayref};
+            for my $nshashref (@nsarray) {
+                my %nshash = %{$nshashref};
+                my $pid = $nshash{'port-id'};
+                my $portname = $nshash{'port-name'};
+                my $nodename =  $nshash{'node-name'};
+                my $devicetype = $nshash{'name-server-device-type'};
+                $devicetype =~ s/\s/_/g;
+                $devicetype =~ s/\//_/g;
+                $log->debug($portname." has nodename: ".$nodename." at PID: ".$pid." with type: ".$devicetype);
+                $nameserver{$portname}{'devicetype'} = $devicetype;
+                $nameserver{$portname}{'pid'} = $pid;
+            }
+        }
+    } else {
+        $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
+        $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
+        $log->info("Trying to logout from ".$switch);
+        restLogout($switch,$token);
+        exit(($resp->code)-100);
+    }
+}
+
+sub getAliases {
+    my $fabric = $_[0];
+    my $switch = $_[1];
+    my $token = $_[2];
+    $log->info("Getting aliases from ".$switch." for fabric: ".$fabric);
+    my $fqdn = $switch;
+    if(defined($switchfqdns{$switch})) {
+        $fqdn = $switchfqdns{$switch};
+    } 
+    my $url = 'https://'.$fqdn.'/rest/running/brocade-zone/defined-configuration/alias';
+    my $req = HTTP::Request->new(GET => $url);
+    $req->header('Accept' => 'application/yang-data+json');
+    $req->header('Content-Type' => 'application/yang-data+json');
+    $req->header('Authorization' => $token);
+    my $querystart = int (gettimeofday * 1000);
+    my $resp = $ua->request($req);
+    my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
+    my $now = time;
+    my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".brocade-zone.duration ".$queryduration." ".$now;
+    toGraphite($statsstring);
+    if ($resp->is_success) {
+        %aliases = ();
+        my $responsecontent = $resp->decoded_content;
+        my %json = %{decode_json($responsecontent)};
+        my @allaliases = $json{"Response"}{"alias"};
+        foreach my $aliarrayref (@allaliases) {
+            my @aliarray = @{$aliarrayref};
+            foreach my $aliashashref (@aliarray) {
+                my %alihash = %{$aliashashref};
+                my $aliname = $alihash{'alias-name'};
+                my @wwnarray = @{$alihash{'member-entry'}{'alias-entry-name'}};
+                foreach my $wwn (@wwnarray) {
+                    if(defined($aliases{$wwn})) {
+                        $log->warn("WWN found with more than 1 alias! (".$wwn." / ".$aliname.")");
+                    } else {
+                        $log->debug($wwn." has alias: ".$aliname);
+                        $aliases{$wwn} = $aliname;
+                    }
+                }
+            }
+        }
+    } else {
+        $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
+        $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
+        exit(($resp->code)-100);
+    }
+}
+
+
+
 sub reportmetrics {
     my $fabric = $_[0];
     my $switch = $_[1];
+    my $conftime = 0;
     $polltime = time();
     $polltime = $polltime - ($polltime % 60);
     while(true) {
         my $curtime = time();
         if(($curtime - $polltime)>=$fabricdetails{$fabric}{'refresh_interval'}) {
             my $printtime = strftime('%m/%d/%Y %H:%M:%S',localtime($curtime));
-            $log->debug("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
+            $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
             initsocket();
             $log->info("Loging in to ".$fabric." / ".$switch);
             my $token = restLogin($switch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
+            if(($curtime - $conftime)>=$fabricdetails{$fabric}{'config_interval'}) {
+                $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
+                $log->info("Getting nameserver and alias configuration");
+                getNameserver($fabric,$switch,$token);
+                getAliases($fabric,$switch,$token);
+                $conftime = $curtime;
+            }
             $log->info("Getting performance- and errorcounters for ".$fabric." / ".$switch);
             getSystemResources($fabric,$switch,$token);
             getPortSettings($fabric,$switch,$token);
@@ -572,7 +761,6 @@ sub reportmetrics {
         sleep(1);
     }
 }
-
 
 sub startreporter {
     my $fabric = $_[0];
@@ -711,9 +899,9 @@ initservice();
 readMetrics();
 
 servicestatus("Discovering fabric...");
-if(fabricdetails{$fabric}{"ssl_verfiy_host"} == 0) {
+if($fabricdetails{$fabric}{"ssl_verfiy_host"} == 0) {
     $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0 });
-else {
+} else {
     $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 1 });
 }
 
