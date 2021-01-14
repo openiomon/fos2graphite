@@ -386,10 +386,7 @@ sub getFCPortCounters {
                         my $metricname = $metrics{$keyname};
                         $log->trace($switch." => Name: ".$portattr{"name"}." : Key: ".$keyname." => ".$portattr{$keyname});
                         my $metricstring = "";
-                        if(($porttype eq "U_PORT") && ($fabricdetails{$fabric}{'collect_uports'})) {
-                            $metricstring =  "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$portattr{$keyname}." ".$now;
-                            toGraphite($metricstring);
-                        } else {
+                        if(($porttype ne "U_PORT") ||  ($fabricdetails{$fabric}{'collect_uports'})) {
                             $metricstring = "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$portattr{$keyname}." ".$now;
                             toGraphite($metricstring);
                             if(defined($fabricdetails{$fabric}{'IT_collection'})) {
