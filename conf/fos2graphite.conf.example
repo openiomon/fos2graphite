@@ -20,7 +20,7 @@ seedswitch = 192.168.1.2
 user = restuser
 password = restpasswd
 # Enable (1) or disable (0) logging of counter from offline ports
-log_uports = 0
+collect_uports = 0
 # Interval in seconds used for querying counter
 counter_refresh_interval = 60
 # Interval in seconds used for querying changes in fabric and discovery of end devices
@@ -29,11 +29,11 @@ config_refresh_interval = 900
 metric_file = /opt/fos2graphite/conf/metrics.conf
 # Option to enable (1) or disable (0) SSL certificate verification
 ssl_verfiy_host = 1
-# Option to enable logging of statistics for Initiators and Targets!
-# none - no logging
-# alias - logging based on zoning alias names of WWPNs
-# wwpn - logging based on WWPNs
-IT_logging = alias
+# Option to enable collection of statistics for Initiators and Targets!
+# none - no collection
+# alias - collection based on zoning alias names of WWPNs
+# wwpn - collection based on WWPNs
+IT_collection = alias
 
 [Fabric_2]
 seedswitch = 192.168.1.3
@@ -43,4 +43,4 @@ log_uports = 0
 counter_refresh_interval = 60
 config_refresh_interval = 900
 metric_file = /opt/fos2graphite/conf/metrics.conf
-IT_logging = alias
+IT_collection = alias

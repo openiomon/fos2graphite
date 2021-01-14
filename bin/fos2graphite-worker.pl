@@ -194,8 +194,8 @@ sub readconfig {
                     if($line =~ "^password") {
                         $fabricdetails{$section}{'password'} = $values[1];
                     }
-                    if($line =~ "^log_uports") {
-                        $fabricdetails{$section}{'log_uports'} = $values[1];
+                    if($line =~ "^collect_uports") {
+                        $fabricdetails{$section}{'collect_uports'} = $values[1];
                     }
                     if($line =~ "^counter_refresh_interval") {
                         $fabricdetails{$section}{'refresh_interval'} = $values[1];
@@ -209,8 +209,8 @@ sub readconfig {
                     if($line =~"^ssl_verfiy_host") {
                         $fabricdetails{$section}{'ssl_verfiy_host'} = $values[1];
                     }
-                    if($line =~"^IT_logging") {
-                        $fabricdetails{$section}{'IT_logging'} = uc($values[1]);
+                    if($line =~"^IT_collection") {
+                        $fabricdetails{$section}{'IT_collection'} = uc($values[1]);
                     }
                 }
             }           
@@ -386,24 +386,22 @@ sub getFCPortCounters {
                         my $metricname = $metrics{$keyname};
                         $log->trace($switch." => Name: ".$portattr{"name"}." : Key: ".$keyname." => ".$portattr{$keyname});
                         my $metricstring = "";
-                        if($porttype eq "U_PORT") {
-                            if($fabricdetails{$fabric}{'log_uports'}) {
-                                $metricstring =  "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$portattr{$keyname}." ".$now;
-                                toGraphite($metricstring);
-                            }
+                        if(($porttype eq "U_PORT") && ($fabricdetails{$fabric}{'collect_uports'})) {
+                            $metricstring =  "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$portattr{$keyname}." ".$now;
+                            toGraphite($metricstring);
                         } else {
                             $metricstring = "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$portattr{$keyname}." ".$now;
                             toGraphite($metricstring);
-                            if(defined($fabricdetails{$fabric}{'IT_logging'})) {
-                                if(($fabricdetails{$fabric}{'IT_logging'} eq "ALIAS") || ($fabricdetails{$fabric}{'IT_logging'} eq "WWPN")) {
+                            if(defined($fabricdetails{$fabric}{'IT_collection'})) {
+                                if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") || ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN")) {
                                     my @wwpns = @{$portsettings{$fabric}{$switch}{$slot}{$portnumber}{"neighbors"}};
                                     foreach my $wwpn (@wwpns) {
                                         if(defined($nameserver{$wwpn}{'devicetype'})) {
                                             my $devicetype = $nameserver{$wwpn}{'devicetype'};
-                                            if(($fabricdetails{$fabric}{'IT_logging'} eq "ALIAS") && (defined($aliases{$wwpn}))) {
+                                            if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") && (defined($aliases{$wwpn}))) {
                                                 $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$aliases{$wwpn}.".".$metricname." ".$portattr{$keyname}." ".$now;
                                                 toGraphite($metricstring);
-                                            } elsif ($fabricdetails{$fabric}{'IT_logging'} eq "WWPN") {
+                                            } elsif ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN") {
                                                 my $plainwwpn = $wwpn;
                                                 $plainwwpn =~ s/\://g;
                                                 $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$wwpn.".".$metricname." ".$portattr{$keyname}." ".$now;
@@ -582,7 +580,7 @@ sub getMediaCounters {
                         my $metricvalue = $mediaattr{$metric};
                         my $metricstring = "";
                         my $metricname = $metrics{$metric};
-                        if((!($porttype eq "U_PORT")) || $fabricdetails{$fabric}{'log_uports'}) {
+                        if((!($porttype eq "U_PORT")) || $fabricdetails{$fabric}{'collect_uports'}) {
                             if($metric =~ "x-power") {
                                 my $dbm = 0;
                                 if($metricvalue>0) {
@@ -590,16 +588,16 @@ sub getMediaCounters {
                                 }
                                 $metricstring = "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname."-dbm ".$dbm." ".$now;
                                 toGraphite($metricstring);
-                                if(defined($fabricdetails{$fabric}{'IT_logging'})) {
-                                    if(($fabricdetails{$fabric}{'IT_logging'} eq "ALIAS") || ($fabricdetails{$fabric}{'IT_logging'} eq "WWPN")) {
+                                if(defined($fabricdetails{$fabric}{'IT_collection'})) {
+                                    if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") || ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN")) {
                                         my @wwpns = @{$portsettings{$fabric}{$switch}{$slot}{$portnumber}{"neighbors"}};
                                         foreach my $wwpn (@wwpns) {
                                             if(defined($nameserver{$wwpn}{'devicetype'})) {
                                                 my $devicetype = $nameserver{$wwpn}{'devicetype'};
-                                                if(($fabricdetails{$fabric}{'IT_logging'} eq "ALIAS") && (defined($aliases{$wwpn}))) {
+                                                if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") && (defined($aliases{$wwpn}))) {
                                                     $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$aliases{$wwpn}.".".$metricname."-dbm ".$dbm." ".$now;
                                                     toGraphite($metricstring);
-                                                } elsif ($fabricdetails{$fabric}{'IT_logging'} eq "WWPN") {
+                                                } elsif ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN") {
                                                     my $plainwwpn = $wwpn;
                                                     $plainwwpn =~ s/\://g;
                                                     $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$wwpn.".".$metricname."-dbm ".$dbm." ".$now;
