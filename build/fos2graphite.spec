@@ -2,7 +2,7 @@ Summary: fos2graphite is a module of openiomon which is used to transfer statist
 Name: fos2graphite
 Version: 0.1
 prefix: /opt
-Release: 2
+Release: 3
 URL: http://www.openiomon.org
 License: GPL
 Group: Applications/Internet
@@ -67,6 +67,8 @@ rm -rf ${RPM_BUILD_ROOT}
 ln -s -f /opt/fos2graphite/bin/fos2graphite.pl /bin/fos2graphite
 
 %changelog
+* Thu Jan 14 2020 Timo Drach <timo.drach@openiomon.org>
+- Added dashboards, renamed config collection parameters
 * Mon Dec 21 2020 Timo Drach <timo.drach@openiomon.org>
 - Added fearures for Target / Initiator logging
 * Tue Dec 15 2020 Timo Drach <timo.drach@openiomon.org>
