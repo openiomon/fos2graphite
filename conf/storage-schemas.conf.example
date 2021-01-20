@@ -14,11 +14,11 @@ pattern = ^carbon\.
 retentions = 60:90d
 
 [brocade.fos]
-pattern = ^brocade\.stats\.
-retentions = 1m:30d,15m:1y,1h:4y
+pattern = ^brocade\.fos\.stats\.
+retentions = 1m:7d,5m:30,15m:1y,1h:4y
 
 [brocade.fos2graphite]
-pattern = ^brocade\.bna2graphite\.
+pattern = ^brocade\.fos2graphite\.
 retentions = 1m:7d,5m:30d,1h:4y
 
 [default_1min_for_1day]
