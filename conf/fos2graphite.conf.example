@@ -36,9 +36,9 @@ ssl_verfiy_host = 1
 # alias - collection based on zoning alias names of WWPNs
 # wwpn - collection based on WWPNs
 IT_collection = alias
-# Option to specify offset in seconds (between 0 and 30) to the full second to start polling of the fabric
+# Option to specify offset in seconds (between 0 and 30) to the full minute to start polling of the fabric
 # Can be used to avoid collision with other tools polling switches every full minute
-ä Can also be used to reduce load to carbon by usings different settings for each fabric-
+# Can also be used to reduce load to carbon by usings different settings for each fabric
 refresh_offset = 0
 
 [Fabric_2]
@@ -47,7 +47,7 @@ user = restuser
 password = restpasswd
 collect_uports = 0
 perf_refresh_interval = 60
-stats_refresh_interval = 60
+stats_refresh_interval = 300
 config_refresh_interval = 900
 metric_file = /opt/fos2graphite/conf/metrics.conf
 IT_collection = alias
