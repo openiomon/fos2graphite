@@ -197,8 +197,11 @@ sub readconfig {
                     if($line =~ "^collect_uports") {
                         $fabricdetails{$section}{'collect_uports'} = $values[1];
                     }
-                    if($line =~ "^counter_refresh_interval") {
-                        $fabricdetails{$section}{'refresh_interval'} = $values[1];
+                    if($line =~ "^perf_refresh_interval") {
+                        $fabricdetails{$section}{'perf_interval'} = $values[1];
+                    }
+                    if($line =~ "^stats_refresh_interval") {
+                        $fabricdetails{$section}{'stats_interval'} = $values[1];
                     }
                     if($line =~ "^config_refresh_interval") {
                         $fabricdetails{$section}{'config_interval'} = $values[1];
@@ -211,6 +214,15 @@ sub readconfig {
                     }
                     if($line =~"^IT_collection") {
                         $fabricdetails{$section}{'IT_collection'} = uc($values[1]);
+                    }
+                    if($line =~"refresh_offset") {
+                        if($values[1] > 30) {
+                            $fabricdetails{$section}{'refresh_offset'} = 30;
+                        } elsif($values[1] < 0) {
+                            $fabricdetails{$section}{'refresh_offset'} = 0;
+                        } else {
+                            $fabricdetails{$section}{'refresh_offset'} = $values[1];
+                        }
                     }
                 }
             }           
@@ -238,10 +250,18 @@ sub readMetrics {
             if($line !~ "#") {
                 if($line =~ ":") {
                     my @values = split(':',$line);
-                    $metrics{$values[0]} = $values[1];
-                } else {
-                    $metrics{$line} = $line; 
-                }
+                    if(scalar(@values)<3) {
+                        $log->error("The metric file contains a metric without specifying alias and category! Please check: ".$line." !");
+                    } else {
+                        if($values[1] ne "") {
+                            $metrics{$values[0]}{'name'} = $values[1];
+                        } else {
+                            $metrics{$values[0]}{'name'} = $values[0];
+                        }
+                        $metrics{$values[0]}{'category'} = $values[2];
+                        print ">".$values[0]."<.>".$values[1]."<.>".$values[2]."<\n";
+                    }
+                } 
             }
         }
     }
@@ -348,7 +368,8 @@ sub getFCPortCounters {
     my $fabric = $_[0];
     my $switch = $_[1];
     my $token = $_[2];
-    $log->debug("Getting port counter for ".$fabric." ".$switch."!");
+    my $mode = $_[3];
+    $log->debug("Getting port counter for ".$fabric." ".$switch." with mode ".$mode."!");
     my $fqdn = $switch;
     if(defined($switchfqdns{$switch})) {
         $fqdn = $switchfqdns{$switch};
@@ -383,11 +404,16 @@ sub getFCPortCounters {
                 foreach my $keyname (keys %portattr) {
                     #if ( grep( /^$keyname$/, @metrics ) ) {
                     if (defined($metrics{$keyname})) {
-                        my $metricname = $metrics{$keyname};
+                        my $metricname = $metrics{$keyname}{'name'};
+                        if($mode eq "perf") {
+                            if($metrics{$keyname}{'category'} ne "perf") {
+                                next;
+                            }
+                        }
                         $log->trace($switch." => Name: ".$portattr{"name"}." : Key: ".$keyname." => ".$portattr{$keyname});
                         my $metricstring = "";
-                        if(($porttype ne "U_PORT") || ($fabricdetails{$fabric}{'collect_uports'})) {
-                            $metricstring = "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$portattr{$keyname}." ".$now;
+                        if(($porttype ne "U_PORT")||($fabricdetails{$fabric}{'collect_uports'})) {
+                            $metricstring = "brocade.fos.".$metrics{$keyname}{'category'}.".ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$portattr{$keyname}." ".$now;
                             toGraphite($metricstring);
                             if(defined($fabricdetails{$fabric}{'IT_collection'})) {
                                 if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") || ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN")) {
@@ -396,12 +422,12 @@ sub getFCPortCounters {
                                         if(defined($nameserver{$wwpn}{'devicetype'})) {
                                             my $devicetype = $nameserver{$wwpn}{'devicetype'};
                                             if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") && (defined($aliases{$wwpn}))) {
-                                                $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$aliases{$wwpn}.".".$metricname." ".$portattr{$keyname}." ".$now;
+                                                $metricstring = "brocade.fos.".$metrics{$keyname}{'category'}.".devices.".$fabric.".".$devicetype.".".$aliases{$wwpn}.".".$metricname." ".$portattr{$keyname}." ".$now;
                                                 toGraphite($metricstring);
                                             } elsif ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN") {
                                                 my $plainwwpn = $wwpn;
                                                 $plainwwpn =~ s/\://g;
-                                                $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$wwpn.".".$metricname." ".$portattr{$keyname}." ".$now;
+                                                $metricstring = "brocade.fos.".$metrics{$keyname}{'category'}.".devices.".$fabric.".".$devicetype.".".$wwpn.".".$metricname." ".$portattr{$keyname}." ".$now;
                                                 toGraphite($metricstring);
                                             }
                                         }
@@ -457,11 +483,6 @@ sub getPortSettings {
                                 my $portnumber = $portvalues[1];
                                 my $porttype = $portattr{"port-type"};
                                 my $longdistance = $portattr{"long-distance"};  
-                                #if($porttypes{$porttype} ne "E_PORT") {
-                                #   print $switch." => ".$portname." => ".$porttype."(".$porttypes{$porttype},")\n";
-                                #} else {
-                                #   print $switch." => ".$portname." => ".$porttype."(".$porttypes{$porttype},") => ".$longdistance."(".$distancemodes{$longdistance}.")\n";
-                                #}
                                 my @wwns=();
                                 if(defined($portattr{"neighbor"}{"wwn"})) {
                                     @wwns = @{$portattr{"neighbor"}{"wwn"}};
@@ -493,7 +514,8 @@ sub getSystemResources {
     my $fabric = $_[0];
     my $switch = $_[1];
     my $token = $_[2];
-    $log->debug("Getting system counter for ".$fabric." ".$switch."!");
+    my $mode = $_[3];
+    $log->debug("Getting system counter for ".$fabric." ".$switch." with mode ".$mode."!");
     my $fqdn = $switch;
     if(defined($switchfqdns{$switch})) {
         $fqdn = $switchfqdns{$switch};
@@ -519,8 +541,13 @@ sub getSystemResources {
                 $log->trace($fabric.": ".$switch." - ".$counter." = ".$counterhash{$counter});
                 #if(grep( /^$counter$/, @metrics)) {
                 if(defined($metrics{$counter})) {
-                    my $metricname = $metrics{$counter};
-                    my $metricstring = "brocade.fos.stats.switches.".$fabric.".".$switch.".".$metricname." ".$counterhash{$counter}." ".$now;
+                    my $metricname = $metrics{$counter}{'name'};
+                    if($mode eq "perf") {
+                        if($metrics{$counter}{'category'} ne "perf") {
+                            next;
+                        }
+                    }
+                    my $metricstring = "brocade.fos.".$metrics{$counter}{'category'}.".switches.".$fabric.".".$switch.".".$metricname." ".$counterhash{$counter}." ".$now;
                     toGraphite($metricstring);
                 }
             }   
@@ -540,7 +567,8 @@ sub getMediaCounters {
     my $fabric = $_[0];
     my $switch = $_[1];
     my $token = $_[2];
-    $log->debug("Getting media counter for ".$fabric." ".$switch."!");
+    my $mode = $_[3];
+    $log->debug("Getting media counter for ".$fabric." ".$switch." with mode ".$mode."!");
     my $fqdn = $switch;
     if(defined($switchfqdns{$switch})) {
         $fqdn = $switchfqdns{$switch};
@@ -572,18 +600,22 @@ sub getMediaCounters {
                     $porttype = $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"longdistance"};
                 }
                 foreach my $metric (keys %mediaattr) {
-                    #if ( grep( /^$metric$/, @metrics ) ) {
                     if ( defined($metrics{$metric})) {
                         my $metricvalue = $mediaattr{$metric};
                         my $metricstring = "";
-                        my $metricname = $metrics{$metric};
+                        my $metricname = $metrics{$metric}{'name'};
+                        if($mode eq "perf") {
+                            if($metrics{$metric}{'category'} ne "perf") {
+                                next;
+                            }
+                        }
                         if((!($porttype eq "U_PORT")) || $fabricdetails{$fabric}{'collect_uports'}) {
                             if($metric =~ "x-power") {
                                 my $dbm = 0;
                                 if($metricvalue>0) {
                                     $dbm = sprintf("%.2f",(10*(log($metricvalue/1000)/log(10))));
                                 }
-                                $metricstring = "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname."-dbm ".$dbm." ".$now;
+                                $metricstring = "brocade.fos.".$metrics{$metric}{'category'}.".ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname."-dbm ".$dbm." ".$now;
                                 toGraphite($metricstring);
                                 if(defined($fabricdetails{$fabric}{'IT_collection'})) {
                                     if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") || ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN")) {
@@ -592,12 +624,12 @@ sub getMediaCounters {
                                             if(defined($nameserver{$wwpn}{'devicetype'})) {
                                                 my $devicetype = $nameserver{$wwpn}{'devicetype'};
                                                 if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") && (defined($aliases{$wwpn}))) {
-                                                    $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$aliases{$wwpn}.".".$metricname."-dbm ".$dbm." ".$now;
+                                                    $metricstring = "brocade.fos.".$metrics{$metric}{'category'}.".devices.".$fabric.".".$devicetype.".".$aliases{$wwpn}.".".$metricname."-dbm ".$dbm." ".$now;
                                                     toGraphite($metricstring);
                                                 } elsif ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN") {
                                                     my $plainwwpn = $wwpn;
                                                     $plainwwpn =~ s/\://g;
-                                                    $metricstring = "brocade.fos.stats.devices.".$fabric.".".$devicetype.".".$wwpn.".".$metricname."-dbm ".$dbm." ".$now;
+                                                    $metricstring = "brocade.fos.".$metrics{$metric}{'category'}.".devices.".$fabric.".".$devicetype.".".$wwpn.".".$metricname."-dbm ".$dbm." ".$now;
                                                     toGraphite($metricstring);
                                                 }
                                             }
@@ -605,7 +637,7 @@ sub getMediaCounters {
                                     }
                                 }
                             } 
-                            $metricstring = "brocade.fos.stats.ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$mediaattr{$metric}." ".$now;
+                            $metricstring = "brocade.fos.".$metrics{$metric}{'category'}.".ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$mediaattr{$metric}." ".$now;
                             toGraphite($metricstring);
                         }
                     }
@@ -726,11 +758,15 @@ sub reportmetrics {
     my $fabric = $_[0];
     my $switch = $_[1];
     my $conftime = 0;
+    my $statstime = 0;
     $polltime = time();
     $polltime = $polltime - ($polltime % 60);
+    if(defined($fabricdetails{$fabric}{'refresh_offset'})) {
+        $polltime = $polltime - ($polltime % 60)+$fabricdetails{$fabric}{'refresh_offset'};
+    }
     while(true) {
         my $curtime = time();
-        if(($curtime - $polltime)>=$fabricdetails{$fabric}{'refresh_interval'}) {
+        if(($curtime - $polltime)>=$fabricdetails{$fabric}{'perf_interval'}) {
             my $printtime = strftime('%m/%d/%Y %H:%M:%S',localtime($curtime));
             $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
             initsocket();
@@ -743,14 +779,22 @@ sub reportmetrics {
                 getAliases($fabric,$switch,$token);
                 $conftime = $curtime;
             }
-            $log->info("Getting performance- and errorcounters for ".$fabric." / ".$switch);
-            getSystemResources($fabric,$switch,$token);
             getPortSettings($fabric,$switch,$token);
-            getFCPortCounters($fabric,$switch,$token);
-            getMediaCounters($fabric,$switch,$token);
+            if(($curtime - $statstime)>=$fabricdetails{$fabric}{'stats_interval'}) {
+                $log->info("Getting performance- and errorcounters for ".$fabric." / ".$switch);
+                getSystemResources($fabric,$switch,$token,'ALL');
+                getFCPortCounters($fabric,$switch,$token,'ALL');
+                getMediaCounters($fabric,$switch,$token,'ALL');
+                $statstime = $curtime;
+            } else {
+                $log->info("Getting only performancecounters for ".$fabric." / ".$switch);
+                getSystemResources($fabric,$switch,$token,'perf');
+                getFCPortCounters($fabric,$switch,$token,'perf');
+                getMediaCounters($fabric,$switch,$token,'perf');     
+            }
             $log->info("Logout from ".$fabric." / ".$switch);
             restLogout($switch,$token);
-            $polltime = $polltime + $fabricdetails{$fabric}{'refresh_interval'};
+            $polltime = $polltime + $fabricdetails{$fabric}{'perf_interval'};
             closesocket();
         }
         sleep(1);
