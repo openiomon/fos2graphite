@@ -15,11 +15,11 @@ retentions = 60:90d
 
 [brocade.fos.stats]
 pattern = ^brocade\.fos\.stats\.
-retentions = 5m:30,15m:1y,1h:4y
+retentions = 5m:30d,15m:1y,1h:4y
 
 [brocade.fos.perf]
 pattern = ^brocade\.fos\.perf\.
-retentions = 1m:7d,5m:30,15m:1y,1h:4y
+retentions = 1m:7d,5m:30d,15m:1y,1h:4y
 
 [brocade.fos2graphite]
 pattern = ^brocade\.fos2graphite\.
