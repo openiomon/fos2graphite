@@ -5,14 +5,14 @@
         "canEdit": true,
         "canAdmin": false,
         "canStar": true,
-        "slug": "brocade-switch-overview-realtime",
-        "url": "/d/_IPgiw1Gk/brocade-switch-overview-realtime",
+        "slug": "brocade-fos2graphite-statistics",
+        "url": "/d/AKyp37bGz/brocade-fos2graphite-statistics",
         "expires": "0001-01-01T00:00:00Z",
-        "created": "2020-12-16T18:32:25+01:00",
-        "updated": "2021-02-18T21:05:52+01:00",
+        "created": "2020-12-21T18:39:45+01:00",
+        "updated": "2020-12-21T18:41:22+01:00",
         "updatedBy": "USER",
         "createdBy": "USER",
-        "version": 5,
+        "version": 4,
         "hasAcl": false,
         "isFolder": false,
         "folderId": 20,
@@ -39,7 +39,7 @@
         "gnetId": null,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1613678519703,
+        "iteration": 1608572448984,
         "links": [
 
         ],
@@ -51,7 +51,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "HDS_Graphite",
+                "datasource": "$Datasource",
                 "fieldConfig": {
                     "defaults": {
                         "custom": {
@@ -66,20 +66,24 @@
                 "fillGradient": 0,
                 "gridPos": {
                     "h": 9,
-                    "w": 16,
+                    "w": 12,
                     "x": 0,
                     "y": 0
                 },
                 "hiddenSeries": false,
                 "id": 2,
                 "legend": {
-                    "avg": false,
+                    "alignAsTable": true,
+                    "avg": true,
                     "current": false,
-                    "max": false,
-                    "min": false,
+                    "max": true,
+                    "min": true,
+                    "rightSide": true,
                     "show": true,
+                    "sort": "max",
+                    "sortDesc": true,
                     "total": false,
-                    "values": false
+                    "values": true
                 },
                 "lines": true,
                 "linewidth": 1,
@@ -101,26 +105,18 @@
                 "targets": [
                     {
                         "refId": "A",
-                        "target": "aliasByNode(brocade.fos.perf.switches.$Fabric.$Switch.cpu-usage, 5)"
+                        "target": "aliasByNode(brocade.fos2graphite.stats.query.*.fibrechannel.duration, 4)"
                     }
                 ],
                 "thresholds": [
-                    {
-                        "$$hashKey": "object:351",
-                        "colorMode": "critical",
-                        "fill": true,
-                        "line": true,
-                        "op": "gt",
-                        "value": 90,
-                        "yaxis": "left"
-                    }
+
                 ],
                 "timeFrom": null,
                 "timeRegions": [
 
                 ],
                 "timeShift": null,
-                "title": "CPU utilization $Fabric / $Switch",
+                "title": "HTTP response time fiberchannel query",
                 "tooltip": {
                     "shared": true,
                     "sort": 0,
@@ -138,16 +134,16 @@
                 },
                 "yaxes": [
                     {
-                        "$$hashKey": "object:155",
-                        "format": "percent",
+                        "$$hashKey": "object:17277",
+                        "format": "µs",
                         "label": null,
                         "logBase": 1,
-                        "max": "100",
-                        "min": "0",
+                        "max": null,
+                        "min": null,
                         "show": true
                     },
                     {
-                        "$$hashKey": "object:156",
+                        "$$hashKey": "object:17278",
                         "format": "short",
                         "label": null,
                         "logBase": 1,
@@ -162,78 +158,13 @@
                 }
             },
             {
-                "datasource": "HDS_Graphite",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-
-                        },
-                        "mappings": [
-
-                        ],
-                        "max": 100,
-                        "min": 0,
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 70
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 90
-                                }
-                            ]
-                        },
-                        "unit": "percent"
-                    },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 8,
-                    "x": 16,
-                    "y": 0
-                },
-                "id": 5,
-                "options": {
-                    "reduceOptions": {
-                        "calcs": [
-                            "lastNotNull"
-                        ],
-                        "fields": "",
-                        "values": false
-                    },
-                    "showThresholdLabels": false,
-                    "showThresholdMarkers": true
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
-                    {
-                        "refId": "A",
-                        "target": "aliasByNode(brocade.fos.perf.switches.$Fabric.$Switch.cpu-usage, 5)"
-                    }
-                ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "Current CPU utilization $Fabric / $Switch",
-                "type": "gauge"
-            },
-            {
                 "aliasColors": {
 
                 },
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "HDS_Graphite",
+                "datasource": "$Datasource",
                 "fieldConfig": {
                     "defaults": {
                         "custom": {
@@ -248,20 +179,137 @@
                 "fillGradient": 0,
                 "gridPos": {
                     "h": 9,
-                    "w": 16,
+                    "w": 12,
+                    "x": 12,
+                    "y": 0
+                },
+                "hiddenSeries": false,
+                "id": 3,
+                "legend": {
+                    "alignAsTable": true,
+                    "avg": true,
+                    "current": false,
+                    "max": true,
+                    "min": true,
+                    "rightSide": true,
+                    "show": true,
+                    "sort": "max",
+                    "sortDesc": true,
+                    "total": false,
+                    "values": true
+                },
+                "lines": true,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "7.2.1",
+                "pointradius": 2,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "refId": "A",
+                        "target": "aliasByNode(brocade.fos2graphite.stats.query.*.fibrechannel-statistics.duration, 4)"
+                    }
+                ],
+                "thresholds": [
+
+                ],
+                "timeFrom": null,
+                "timeRegions": [
+
+                ],
+                "timeShift": null,
+                "title": "HTTP response time fiberchannel statistics query",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": [
+
+                    ]
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:17277",
+                        "format": "µs",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:17278",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {
+
+                },
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "$Datasource",
+                "fieldConfig": {
+                    "defaults": {
+                        "custom": {
+
+                        }
+                    },
+                    "overrides": [
+
+                    ]
+                },
+                "fill": 0,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 9,
+                    "w": 12,
                     "x": 0,
                     "y": 9
                 },
                 "hiddenSeries": false,
                 "id": 4,
                 "legend": {
-                    "avg": false,
+                    "alignAsTable": true,
+                    "avg": true,
                     "current": false,
-                    "max": false,
-                    "min": false,
+                    "max": true,
+                    "min": true,
+                    "rightSide": true,
                     "show": true,
+                    "sort": "max",
+                    "sortDesc": true,
                     "total": false,
-                    "values": false
+                    "values": true
                 },
                 "lines": true,
                 "linewidth": 1,
@@ -283,26 +331,18 @@
                 "targets": [
                     {
                         "refId": "A",
-                        "target": "aliasByNode(brocade.fos.perf.switches.$Fabric.$Switch.memory-usage, 5)"
+                        "target": "aliasByNode(brocade.fos2graphite.stats.query.*.brocade-media.duration, 4)"
                     }
                 ],
                 "thresholds": [
-                    {
-                        "$$hashKey": "object:351",
-                        "colorMode": "critical",
-                        "fill": true,
-                        "line": true,
-                        "op": "gt",
-                        "value": 90,
-                        "yaxis": "left"
-                    }
+
                 ],
                 "timeFrom": null,
                 "timeRegions": [
 
                 ],
                 "timeShift": null,
-                "title": "Memory utilization $Fabric / $Switch",
+                "title": "HTTP response time brocade-media query",
                 "tooltip": {
                     "shared": true,
                     "sort": 0,
@@ -320,16 +360,16 @@
                 },
                 "yaxes": [
                     {
-                        "$$hashKey": "object:155",
-                        "format": "percent",
+                        "$$hashKey": "object:17277",
+                        "format": "µs",
                         "label": null,
                         "logBase": 1,
-                        "max": "100",
-                        "min": "0",
+                        "max": null,
+                        "min": null,
                         "show": true
                     },
                     {
-                        "$$hashKey": "object:156",
+                        "$$hashKey": "object:17278",
                         "format": "short",
                         "label": null,
                         "logBase": 1,
@@ -344,78 +384,13 @@
                 }
             },
             {
-                "datasource": "HDS_Graphite",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-
-                        },
-                        "mappings": [
-
-                        ],
-                        "max": 100,
-                        "min": 0,
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 70
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 90
-                                }
-                            ]
-                        },
-                        "unit": "percent"
-                    },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 8,
-                    "x": 16,
-                    "y": 9
-                },
-                "id": 6,
-                "options": {
-                    "reduceOptions": {
-                        "calcs": [
-                            "lastNotNull"
-                        ],
-                        "fields": "",
-                        "values": false
-                    },
-                    "showThresholdLabels": false,
-                    "showThresholdMarkers": true
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
-                    {
-                        "refId": "A",
-                        "target": "aliasByNode(brocade.fos.perf.switches.$Fabric.$Switch.memory-usage, 5)"
-                    }
-                ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "Current Memory utilization $Fabric / $Switch",
-                "type": "gauge"
-            },
-            {
                 "aliasColors": {
 
                 },
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "HDS_Graphite",
+                "datasource": "$Datasource",
                 "fieldConfig": {
                     "defaults": {
                         "custom": {
@@ -430,20 +405,24 @@
                 "fillGradient": 0,
                 "gridPos": {
                     "h": 9,
-                    "w": 16,
-                    "x": 0,
-                    "y": 18
+                    "w": 12,
+                    "x": 12,
+                    "y": 9
                 },
                 "hiddenSeries": false,
-                "id": 3,
+                "id": 5,
                 "legend": {
-                    "avg": false,
+                    "alignAsTable": true,
+                    "avg": true,
                     "current": false,
-                    "max": false,
-                    "min": false,
+                    "max": true,
+                    "min": true,
+                    "rightSide": true,
                     "show": true,
+                    "sort": "max",
+                    "sortDesc": true,
                     "total": false,
-                    "values": false
+                    "values": true
                 },
                 "lines": true,
                 "linewidth": 1,
@@ -465,26 +444,18 @@
                 "targets": [
                     {
                         "refId": "A",
-                        "target": "aliasByNode(brocade.fos.perf.switches.$Fabric.$Switch.flash-usage, 5)"
+                        "target": "aliasByNode(brocade.fos2graphite.stats.query.*.system-resources.duration, 4)"
                     }
                 ],
                 "thresholds": [
-                    {
-                        "$$hashKey": "object:351",
-                        "colorMode": "critical",
-                        "fill": true,
-                        "line": true,
-                        "op": "gt",
-                        "value": 90,
-                        "yaxis": "left"
-                    }
+
                 ],
                 "timeFrom": null,
                 "timeRegions": [
 
                 ],
                 "timeShift": null,
-                "title": "Flash utilization $Fabric / $Switch",
+                "title": "HTTP response time system-resources query",
                 "tooltip": {
                     "shared": true,
                     "sort": 0,
@@ -502,16 +473,16 @@
                 },
                 "yaxes": [
                     {
-                        "$$hashKey": "object:155",
-                        "format": "percent",
+                        "$$hashKey": "object:17277",
+                        "format": "µs",
                         "label": null,
                         "logBase": 1,
-                        "max": "100",
-                        "min": "0",
+                        "max": null,
+                        "min": null,
                         "show": true
                     },
                     {
-                        "$$hashKey": "object:156",
+                        "$$hashKey": "object:17278",
                         "format": "short",
                         "label": null,
                         "logBase": 1,
@@ -526,148 +497,145 @@
                 }
             },
             {
-                "datasource": "HDS_Graphite",
+                "aliasColors": {
+
+                },
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "$Datasource",
                 "fieldConfig": {
                     "defaults": {
                         "custom": {
 
-                        },
-                        "mappings": [
-
-                        ],
-                        "max": 100,
-                        "min": 0,
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 70
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 90
-                                }
-                            ]
-                        },
-                        "unit": "percent"
+                        }
                     },
                     "overrides": [
 
                     ]
                 },
+                "fill": 0,
+                "fillGradient": 0,
                 "gridPos": {
                     "h": 9,
-                    "w": 8,
-                    "x": 16,
+                    "w": 12,
+                    "x": 0,
                     "y": 18
                 },
-                "id": 7,
-                "options": {
-                    "reduceOptions": {
-                        "calcs": [
-                            "lastNotNull"
-                        ],
-                        "fields": "",
-                        "values": false
-                    },
-                    "showThresholdLabels": false,
-                    "showThresholdMarkers": true
+                "hiddenSeries": false,
+                "id": 6,
+                "legend": {
+                    "alignAsTable": true,
+                    "avg": true,
+                    "current": false,
+                    "max": true,
+                    "min": true,
+                    "rightSide": true,
+                    "show": true,
+                    "sort": "max",
+                    "sortDesc": true,
+                    "total": false,
+                    "values": true
                 },
+                "lines": true,
+                "linewidth": 1,
+                "nullPointMode": "connected",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
                 "pluginVersion": "7.2.1",
+                "pointradius": 2,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
                 "targets": [
                     {
                         "refId": "A",
-                        "target": "aliasByNode(brocade.fos.perf.switches.$Fabric.$Switch.flash-usage, 5)"
+                        "target": "aliasByNode(brocade.fos2graphite.stats.query.*.brocade-nameserver.duration, 4)"
                     }
                 ],
+                "thresholds": [
+
+                ],
                 "timeFrom": null,
+                "timeRegions": [
+
+                ],
                 "timeShift": null,
-                "title": "Current flash utilization $Fabric / $Switch",
-                "type": "gauge"
+                "title": "HTTP response time name-server query",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": [
+
+                    ]
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:17277",
+                        "format": "µs",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:17278",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
             }
         ],
-        "refresh": "1m",
         "schemaVersion": 26,
         "style": "dark",
         "tags": [
-            "Brocade",
-            "Realtime"
+            "fos2graphite"
         ],
         "templating": {
             "list": [
                 {
-                    "allValue": null,
-                    "current": {
-                        "selected": true,
-                        "tags": [
-
-                        ],
-                        "text": [
-                            "FABRIC_A",
-                            "FABRIC_B"
-                        ],
-                        "value": [
-                            "FABRIC_A",
-                            "FABRIC_B"
-                        ]
-                    },
-                    "datasource": "HDS_Graphite",
-                    "definition": "brocade.fos.perf.switches.*",
-                    "hide": 0,
-                    "includeAll": true,
-                    "label": null,
-                    "multi": true,
-                    "name": "Fabric",
-                    "options": [
-
-                    ],
-                    "query": "brocade.fos.perf.switches.*",
-                    "refresh": 1,
-                    "regex": "",
-                    "skipUrlSync": false,
-                    "sort": 0,
-                    "tagValuesQuery": "",
-                    "tags": [
-
-                    ],
-                    "tagsQuery": "",
-                    "type": "query",
-                    "useTags": false
-                },
-                {
-                    "allValue": null,
                     "current": {
                         "selected": false,
-                        "text": "All",
-                        "value": "$__all"
+                        "text": "HDS_Graphite",
+                        "value": "HDS_Graphite"
                     },
-                    "datasource": "HDS_Graphite",
-                    "definition": "brocade.fos.perf.switches.$Fabric.*",
                     "hide": 0,
-                    "includeAll": true,
+                    "includeAll": false,
                     "label": null,
-                    "multi": true,
-                    "name": "Switch",
+                    "multi": false,
+                    "name": "Datasource",
                     "options": [
 
                     ],
-                    "query": "brocade.fos.perf.switches.$Fabric.*",
+                    "query": "graphite",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
-                    "sort": 0,
-                    "tagValuesQuery": "",
-                    "tags": [
-
-                    ],
-                    "tagsQuery": "",
-                    "type": "query",
-                    "useTags": false
+                    "type": "datasource"
                 }
             ]
         },
@@ -679,9 +647,9 @@
 
         },
         "timezone": "",
-        "title": "Brocade: Switch Overview (Realtime)",
-        "uid": "_IPgiw1Gk",
-        "version": 5
+        "title": "Brocade: fos2graphite statistics",
+        "uid": "AKyp37bGz",
+        "version": 4
     },
     "overwrite": true
 }

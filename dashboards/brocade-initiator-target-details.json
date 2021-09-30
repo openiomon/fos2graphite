@@ -1,0 +1,2560 @@
+{
+    "meta": {
+        "type": "db",
+        "canSave": true,
+        "canEdit": true,
+        "canAdmin": false,
+        "canStar": true,
+        "slug": "brocade-initiator-target-details",
+        "url": "/d/a73yCj1Gk/brocade-initiator-target-details",
+        "expires": "0001-01-01T00:00:00Z",
+        "created": "2020-12-18T15:53:56+01:00",
+        "updated": "2021-02-18T21:24:48+01:00",
+        "updatedBy": "USER",
+        "createdBy": "USER",
+        "version": 11,
+        "hasAcl": false,
+        "isFolder": false,
+        "folderId": 20,
+        "folderTitle": "Brocade",
+        "folderUrl": "/dashboards/f/HRb0h2TMk/brocade",
+        "provisioned": false,
+        "provisionedExternalId": ""
+    },
+    "dashboard": {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": "-- Grafana --",
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "editable": true,
+        "gnetId": null,
+        "graphTooltip": 0,
+        "id": null,
+        "iteration": 1613679695705,
+        "links": [
+
+        ],
+        "panels": [
+            {
+                "collapsed": false,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 0
+                },
+                "id": 7,
+                "panels": [
+
+                ],
+                "title": "Performance Overview",
+                "type": "row"
+            },
+            {
+                "aliasColors": {
+
+                },
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "HDS_Graphite",
+                "fieldConfig": {
+                    "defaults": {
+                        "custom": {
+
+                        }
+                    },
+                    "overrides": [
+
+                    ]
+                },
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 1
+                },
+                "hiddenSeries": false,
+                "id": 8,
+                "legend": {
+                    "alignAsTable": true,
+                    "avg": true,
+                    "current": true,
+                    "max": true,
+                    "min": true,
+                    "show": true,
+                    "sort": "current",
+                    "sortDesc": true,
+                    "total": false,
+                    "values": true
+                },
+                "lines": true,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "7.2.1",
+                "pointradius": 2,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+
+                ],
+                "spaceLength": 10,
+                "stack": true,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "refId": "A",
+                        "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), 6, 7)"
+                    }
+                ],
+                "thresholds": [
+
+                ],
+                "timeFrom": null,
+                "timeRegions": [
+
+                ],
+                "timeShift": null,
+                "title": "Stacked RX Throughput",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": [
+
+                    ]
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:6171",
+                        "format": "Bps",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:6172",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {
+
+                },
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "HDS_Graphite",
+                "fieldConfig": {
+                    "defaults": {
+                        "custom": {
+
+                        }
+                    },
+                    "overrides": [
+
+                    ]
+                },
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 1
+                },
+                "hiddenSeries": false,
+                "id": 3,
+                "legend": {
+                    "alignAsTable": true,
+                    "avg": true,
+                    "current": true,
+                    "max": true,
+                    "min": true,
+                    "show": true,
+                    "sort": "current",
+                    "sortDesc": true,
+                    "total": false,
+                    "values": true
+                },
+                "lines": true,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "7.2.1",
+                "pointradius": 2,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+
+                ],
+                "spaceLength": 10,
+                "stack": true,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "refId": "A",
+                        "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), 6, 7)"
+                    }
+                ],
+                "thresholds": [
+
+                ],
+                "timeFrom": null,
+                "timeRegions": [
+
+                ],
+                "timeShift": null,
+                "title": "Stacked TX Throughput",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": [
+
+                    ]
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:6171",
+                        "format": "Bps",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:6172",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {
+
+                },
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "HDS_Graphite",
+                "fieldConfig": {
+                    "defaults": {
+                        "custom": {
+
+                        }
+                    },
+                    "overrides": [
+
+                    ]
+                },
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 9
+                },
+                "hiddenSeries": false,
+                "id": 2,
+                "legend": {
+                    "alignAsTable": true,
+                    "avg": true,
+                    "current": true,
+                    "max": true,
+                    "min": true,
+                    "show": true,
+                    "sort": "current",
+                    "sortDesc": true,
+                    "total": false,
+                    "values": true
+                },
+                "lines": true,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "7.2.1",
+                "pointradius": 2,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "refId": "A",
+                        "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), 6, 7)"
+                    }
+                ],
+                "thresholds": [
+
+                ],
+                "timeFrom": null,
+                "timeRegions": [
+
+                ],
+                "timeShift": null,
+                "title": "RX Throughput Details",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 2,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": [
+
+                    ]
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:6171",
+                        "format": "Bps",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:6172",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {
+
+                },
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "HDS_Graphite",
+                "fieldConfig": {
+                    "defaults": {
+                        "custom": {
+
+                        }
+                    },
+                    "overrides": [
+
+                    ]
+                },
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 9
+                },
+                "hiddenSeries": false,
+                "id": 9,
+                "legend": {
+                    "alignAsTable": true,
+                    "avg": true,
+                    "current": true,
+                    "max": true,
+                    "min": true,
+                    "show": true,
+                    "sort": "current",
+                    "sortDesc": true,
+                    "total": false,
+                    "values": true
+                },
+                "lines": true,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "7.2.1",
+                "pointradius": 2,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "refId": "A",
+                        "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), 6, 7)"
+                    }
+                ],
+                "thresholds": [
+
+                ],
+                "timeFrom": null,
+                "timeRegions": [
+
+                ],
+                "timeShift": null,
+                "title": "TX Throughput Details",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 2,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": [
+
+                    ]
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:6171",
+                        "format": "Bps",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:6172",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "collapsed": true,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 17
+                },
+                "id": 5,
+                "panels": [
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "fill": 1,
+                        "fillGradient": 0,
+                        "gridPos": {
+                            "h": 8,
+                            "w": 12,
+                            "x": 0,
+                            "y": 18
+                        },
+                        "hiddenSeries": false,
+                        "id": 12,
+                        "legend": {
+                            "alignAsTable": true,
+                            "avg": true,
+                            "current": true,
+                            "max": true,
+                            "min": true,
+                            "show": true,
+                            "sort": "current",
+                            "sortDesc": true,
+                            "total": false,
+                            "values": true
+                        },
+                        "lines": true,
+                        "linewidth": 1,
+                        "nullPointMode": "null",
+                        "options": {
+                            "alertThreshold": true
+                        },
+                        "percentage": false,
+                        "pluginVersion": "7.2.1",
+                        "pointradius": 2,
+                        "points": false,
+                        "renderer": "flot",
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl3b_sol_pg25",
+                                "value": "defrahds32_cl3b_sol_pg25"
+                            }
+                        },
+                        "seriesOverrides": [
+                            {
+                                "alias": "in-octets",
+                                "yaxis": 1
+                            }
+                        ],
+                        "spaceLength": 10,
+                        "stack": false,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "refCount": 0,
+                                "refId": "A",
+                                "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), 'TX')"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "B",
+                                "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), 'RX')"
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeRegions": [
+
+                        ],
+                        "timeShift": null,
+                        "title": "RX / TX Throughput",
+                        "tooltip": {
+                            "shared": true,
+                            "sort": 2,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "$$hashKey": "object:7692",
+                                "format": "Bps",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            },
+                            {
+                                "$$hashKey": "object:7693",
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            }
+                        ],
+                        "yaxis": {
+                            "align": false,
+                            "alignLevel": null
+                        }
+                    },
+                    {
+                        "aliasColors": {
+
+                        },
+                        "breakPoint": "50%",
+                        "cacheTimeout": null,
+                        "combine": {
+                            "label": "Others",
+                            "threshold": 0
+                        },
+                        "datasource": "HDS_Graphite",
+                        "decimals": null,
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "fontSize": "80%",
+                        "format": "Bps",
+                        "gridPos": {
+                            "h": 8,
+                            "w": 3,
+                            "x": 12,
+                            "y": 18
+                        },
+                        "id": 29,
+                        "interval": null,
+                        "legend": {
+                            "header": "",
+                            "percentage": true,
+                            "show": true,
+                            "sort": "current",
+                            "sortDesc": true,
+                            "values": true
+                        },
+                        "legendType": "Under graph",
+                        "links": [
+
+                        ],
+                        "nullPointMode": "connected",
+                        "pieType": "pie",
+                        "pluginVersion": "7.2.1",
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl3b_sol_pg25",
+                                "value": "defrahds32_cl3b_sol_pg25"
+                            }
+                        },
+                        "strokeWidth": 1,
+                        "targets": [
+                            {
+                                "refCount": 0,
+                                "refId": "B",
+                                "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), 'RX')"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "C",
+                                "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), 'TX')"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "RX / TX Throughput",
+                        "type": "grafana-piechart-panel",
+                        "valueName": "current"
+                    },
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "fill": 1,
+                        "fillGradient": 0,
+                        "gridPos": {
+                            "h": 8,
+                            "w": 9,
+                            "x": 15,
+                            "y": 18
+                        },
+                        "hiddenSeries": false,
+                        "id": 19,
+                        "legend": {
+                            "alignAsTable": true,
+                            "avg": true,
+                            "current": true,
+                            "max": true,
+                            "min": true,
+                            "show": true,
+                            "sort": "current",
+                            "sortDesc": true,
+                            "total": false,
+                            "values": true
+                        },
+                        "lines": true,
+                        "linewidth": 1,
+                        "nullPointMode": "null",
+                        "options": {
+                            "alertThreshold": true
+                        },
+                        "percentage": false,
+                        "pluginVersion": "7.2.1",
+                        "pointradius": 2,
+                        "points": false,
+                        "renderer": "flot",
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl3b_sol_pg25",
+                                "value": "defrahds32_cl3b_sol_pg25"
+                            }
+                        },
+                        "seriesOverrides": [
+                            {
+                                "alias": "in-octets",
+                                "yaxis": 1
+                            }
+                        ],
+                        "spaceLength": 10,
+                        "stack": false,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "hide": true,
+                                "refCount": 0,
+                                "refId": "A",
+                                "target": "sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.*-octets), 1))"
+                            },
+                            {
+                                "refCount": 1,
+                                "refId": "B",
+                                "target": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), #A), 'RX')",
+                                "targetFull": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.*-octets), 1))), 'RX')"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "C",
+                                "target": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), #A), 'TX')",
+                                "targetFull": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.*-octets), 1))), 'TX')"
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeRegions": [
+
+                        ],
+                        "timeShift": null,
+                        "title": "RX / TX Throughput",
+                        "tooltip": {
+                            "shared": true,
+                            "sort": 2,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "$$hashKey": "object:7692",
+                                "format": "percent",
+                                "label": null,
+                                "logBase": 1,
+                                "max": "100",
+                                "min": "0",
+                                "show": true
+                            },
+                            {
+                                "$$hashKey": "object:7693",
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            }
+                        ],
+                        "yaxis": {
+                            "align": false,
+                            "alignLevel": null
+                        }
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 10
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 11,
+                            "w": 8,
+                            "x": 0,
+                            "y": 26
+                        },
+                        "id": 31,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Total"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl3b_sol_pg25",
+                                "value": "defrahds32_cl3b_sol_pg25"
+                            }
+                        },
+                        "targets": [
+                            {
+                                "refCount": 0,
+                                "refId": "A",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.crc-errors))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "B",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.itw))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "C",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.bad-eofs-received))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "D",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.address-errors))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "E",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.delimiter-errors))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "F",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.in-crc-errors))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "G",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.enc_out))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "H",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.pcs))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "I",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.pcs))"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Physical Errors",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "sum"
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "organize",
+                                "options": {
+                                    "excludeByName": {
+
+                                    },
+                                    "indexByName": {
+
+                                    },
+                                    "renameByName": {
+                                        "Field": "Counter"
+                                    }
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 10
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 11,
+                            "w": 8,
+                            "x": 8,
+                            "y": 26
+                        },
+                        "id": 37,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Total"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl3b_sol_pg25",
+                                "value": "defrahds32_cl3b_sol_pg25"
+                            }
+                        },
+                        "targets": [
+                            {
+                                "refCount": 0,
+                                "refId": "A",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.link-failures))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "B",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.loss-of-signal))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "C",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.loss-of-sync))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "D",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.lr_in))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "E",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.lr_out))"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Link Errors",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "sum"
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "organize",
+                                "options": {
+                                    "excludeByName": {
+
+                                    },
+                                    "indexByName": {
+
+                                    },
+                                    "renameByName": {
+                                        "Field": "Counter"
+                                    }
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 10
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 11,
+                            "w": 8,
+                            "x": 16,
+                            "y": 26
+                        },
+                        "id": 38,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Total"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl3b_sol_pg25",
+                                "value": "defrahds32_cl3b_sol_pg25"
+                            }
+                        },
+                        "targets": [
+                            {
+                                "refCount": 0,
+                                "refId": "A",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.class-3-discards))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "B",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.c3_rxto))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "C",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.c3_txto))"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Discard Errors",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "sum"
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "organize",
+                                "options": {
+                                    "excludeByName": {
+
+                                    },
+                                    "indexByName": {
+
+                                    },
+                                    "renameByName": {
+                                        "Field": "Counter"
+                                    }
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "fill": 0,
+                        "fillGradient": 0,
+                        "gridPos": {
+                            "h": 8,
+                            "w": 12,
+                            "x": 0,
+                            "y": 37
+                        },
+                        "hiddenSeries": false,
+                        "id": 47,
+                        "legend": {
+                            "avg": false,
+                            "current": false,
+                            "max": false,
+                            "min": false,
+                            "show": true,
+                            "total": false,
+                            "values": false
+                        },
+                        "lines": true,
+                        "linewidth": 1,
+                        "nullPointMode": "null",
+                        "options": {
+                            "alertThreshold": true
+                        },
+                        "percentage": false,
+                        "pluginVersion": "7.2.1",
+                        "pointradius": 2,
+                        "points": false,
+                        "renderer": "flot",
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl3b_sol_pg25",
+                                "value": "defrahds32_cl3b_sol_pg25"
+                            }
+                        },
+                        "seriesOverrides": [
+
+                        ],
+                        "spaceLength": 10,
+                        "stack": false,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(brocade.fos.stats.devices.$Fabric.$Type.$Device.rx-power-dbm, 6)"
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeRegions": [
+
+                        ],
+                        "timeShift": null,
+                        "title": "SFP RX Power of $Device",
+                        "tooltip": {
+                            "shared": true,
+                            "sort": 0,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "$$hashKey": "object:18540",
+                                "format": "dBm",
+                                "label": null,
+                                "logBase": 1,
+                                "max": "2",
+                                "min": null,
+                                "show": true
+                            },
+                            {
+                                "$$hashKey": "object:18541",
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            }
+                        ],
+                        "yaxis": {
+                            "align": false,
+                            "alignLevel": null
+                        }
+                    },
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "fill": 0,
+                        "fillGradient": 0,
+                        "gridPos": {
+                            "h": 8,
+                            "w": 12,
+                            "x": 12,
+                            "y": 37
+                        },
+                        "hiddenSeries": false,
+                        "id": 48,
+                        "legend": {
+                            "avg": false,
+                            "current": false,
+                            "max": false,
+                            "min": false,
+                            "show": true,
+                            "total": false,
+                            "values": false
+                        },
+                        "lines": true,
+                        "linewidth": 1,
+                        "nullPointMode": "null",
+                        "options": {
+                            "alertThreshold": true
+                        },
+                        "percentage": false,
+                        "pluginVersion": "7.2.1",
+                        "pointradius": 2,
+                        "points": false,
+                        "renderer": "flot",
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl3b_sol_pg25",
+                                "value": "defrahds32_cl3b_sol_pg25"
+                            }
+                        },
+                        "seriesOverrides": [
+
+                        ],
+                        "spaceLength": 10,
+                        "stack": false,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(brocade.fos.stats.devices.$Fabric.$Type.$Device.tx-power-dbm, 6)"
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeRegions": [
+
+                        ],
+                        "timeShift": null,
+                        "title": "SFP TX Power of $Device",
+                        "tooltip": {
+                            "shared": true,
+                            "sort": 0,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "$$hashKey": "object:18540",
+                                "format": "dBm",
+                                "label": null,
+                                "logBase": 1,
+                                "max": "2",
+                                "min": null,
+                                "show": true
+                            },
+                            {
+                                "$$hashKey": "object:18541",
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            }
+                        ],
+                        "yaxis": {
+                            "align": false,
+                            "alignLevel": null
+                        }
+                    }
+                ],
+                "repeat": "Device",
+                "scopedVars": {
+                    "Device": {
+                        "selected": true,
+                        "text": "defrahds32_cl3b_sol_pg25",
+                        "value": "defrahds32_cl3b_sol_pg25"
+                    }
+                },
+                "title": "Performance Details $Device",
+                "type": "row"
+            },
+            {
+                "collapsed": true,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 18
+                },
+                "id": 49,
+                "panels": [
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "fill": 1,
+                        "fillGradient": 0,
+                        "gridPos": {
+                            "h": 8,
+                            "w": 12,
+                            "x": 0,
+                            "y": 18
+                        },
+                        "hiddenSeries": false,
+                        "id": 50,
+                        "legend": {
+                            "alignAsTable": true,
+                            "avg": true,
+                            "current": true,
+                            "max": true,
+                            "min": true,
+                            "show": true,
+                            "sort": "current",
+                            "sortDesc": true,
+                            "total": false,
+                            "values": true
+                        },
+                        "lines": true,
+                        "linewidth": 1,
+                        "nullPointMode": "null",
+                        "options": {
+                            "alertThreshold": true
+                        },
+                        "percentage": false,
+                        "pluginVersion": "7.2.1",
+                        "pointradius": 2,
+                        "points": false,
+                        "renderer": "flot",
+                        "repeatIteration": 1613679695705,
+                        "repeatPanelId": 12,
+                        "repeatedByRow": true,
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl4b_sol_pg25",
+                                "value": "defrahds32_cl4b_sol_pg25"
+                            }
+                        },
+                        "seriesOverrides": [
+                            {
+                                "alias": "in-octets",
+                                "yaxis": 1
+                            }
+                        ],
+                        "spaceLength": 10,
+                        "stack": false,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "refCount": 0,
+                                "refId": "A",
+                                "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), 'TX')"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "B",
+                                "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), 'RX')"
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeRegions": [
+
+                        ],
+                        "timeShift": null,
+                        "title": "RX / TX Throughput",
+                        "tooltip": {
+                            "shared": true,
+                            "sort": 2,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "$$hashKey": "object:7692",
+                                "format": "Bps",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            },
+                            {
+                                "$$hashKey": "object:7693",
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            }
+                        ],
+                        "yaxis": {
+                            "align": false,
+                            "alignLevel": null
+                        }
+                    },
+                    {
+                        "aliasColors": {
+
+                        },
+                        "breakPoint": "50%",
+                        "cacheTimeout": null,
+                        "combine": {
+                            "label": "Others",
+                            "threshold": 0
+                        },
+                        "datasource": "HDS_Graphite",
+                        "decimals": null,
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "fontSize": "80%",
+                        "format": "Bps",
+                        "gridPos": {
+                            "h": 8,
+                            "w": 3,
+                            "x": 12,
+                            "y": 18
+                        },
+                        "id": 51,
+                        "interval": null,
+                        "legend": {
+                            "header": "",
+                            "percentage": true,
+                            "show": true,
+                            "sort": "current",
+                            "sortDesc": true,
+                            "values": true
+                        },
+                        "legendType": "Under graph",
+                        "links": [
+
+                        ],
+                        "nullPointMode": "connected",
+                        "pieType": "pie",
+                        "pluginVersion": "7.2.1",
+                        "repeatIteration": 1613679695705,
+                        "repeatPanelId": 29,
+                        "repeatedByRow": true,
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl4b_sol_pg25",
+                                "value": "defrahds32_cl4b_sol_pg25"
+                            }
+                        },
+                        "strokeWidth": 1,
+                        "targets": [
+                            {
+                                "refCount": 0,
+                                "refId": "B",
+                                "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), 'RX')"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "C",
+                                "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), 'TX')"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "RX / TX Throughput",
+                        "type": "grafana-piechart-panel",
+                        "valueName": "current"
+                    },
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "fill": 1,
+                        "fillGradient": 0,
+                        "gridPos": {
+                            "h": 8,
+                            "w": 9,
+                            "x": 15,
+                            "y": 18
+                        },
+                        "hiddenSeries": false,
+                        "id": 52,
+                        "legend": {
+                            "alignAsTable": true,
+                            "avg": true,
+                            "current": true,
+                            "max": true,
+                            "min": true,
+                            "show": true,
+                            "sort": "current",
+                            "sortDesc": true,
+                            "total": false,
+                            "values": true
+                        },
+                        "lines": true,
+                        "linewidth": 1,
+                        "nullPointMode": "null",
+                        "options": {
+                            "alertThreshold": true
+                        },
+                        "percentage": false,
+                        "pluginVersion": "7.2.1",
+                        "pointradius": 2,
+                        "points": false,
+                        "renderer": "flot",
+                        "repeatIteration": 1613679695705,
+                        "repeatPanelId": 19,
+                        "repeatedByRow": true,
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl4b_sol_pg25",
+                                "value": "defrahds32_cl4b_sol_pg25"
+                            }
+                        },
+                        "seriesOverrides": [
+                            {
+                                "alias": "in-octets",
+                                "yaxis": 1
+                            }
+                        ],
+                        "spaceLength": 10,
+                        "stack": false,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "hide": true,
+                                "refCount": 0,
+                                "refId": "A",
+                                "target": "sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.*-octets), 1))"
+                            },
+                            {
+                                "refCount": 1,
+                                "refId": "B",
+                                "target": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), #A), 'RX')",
+                                "targetFull": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.*-octets), 1))), 'RX')"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "C",
+                                "target": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), #A), 'TX')",
+                                "targetFull": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.*-octets), 1))), 'TX')"
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeRegions": [
+
+                        ],
+                        "timeShift": null,
+                        "title": "RX / TX Throughput",
+                        "tooltip": {
+                            "shared": true,
+                            "sort": 2,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "$$hashKey": "object:7692",
+                                "format": "percent",
+                                "label": null,
+                                "logBase": 1,
+                                "max": "100",
+                                "min": "0",
+                                "show": true
+                            },
+                            {
+                                "$$hashKey": "object:7693",
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            }
+                        ],
+                        "yaxis": {
+                            "align": false,
+                            "alignLevel": null
+                        }
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 10
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 11,
+                            "w": 8,
+                            "x": 0,
+                            "y": 26
+                        },
+                        "id": 53,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Total"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "repeatIteration": 1613679695705,
+                        "repeatPanelId": 31,
+                        "repeatedByRow": true,
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl4b_sol_pg25",
+                                "value": "defrahds32_cl4b_sol_pg25"
+                            }
+                        },
+                        "targets": [
+                            {
+                                "refCount": 0,
+                                "refId": "A",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.crc-errors))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "B",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.itw))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "C",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.bad-eofs-received))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "D",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.address-errors))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "E",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.delimiter-errors))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "F",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.in-crc-errors))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "G",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.enc_out))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "H",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.pcs))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "I",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.pcs))"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Physical Errors",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "sum"
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "organize",
+                                "options": {
+                                    "excludeByName": {
+
+                                    },
+                                    "indexByName": {
+
+                                    },
+                                    "renameByName": {
+                                        "Field": "Counter"
+                                    }
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 10
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 11,
+                            "w": 8,
+                            "x": 8,
+                            "y": 26
+                        },
+                        "id": 54,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Total"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "repeatIteration": 1613679695705,
+                        "repeatPanelId": 37,
+                        "repeatedByRow": true,
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl4b_sol_pg25",
+                                "value": "defrahds32_cl4b_sol_pg25"
+                            }
+                        },
+                        "targets": [
+                            {
+                                "refCount": 0,
+                                "refId": "A",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.link-failures))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "B",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.loss-of-signal))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "C",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.loss-of-sync))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "D",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.lr_in))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "E",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.lr_out))"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Link Errors",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "sum"
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "organize",
+                                "options": {
+                                    "excludeByName": {
+
+                                    },
+                                    "indexByName": {
+
+                                    },
+                                    "renameByName": {
+                                        "Field": "Counter"
+                                    }
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 10
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 11,
+                            "w": 8,
+                            "x": 16,
+                            "y": 26
+                        },
+                        "id": 55,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Total"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "repeatIteration": 1613679695705,
+                        "repeatPanelId": 38,
+                        "repeatedByRow": true,
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl4b_sol_pg25",
+                                "value": "defrahds32_cl4b_sol_pg25"
+                            }
+                        },
+                        "targets": [
+                            {
+                                "refCount": 0,
+                                "refId": "A",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.class-3-discards))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "B",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.c3_rxto))"
+                            },
+                            {
+                                "refCount": 0,
+                                "refId": "C",
+                                "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.c3_txto))"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Discard Errors",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "sum"
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "organize",
+                                "options": {
+                                    "excludeByName": {
+
+                                    },
+                                    "indexByName": {
+
+                                    },
+                                    "renameByName": {
+                                        "Field": "Counter"
+                                    }
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "fill": 0,
+                        "fillGradient": 0,
+                        "gridPos": {
+                            "h": 8,
+                            "w": 12,
+                            "x": 0,
+                            "y": 37
+                        },
+                        "hiddenSeries": false,
+                        "id": 56,
+                        "legend": {
+                            "avg": false,
+                            "current": false,
+                            "max": false,
+                            "min": false,
+                            "show": true,
+                            "total": false,
+                            "values": false
+                        },
+                        "lines": true,
+                        "linewidth": 1,
+                        "nullPointMode": "null",
+                        "options": {
+                            "alertThreshold": true
+                        },
+                        "percentage": false,
+                        "pluginVersion": "7.2.1",
+                        "pointradius": 2,
+                        "points": false,
+                        "renderer": "flot",
+                        "repeatIteration": 1613679695705,
+                        "repeatPanelId": 47,
+                        "repeatedByRow": true,
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl4b_sol_pg25",
+                                "value": "defrahds32_cl4b_sol_pg25"
+                            }
+                        },
+                        "seriesOverrides": [
+
+                        ],
+                        "spaceLength": 10,
+                        "stack": false,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(brocade.fos.stats.devices.$Fabric.$Type.$Device.rx-power-dbm, 6)"
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeRegions": [
+
+                        ],
+                        "timeShift": null,
+                        "title": "SFP RX Power of $Device",
+                        "tooltip": {
+                            "shared": true,
+                            "sort": 0,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "$$hashKey": "object:18540",
+                                "format": "dBm",
+                                "label": null,
+                                "logBase": 1,
+                                "max": "2",
+                                "min": null,
+                                "show": true
+                            },
+                            {
+                                "$$hashKey": "object:18541",
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            }
+                        ],
+                        "yaxis": {
+                            "align": false,
+                            "alignLevel": null
+                        }
+                    },
+                    {
+                        "aliasColors": {
+
+                        },
+                        "bars": false,
+                        "dashLength": 10,
+                        "dashes": false,
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "fill": 0,
+                        "fillGradient": 0,
+                        "gridPos": {
+                            "h": 8,
+                            "w": 12,
+                            "x": 12,
+                            "y": 37
+                        },
+                        "hiddenSeries": false,
+                        "id": 57,
+                        "legend": {
+                            "avg": false,
+                            "current": false,
+                            "max": false,
+                            "min": false,
+                            "show": true,
+                            "total": false,
+                            "values": false
+                        },
+                        "lines": true,
+                        "linewidth": 1,
+                        "nullPointMode": "null",
+                        "options": {
+                            "alertThreshold": true
+                        },
+                        "percentage": false,
+                        "pluginVersion": "7.2.1",
+                        "pointradius": 2,
+                        "points": false,
+                        "renderer": "flot",
+                        "repeatIteration": 1613679695705,
+                        "repeatPanelId": 48,
+                        "repeatedByRow": true,
+                        "scopedVars": {
+                            "Device": {
+                                "selected": true,
+                                "text": "defrahds32_cl4b_sol_pg25",
+                                "value": "defrahds32_cl4b_sol_pg25"
+                            }
+                        },
+                        "seriesOverrides": [
+
+                        ],
+                        "spaceLength": 10,
+                        "stack": false,
+                        "steppedLine": false,
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(brocade.fos.stats.devices.$Fabric.$Type.$Device.tx-power-dbm, 6)"
+                            }
+                        ],
+                        "thresholds": [
+
+                        ],
+                        "timeFrom": null,
+                        "timeRegions": [
+
+                        ],
+                        "timeShift": null,
+                        "title": "SFP TX Power of $Device",
+                        "tooltip": {
+                            "shared": true,
+                            "sort": 0,
+                            "value_type": "individual"
+                        },
+                        "type": "graph",
+                        "xaxis": {
+                            "buckets": null,
+                            "mode": "time",
+                            "name": null,
+                            "show": true,
+                            "values": [
+
+                            ]
+                        },
+                        "yaxes": [
+                            {
+                                "$$hashKey": "object:18540",
+                                "format": "dBm",
+                                "label": null,
+                                "logBase": 1,
+                                "max": "2",
+                                "min": null,
+                                "show": true
+                            },
+                            {
+                                "$$hashKey": "object:18541",
+                                "format": "short",
+                                "label": null,
+                                "logBase": 1,
+                                "max": null,
+                                "min": null,
+                                "show": true
+                            }
+                        ],
+                        "yaxis": {
+                            "align": false,
+                            "alignLevel": null
+                        }
+                    }
+                ],
+                "repeatIteration": 1613679695705,
+                "repeatPanelId": 5,
+                "scopedVars": {
+                    "Device": {
+                        "selected": true,
+                        "text": "defrahds32_cl4b_sol_pg25",
+                        "value": "defrahds32_cl4b_sol_pg25"
+                    }
+                },
+                "title": "Performance Details $Device",
+                "type": "row"
+            }
+        ],
+        "schemaVersion": 26,
+        "style": "dark",
+        "tags": [
+            "Brocade",
+            "Realtime"
+        ],
+        "templating": {
+            "list": [
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": true,
+                        "tags": [
+
+                        ],
+                        "text": [
+                            "FABRIC_A",
+                            "FABRIC_B"
+                        ],
+                        "value": [
+                            "FABRIC_A",
+                            "FABRIC_B"
+                        ]
+                    },
+                    "datasource": "HDS_Graphite",
+                    "definition": "brocade.fos.stats.devices.*",
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": null,
+                    "multi": true,
+                    "name": "Fabric",
+                    "options": [
+
+                    ],
+                    "query": "brocade.fos.stats.devices.*",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "tagValuesQuery": "",
+                    "tags": [
+
+                    ],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": true,
+                        "text": [
+                            "Physical_Target"
+                        ],
+                        "value": [
+                            "Physical_Target"
+                        ]
+                    },
+                    "datasource": "HDS_Graphite",
+                    "definition": "brocade.fos.stats.devices.$Fabric.*",
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": null,
+                    "multi": true,
+                    "name": "Type",
+                    "options": [
+
+                    ],
+                    "query": "brocade.fos.stats.devices.$Fabric.*",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "tagValuesQuery": "",
+                    "tags": [
+
+                    ],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": true,
+                        "tags": [
+
+                        ],
+                        "text": [
+                            "defrahds32_cl3b_sol_pg25",
+                            "defrahds32_cl4b_sol_pg25"
+                        ],
+                        "value": [
+                            "defrahds32_cl3b_sol_pg25",
+                            "defrahds32_cl4b_sol_pg25"
+                        ]
+                    },
+                    "datasource": "HDS_Graphite",
+                    "definition": "brocade.fos.stats.devices.$Fabric.$Type.*",
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": null,
+                    "multi": true,
+                    "name": "Device",
+                    "options": [
+
+                    ],
+                    "query": "brocade.fos.stats.devices.$Fabric.$Type.*",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "tagValuesQuery": "",
+                    "tags": [
+
+                    ],
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
+                }
+            ]
+        },
+        "time": {
+            "from": "now-6h",
+            "to": "now"
+        },
+        "timepicker": {
+
+        },
+        "timezone": "",
+        "title": "Brocade: Initiator / Target Details",
+        "uid": "a73yCj1Gk",
+        "version": 11
+    },
+    "overwrite": true
+}

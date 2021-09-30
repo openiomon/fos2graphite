@@ -9,10 +9,10 @@
         "url": "/d/j47zVwJMz/brocade-isl-overview-realtime",
         "expires": "0001-01-01T00:00:00Z",
         "created": "2020-12-16T19:42:34+01:00",
-        "updated": "2020-12-21T18:51:50+01:00",
+        "updated": "2021-02-18T21:17:38+01:00",
         "updatedBy": "USER",
         "createdBy": "USER",
-        "version": 13,
+        "version": 16,
         "hasAcl": false,
         "isFolder": false,
         "folderId": 20,
@@ -39,7 +39,7 @@
         "gnetId": null,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1608573095847,
+        "iteration": 1613679177302,
         "links": [
 
         ],
@@ -67,7 +67,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Default",
+                "datasource": "localdatasource",
                 "fieldConfig": {
                     "defaults": {
                         "custom": {
@@ -120,7 +120,7 @@
                 "targets": [
                     {
                         "refId": "A",
-                        "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.LS_PORT.*.*.in-octets), 1), 5, 7, 8))"
+                        "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.LS_PORT.*.*.in-octets), 1), 5, 7, 8))"
                     }
                 ],
                 "thresholds": [
@@ -173,7 +173,7 @@
                 }
             },
             {
-                "datasource": "Default",
+                "datasource": "localdatasource",
                 "fieldConfig": {
                     "defaults": {
                         "custom": {
@@ -222,7 +222,7 @@
                 "targets": [
                     {
                         "refId": "A",
-                        "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.LS_PORT.*.*.in-octets), 1))"
+                        "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.LS_PORT.*.*.in-octets), 1))"
                     }
                 ],
                 "timeFrom": null,
@@ -237,7 +237,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "Default",
+                "datasource": "localdatasource",
                 "fieldConfig": {
                     "defaults": {
                         "custom": {
@@ -290,7 +290,7 @@
                 "targets": [
                     {
                         "refId": "A",
-                        "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.LS_PORT.*.*.out-octets), 1), 5, 7, 8))"
+                        "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.LS_PORT.*.*.out-octets), 1), 5, 7, 8))"
                     }
                 ],
                 "thresholds": [
@@ -343,7 +343,7 @@
                 }
             },
             {
-                "datasource": "Default",
+                "datasource": "localdatasource",
                 "fieldConfig": {
                     "defaults": {
                         "custom": {
@@ -392,7 +392,7 @@
                 "targets": [
                     {
                         "refId": "A",
-                        "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.LS_PORT.*.*.out-octets), 1))"
+                        "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.LS_PORT.*.*.out-octets), 1))"
                     }
                 ],
                 "timeFrom": null,
@@ -424,7 +424,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -504,7 +504,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -584,7 +584,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -664,7 +664,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -744,7 +744,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -824,7 +824,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -904,7 +904,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -984,7 +984,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1064,7 +1064,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1144,7 +1144,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1224,7 +1224,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1313,7 +1313,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1366,7 +1366,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.E_PORT.*.*.in-octets), 1), 5, 7, 8))"
+                                "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.E_PORT.*.*.in-octets), 1), 5, 7, 8))"
                             }
                         ],
                         "thresholds": [
@@ -1419,7 +1419,7 @@
                         }
                     },
                     {
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1468,7 +1468,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.E_PORT.*.*.in-octets), 1))"
+                                "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.E_PORT.*.*.in-octets), 1))"
                             }
                         ],
                         "timeFrom": null,
@@ -1483,7 +1483,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1536,7 +1536,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.E_PORT.*.*.out-octets), 1), 5, 7, 8))"
+                                "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.E_PORT.*.*.out-octets), 1), 5, 7, 8))"
                             }
                         ],
                         "thresholds": [
@@ -1589,7 +1589,7 @@
                         }
                     },
                     {
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1638,7 +1638,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.E_PORT.*.*.out-octets), 1))"
+                                "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.E_PORT.*.*.out-octets), 1))"
                             }
                         ],
                         "timeFrom": null,
@@ -1674,7 +1674,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1690,7 +1690,7 @@
                             "h": 8,
                             "w": 6,
                             "x": 0,
-                            "y": 37
+                            "y": 13
                         },
                         "id": 37,
                         "links": [
@@ -1754,7 +1754,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1770,7 +1770,7 @@
                             "h": 8,
                             "w": 6,
                             "x": 6,
-                            "y": 37
+                            "y": 13
                         },
                         "id": 38,
                         "links": [
@@ -1834,7 +1834,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1850,7 +1850,7 @@
                             "h": 8,
                             "w": 6,
                             "x": 12,
-                            "y": 37
+                            "y": 13
                         },
                         "id": 39,
                         "links": [
@@ -1914,7 +1914,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1930,7 +1930,7 @@
                             "h": 8,
                             "w": 6,
                             "x": 18,
-                            "y": 37
+                            "y": 13
                         },
                         "id": 40,
                         "links": [
@@ -1994,7 +1994,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2010,7 +2010,7 @@
                             "h": 8,
                             "w": 6,
                             "x": 0,
-                            "y": 45
+                            "y": 21
                         },
                         "id": 36,
                         "links": [
@@ -2074,7 +2074,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2090,7 +2090,7 @@
                             "h": 8,
                             "w": 6,
                             "x": 6,
-                            "y": 45
+                            "y": 21
                         },
                         "id": 35,
                         "links": [
@@ -2154,7 +2154,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2170,7 +2170,7 @@
                             "h": 8,
                             "w": 6,
                             "x": 12,
-                            "y": 45
+                            "y": 21
                         },
                         "id": 34,
                         "links": [
@@ -2234,7 +2234,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2250,7 +2250,7 @@
                             "h": 8,
                             "w": 6,
                             "x": 18,
-                            "y": 45
+                            "y": 21
                         },
                         "id": 33,
                         "links": [
@@ -2314,7 +2314,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2330,7 +2330,7 @@
                             "h": 8,
                             "w": 6,
                             "x": 0,
-                            "y": 53
+                            "y": 29
                         },
                         "id": 32,
                         "links": [
@@ -2394,7 +2394,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2410,7 +2410,7 @@
                             "h": 8,
                             "w": 6,
                             "x": 6,
-                            "y": 53
+                            "y": 29
                         },
                         "id": 31,
                         "links": [
@@ -2474,7 +2474,7 @@
                                 "value": "max"
                             }
                         ],
-                        "datasource": "Default",
+                        "datasource": "localdatasource",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2490,7 +2490,7 @@
                             "h": 8,
                             "w": 6,
                             "x": 12,
-                            "y": 53
+                            "y": 29
                         },
                         "id": 30,
                         "links": [
@@ -2559,14 +2559,17 @@
                     "allValue": null,
                     "current": {
                         "selected": true,
+                        "tags": [
+
+                        ],
                         "text": [
-                            "SAN_A"
+                            "FABRIC_A"
                         ],
                         "value": [
-                            "SAN_A"
+                            "FABRIC_A"
                         ]
                     },
-                    "datasource": "Default",
+                    "datasource": "localdatasource",
                     "definition": "brocade.fos.stats.ports.*",
                     "hide": 0,
                     "includeAll": true,
@@ -2592,18 +2595,11 @@
                 {
                     "allValue": null,
                     "current": {
-                        "selected": true,
-                        "tags": [
-
-                        ],
-                        "text": [
-                            "All"
-                        ],
-                        "value": [
-                            "$__all"
-                        ]
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
                     },
-                    "datasource": "Default",
+                    "datasource": "localdatasource",
                     "definition": "brocade.fos.stats.ports.$Fabric.*",
                     "hide": 0,
                     "includeAll": true,
@@ -2638,7 +2634,7 @@
         "timezone": "",
         "title": "Brocade: ISL Overview (Realtime)",
         "uid": "j47zVwJMz",
-        "version": 13
+        "version": 16
     },
     "overwrite": true
 }

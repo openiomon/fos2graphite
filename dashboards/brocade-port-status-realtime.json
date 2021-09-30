@@ -9,10 +9,10 @@
         "url": "/d/E3YjE7xGk/brocade-port-status-realtime",
         "expires": "0001-01-01T00:00:00Z",
         "created": "2020-12-21T16:28:39+01:00",
-        "updated": "2020-12-31T18:25:13+01:00",
+        "updated": "2021-04-13T09:42:42+02:00",
         "updatedBy": "USER",
         "createdBy": "USER",
-        "version": 11,
+        "version": 16,
         "hasAcl": false,
         "isFolder": false,
         "folderId": 20,
@@ -39,13 +39,13 @@
         "gnetId": null,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1609435398007,
+        "iteration": 1618298960298,
         "links": [
 
         ],
         "panels": [
             {
-                "collapsed": true,
+                "collapsed": false,
                 "datasource": null,
                 "gridPos": {
                     "h": 1,
@@ -55,1330 +55,427 @@
                 },
                 "id": 2,
                 "panels": [
-                    {
-                        "aliasColors": {
 
-                        },
-                        "bars": false,
-                        "dashLength": 10,
-                        "dashes": false,
-                        "datasource": "Default",
-                        "fieldConfig": {
-                            "defaults": {
-                                "custom": {
-
-                                }
-                            },
-                            "overrides": [
-
-                            ]
-                        },
-                        "fill": 1,
-                        "fillGradient": 0,
-                        "gridPos": {
-                            "h": 8,
-                            "w": 20,
-                            "x": 0,
-                            "y": 1
-                        },
-                        "hiddenSeries": false,
-                        "id": 4,
-                        "legend": {
-                            "alignAsTable": true,
-                            "avg": true,
-                            "current": true,
-                            "max": true,
-                            "min": true,
-                            "show": true,
-                            "sort": "current",
-                            "sortDesc": true,
-                            "total": false,
-                            "values": true
-                        },
-                        "lines": true,
-                        "linewidth": 1,
-                        "nullPointMode": "null",
-                        "options": {
-                            "alertThreshold": true
-                        },
-                        "percentage": false,
-                        "pluginVersion": "7.2.1",
-                        "pointradius": 2,
-                        "points": false,
-                        "renderer": "flot",
-                        "seriesOverrides": [
-                            {
-                                "alias": "Aggregated TX Throughput",
-                                "yaxis": 2
-                            }
-                        ],
-                        "spaceLength": 10,
-                        "stack": false,
-                        "steppedLine": false,
-                        "targets": [
-                            {
-                                "refCount": 0,
-                                "refId": "A",
-                                "target": "alias(sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.in-octets), 1)), 'Aggregated RX Throughput')"
-                            },
-                            {
-                                "refCount": 0,
-                                "refId": "B",
-                                "target": "alias(sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.out-octets), 1)), 'Aggregated TX Throughput')"
-                            }
-                        ],
-                        "thresholds": [
-
-                        ],
-                        "timeFrom": null,
-                        "timeRegions": [
-
-                        ],
-                        "timeShift": null,
-                        "title": "Aggregated throughput for all selected ports ",
-                        "tooltip": {
-                            "shared": true,
-                            "sort": 2,
-                            "value_type": "individual"
-                        },
-                        "type": "graph",
-                        "xaxis": {
-                            "buckets": null,
-                            "mode": "time",
-                            "name": null,
-                            "show": true,
-                            "values": [
-
-                            ]
-                        },
-                        "yaxes": [
-                            {
-                                "$$hashKey": "object:12174",
-                                "format": "Bps",
-                                "label": null,
-                                "logBase": 1,
-                                "max": null,
-                                "min": "0",
-                                "show": true
-                            },
-                            {
-                                "$$hashKey": "object:12175",
-                                "format": "Bps",
-                                "label": null,
-                                "logBase": 1,
-                                "max": null,
-                                "min": "0",
-                                "show": true
-                            }
-                        ],
-                        "yaxis": {
-                            "align": false,
-                            "alignLevel": null
-                        }
-                    },
-                    {
-                        "aliasColors": {
-
-                        },
-                        "breakPoint": "50%",
-                        "cacheTimeout": null,
-                        "combine": {
-                            "label": "Others",
-                            "threshold": 0
-                        },
-                        "datasource": "Default",
-                        "fieldConfig": {
-                            "defaults": {
-                                "custom": {
-
-                                }
-                            },
-                            "overrides": [
-
-                            ]
-                        },
-                        "fontSize": "80%",
-                        "format": "Bps",
-                        "gridPos": {
-                            "h": 8,
-                            "w": 4,
-                            "x": 20,
-                            "y": 1
-                        },
-                        "id": 5,
-                        "interval": null,
-                        "legend": {
-                            "percentage": true,
-                            "show": true,
-                            "sort": "avg",
-                            "sortDesc": true,
-                            "values": true
-                        },
-                        "legendType": "Under graph",
-                        "links": [
-
-                        ],
-                        "nullPointMode": "connected",
-                        "pieType": "pie",
-                        "pluginVersion": "7.2.1",
-                        "strokeWidth": 1,
-                        "targets": [
-                            {
-                                "refCount": 0,
-                                "refId": "A",
-                                "target": "alias(sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.in-octets), 1)), 'Aggregated RX Throughput')"
-                            },
-                            {
-                                "refCount": 0,
-                                "refId": "B",
-                                "target": "alias(sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.out-octets), 1)), 'Aggregated TX Throughput')"
-                            }
-                        ],
-                        "timeFrom": null,
-                        "timeShift": null,
-                        "title": "Aggregated RX/TX Ratio all selected ports ",
-                        "type": "grafana-piechart-panel",
-                        "valueName": "avg"
-                    },
-                    {
-                        "aliasColors": {
-
-                        },
-                        "bars": false,
-                        "dashLength": 10,
-                        "dashes": false,
-                        "datasource": "Default",
-                        "fieldConfig": {
-                            "defaults": {
-                                "custom": {
-
-                                }
-                            },
-                            "overrides": [
-
-                            ]
-                        },
-                        "fill": 0,
-                        "fillGradient": 0,
-                        "gridPos": {
-                            "h": 10,
-                            "w": 12,
-                            "x": 0,
-                            "y": 9
-                        },
-                        "hiddenSeries": false,
-                        "id": 6,
-                        "legend": {
-                            "alignAsTable": true,
-                            "avg": true,
-                            "current": true,
-                            "max": true,
-                            "min": true,
-                            "show": true,
-                            "sort": "current",
-                            "sortDesc": true,
-                            "total": false,
-                            "values": true
-                        },
-                        "lines": true,
-                        "linewidth": 1,
-                        "nullPointMode": "null",
-                        "options": {
-                            "alertThreshold": true
-                        },
-                        "percentage": false,
-                        "pluginVersion": "7.2.1",
-                        "pointradius": 2,
-                        "points": false,
-                        "renderer": "flot",
-                        "seriesOverrides": [
-                            {
-                                "alias": "Aggregated TX Throughput",
-                                "yaxis": 2
-                            }
-                        ],
-                        "spaceLength": 10,
-                        "stack": false,
-                        "steppedLine": false,
-                        "targets": [
-                            {
-                                "refCount": 0,
-                                "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.in-octets), 1), 5, 7, 8)"
-                            }
-                        ],
-                        "thresholds": [
-
-                        ],
-                        "timeFrom": null,
-                        "timeRegions": [
-
-                        ],
-                        "timeShift": null,
-                        "title": "Port RX throughput for all selected ports ",
-                        "tooltip": {
-                            "shared": true,
-                            "sort": 2,
-                            "value_type": "individual"
-                        },
-                        "type": "graph",
-                        "xaxis": {
-                            "buckets": null,
-                            "mode": "time",
-                            "name": null,
-                            "show": true,
-                            "values": [
-
-                            ]
-                        },
-                        "yaxes": [
-                            {
-                                "$$hashKey": "object:12174",
-                                "format": "Bps",
-                                "label": null,
-                                "logBase": 1,
-                                "max": null,
-                                "min": "0",
-                                "show": true
-                            },
-                            {
-                                "$$hashKey": "object:12175",
-                                "format": "Bps",
-                                "label": null,
-                                "logBase": 1,
-                                "max": null,
-                                "min": "0",
-                                "show": true
-                            }
-                        ],
-                        "yaxis": {
-                            "align": false,
-                            "alignLevel": null
-                        }
-                    },
-                    {
-                        "aliasColors": {
-
-                        },
-                        "bars": false,
-                        "dashLength": 10,
-                        "dashes": false,
-                        "datasource": "Default",
-                        "fieldConfig": {
-                            "defaults": {
-                                "custom": {
-
-                                }
-                            },
-                            "overrides": [
-
-                            ]
-                        },
-                        "fill": 0,
-                        "fillGradient": 0,
-                        "gridPos": {
-                            "h": 10,
-                            "w": 12,
-                            "x": 12,
-                            "y": 9
-                        },
-                        "hiddenSeries": false,
-                        "id": 7,
-                        "legend": {
-                            "alignAsTable": true,
-                            "avg": true,
-                            "current": true,
-                            "max": true,
-                            "min": true,
-                            "show": true,
-                            "sort": "current",
-                            "sortDesc": true,
-                            "total": false,
-                            "values": true
-                        },
-                        "lines": true,
-                        "linewidth": 1,
-                        "nullPointMode": "null",
-                        "options": {
-                            "alertThreshold": true
-                        },
-                        "percentage": false,
-                        "pluginVersion": "7.2.1",
-                        "pointradius": 2,
-                        "points": false,
-                        "renderer": "flot",
-                        "seriesOverrides": [
-                            {
-                                "alias": "Aggregated TX Throughput",
-                                "yaxis": 2
-                            }
-                        ],
-                        "spaceLength": 10,
-                        "stack": false,
-                        "steppedLine": false,
-                        "targets": [
-                            {
-                                "refCount": 0,
-                                "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.out-octets), 1), 5, 7, 8)"
-                            }
-                        ],
-                        "thresholds": [
-
-                        ],
-                        "timeFrom": null,
-                        "timeRegions": [
-
-                        ],
-                        "timeShift": null,
-                        "title": "Port TX throughput for all selected ports ",
-                        "tooltip": {
-                            "shared": true,
-                            "sort": 2,
-                            "value_type": "individual"
-                        },
-                        "type": "graph",
-                        "xaxis": {
-                            "buckets": null,
-                            "mode": "time",
-                            "name": null,
-                            "show": true,
-                            "values": [
-
-                            ]
-                        },
-                        "yaxes": [
-                            {
-                                "$$hashKey": "object:12174",
-                                "format": "Bps",
-                                "label": null,
-                                "logBase": 1,
-                                "max": null,
-                                "min": "0",
-                                "show": true
-                            },
-                            {
-                                "$$hashKey": "object:12175",
-                                "format": "Bps",
-                                "label": null,
-                                "logBase": 1,
-                                "max": null,
-                                "min": "0",
-                                "show": true
-                            }
-                        ],
-                        "yaxis": {
-                            "align": false,
-                            "alignLevel": null
-                        }
-                    }
                 ],
                 "title": "Performance Overview",
                 "type": "row"
             },
             {
-                "collapsed": false,
-                "datasource": null,
+                "aliasColors": {
+
+                },
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "HDS_Graphite",
+                "fieldConfig": {
+                    "defaults": {
+                        "custom": {
+
+                        }
+                    },
+                    "overrides": [
+
+                    ]
+                },
+                "fill": 1,
+                "fillGradient": 0,
                 "gridPos": {
-                    "h": 1,
-                    "w": 24,
+                    "h": 8,
+                    "w": 20,
                     "x": 0,
                     "y": 1
                 },
-                "id": 9,
-                "panels": [
+                "hiddenSeries": false,
+                "id": 4,
+                "legend": {
+                    "alignAsTable": true,
+                    "avg": true,
+                    "current": true,
+                    "max": true,
+                    "min": true,
+                    "show": true,
+                    "sort": "current",
+                    "sortDesc": true,
+                    "total": false,
+                    "values": true
+                },
+                "lines": true,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "7.2.1",
+                "pointradius": 2,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "Aggregated TX Throughput",
+                        "yaxis": 2
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "refCount": 0,
+                        "refId": "A",
+                        "target": "alias(sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.in-octets), 1)), 'Aggregated RX Throughput')"
+                    },
+                    {
+                        "refCount": 0,
+                        "refId": "B",
+                        "target": "alias(sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.out-octets), 1)), 'Aggregated TX Throughput')"
+                    }
+                ],
+                "thresholds": [
 
                 ],
-                "title": "Error Overview",
-                "type": "row"
+                "timeFrom": null,
+                "timeRegions": [
+
+                ],
+                "timeShift": null,
+                "title": "Aggregated throughput for all selected ports ",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 2,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": [
+
+                    ]
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:12174",
+                        "format": "Bps",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": "0",
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:12175",
+                        "format": "Bps",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": "0",
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
             },
             {
-                "datasource": "Default",
+                "aliasColors": {
+
+                },
+                "breakPoint": "50%",
+                "cacheTimeout": null,
+                "combine": {
+                    "label": "Others",
+                    "threshold": 0
+                },
+                "datasource": "HDS_Graphite",
                 "fieldConfig": {
                     "defaults": {
                         "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
 
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
                         }
                     },
                     "overrides": [
 
                     ]
                 },
+                "fontSize": "80%",
+                "format": "Bps",
                 "gridPos": {
-                    "h": 9,
-                    "w": 6,
+                    "h": 8,
+                    "w": 4,
+                    "x": 20,
+                    "y": 1
+                },
+                "id": 5,
+                "interval": null,
+                "legend": {
+                    "percentage": true,
+                    "show": true,
+                    "sort": "avg",
+                    "sortDesc": true,
+                    "values": true
+                },
+                "legendType": "Under graph",
+                "links": [
+
+                ],
+                "nullPointMode": "connected",
+                "pieType": "pie",
+                "pluginVersion": "7.2.1",
+                "strokeWidth": 1,
+                "targets": [
+                    {
+                        "refCount": 0,
+                        "refId": "A",
+                        "target": "alias(sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.in-octets), 1)), 'Aggregated RX Throughput')"
+                    },
+                    {
+                        "refCount": 0,
+                        "refId": "B",
+                        "target": "alias(sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.out-octets), 1)), 'Aggregated TX Throughput')"
+                    }
+                ],
+                "timeFrom": null,
+                "timeShift": null,
+                "title": "Aggregated RX/TX Ratio all selected ports ",
+                "type": "grafana-piechart-panel",
+                "valueName": "avg"
+            },
+            {
+                "aliasColors": {
+
+                },
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "HDS_Graphite",
+                "fieldConfig": {
+                    "defaults": {
+                        "custom": {
+
+                        }
+                    },
+                    "overrides": [
+
+                    ]
+                },
+                "fill": 0,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 10,
+                    "w": 12,
                     "x": 0,
-                    "y": 2
+                    "y": 9
                 },
-                "id": 11,
+                "hiddenSeries": false,
+                "id": 6,
+                "legend": {
+                    "alignAsTable": true,
+                    "avg": true,
+                    "current": true,
+                    "max": true,
+                    "min": true,
+                    "show": true,
+                    "sort": "current",
+                    "sortDesc": true,
+                    "total": false,
+                    "values": true
+                },
+                "lines": true,
+                "linewidth": 1,
+                "nullPointMode": "null",
                 "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
+                    "alertThreshold": true
                 },
+                "percentage": false,
                 "pluginVersion": "7.2.1",
+                "pointradius": 2,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "Aggregated TX Throughput",
+                        "yaxis": 2
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
                 "targets": [
                     {
+                        "refCount": 0,
                         "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.pcs), 5, 7, 8)"
+                        "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.in-octets), 1), 5, 7, 8)"
                     }
+                ],
+                "thresholds": [
+
                 ],
                 "timeFrom": null,
+                "timeRegions": [
+
+                ],
                 "timeShift": null,
-                "title": "Physical coding sublayer errors",
-                "transformations": [
+                "title": "Port RX throughput for all selected ports ",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 2,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": [
+
+                    ]
+                },
+                "yaxes": [
                     {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
+                        "$$hashKey": "object:12174",
+                        "format": "Bps",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": "0",
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:12175",
+                        "format": "Bps",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": "0",
+                        "show": true
                     }
                 ],
-                "type": "table"
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
             },
             {
-                "datasource": "Default",
+                "aliasColors": {
+
+                },
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "HDS_Graphite",
                 "fieldConfig": {
                     "defaults": {
                         "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
 
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
                         }
                     },
                     "overrides": [
 
                     ]
                 },
+                "fill": 0,
+                "fillGradient": 0,
                 "gridPos": {
-                    "h": 9,
-                    "w": 6,
-                    "x": 6,
-                    "y": 2
-                },
-                "id": 12,
-                "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
-                    {
-                        "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.enc_out), 5, 7, 8)"
-                    }
-                ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "Encoding OUT errors",
-                "transformations": [
-                    {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
-                    }
-                ],
-                "type": "table"
-            },
-            {
-                "datasource": "Default",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
-
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
-                        }
-                    },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 6,
+                    "h": 10,
+                    "w": 12,
                     "x": 12,
-                    "y": 2
+                    "y": 9
                 },
-                "id": 13,
+                "hiddenSeries": false,
+                "id": 7,
+                "legend": {
+                    "alignAsTable": true,
+                    "avg": true,
+                    "current": true,
+                    "max": true,
+                    "min": true,
+                    "show": true,
+                    "sort": "current",
+                    "sortDesc": true,
+                    "total": false,
+                    "values": true
+                },
+                "lines": true,
+                "linewidth": 1,
+                "nullPointMode": "null",
                 "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
+                    "alertThreshold": true
                 },
+                "percentage": false,
                 "pluginVersion": "7.2.1",
+                "pointradius": 2,
+                "points": false,
+                "renderer": "flot",
+                "seriesOverrides": [
+                    {
+                        "alias": "Aggregated TX Throughput",
+                        "yaxis": 2
+                    }
+                ],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
                 "targets": [
                     {
+                        "refCount": 0,
                         "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.crc-errors), 5, 7, 8)"
+                        "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.out-octets), 1), 5, 7, 8)"
                     }
+                ],
+                "thresholds": [
+
                 ],
                 "timeFrom": null,
-                "timeShift": null,
-                "title": "CRC errors",
-                "transformations": [
-                    {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
-                    }
-                ],
-                "type": "table"
-            },
-            {
-                "datasource": "Default",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
+                "timeRegions": [
 
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
-                        }
+                ],
+                "timeShift": null,
+                "title": "Port TX throughput for all selected ports ",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 2,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": [
+
+                    ]
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:12174",
+                        "format": "Bps",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": "0",
+                        "show": true
                     },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 6,
-                    "x": 18,
-                    "y": 2
-                },
-                "id": 14,
-                "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
                     {
-                        "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.inv_os), 5, 7, 8)"
+                        "$$hashKey": "object:12175",
+                        "format": "Bps",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": "0",
+                        "show": true
                     }
                 ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "Invalid orderd sets",
-                "transformations": [
-                    {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
-                    }
-                ],
-                "type": "table"
-            },
-            {
-                "datasource": "Default",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
-
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
-                        }
-                    },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 6,
-                    "x": 0,
-                    "y": 11
-                },
-                "id": 15,
-                "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
-                    {
-                        "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.link-failures), 5, 7, 8)"
-                    }
-                ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "Link failures",
-                "transformations": [
-                    {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
-                    }
-                ],
-                "type": "table"
-            },
-            {
-                "datasource": "Default",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
-
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
-                        }
-                    },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 6,
-                    "x": 6,
-                    "y": 11
-                },
-                "id": 16,
-                "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
-                    {
-                        "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.lr_in), 5, 7, 8)"
-                    }
-                ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "Link reset IN",
-                "transformations": [
-                    {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
-                    }
-                ],
-                "type": "table"
-            },
-            {
-                "datasource": "Default",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
-
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
-                        }
-                    },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 6,
-                    "x": 12,
-                    "y": 11
-                },
-                "id": 17,
-                "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
-                    {
-                        "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.lr_out), 5, 7, 8)"
-                    }
-                ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "Link reset OUT",
-                "transformations": [
-                    {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
-                    }
-                ],
-                "type": "table"
-            },
-            {
-                "datasource": "Default",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
-
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
-                        }
-                    },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 6,
-                    "x": 18,
-                    "y": 11
-                },
-                "id": 18,
-                "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
-                    {
-                        "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.loss-of-sync), 5, 7, 8)"
-                    }
-                ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "Loss of sync",
-                "transformations": [
-                    {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
-                    }
-                ],
-                "type": "table"
-            },
-            {
-                "datasource": "Default",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
-
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
-                        }
-                    },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 6,
-                    "x": 0,
-                    "y": 20
-                },
-                "id": 33,
-                "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
-                    {
-                        "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.loss-of-signal), 5, 7, 8)"
-                    }
-                ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "Loss of signal",
-                "transformations": [
-                    {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
-                    }
-                ],
-                "type": "table"
-            },
-            {
-                "datasource": "Default",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
-
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
-                        }
-                    },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 6,
-                    "x": 6,
-                    "y": 20
-                },
-                "id": 19,
-                "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
-                    {
-                        "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.class-3-discards), 5, 7, 8)"
-                    }
-                ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "C3 discards",
-                "transformations": [
-                    {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
-                    }
-                ],
-                "type": "table"
-            },
-            {
-                "datasource": "Default",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
-
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
-                        }
-                    },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 6,
-                    "x": 12,
-                    "y": 20
-                },
-                "id": 20,
-                "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
-                    {
-                        "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.c3_rxto), 5, 7, 8)"
-                    }
-                ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "C3 RXTO discards",
-                "transformations": [
-                    {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
-                    }
-                ],
-                "type": "table"
-            },
-            {
-                "datasource": "Default",
-                "fieldConfig": {
-                    "defaults": {
-                        "custom": {
-                            "align": null,
-                            "displayMode": "color-background",
-                            "filterable": false
-                        },
-                        "mappings": [
-
-                        ],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
-                                {
-                                    "color": "green",
-                                    "value": null
-                                },
-                                {
-                                    "color": "#EAB839",
-                                    "value": 50
-                                },
-                                {
-                                    "color": "red",
-                                    "value": 100
-                                }
-                            ]
-                        }
-                    },
-                    "overrides": [
-
-                    ]
-                },
-                "gridPos": {
-                    "h": 9,
-                    "w": 6,
-                    "x": 18,
-                    "y": 20
-                },
-                "id": 21,
-                "options": {
-                    "showHeader": true,
-                    "sortBy": [
-                        {
-                            "desc": true,
-                            "displayName": "Difference"
-                        }
-                    ]
-                },
-                "pluginVersion": "7.2.1",
-                "targets": [
-                    {
-                        "refId": "A",
-                        "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.c3_txto), 5, 7, 8)"
-                    }
-                ],
-                "timeFrom": null,
-                "timeShift": null,
-                "title": "C3 TXTO discards",
-                "transformations": [
-                    {
-                        "id": "reduce",
-                        "options": {
-                            "reducers": [
-                                "diff",
-                                "max",
-                                "mean"
-                            ]
-                        }
-                    }
-                ],
-                "type": "table"
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
             },
             {
                 "collapsed": true,
@@ -1387,7 +484,910 @@
                     "h": 1,
                     "w": 24,
                     "x": 0,
-                    "y": 29
+                    "y": 19
+                },
+                "id": 9,
+                "panels": [
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 50
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 0,
+                            "y": 20
+                        },
+                        "id": 11,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.pcs), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Physical coding sublayer errors",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 50
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 6,
+                            "y": 20
+                        },
+                        "id": 12,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.enc_out), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Encoding OUT errors",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 50
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 12,
+                            "y": 20
+                        },
+                        "id": 13,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.crc-errors), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "CRC errors",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 50
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 18,
+                            "y": 20
+                        },
+                        "id": 14,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.inv_os), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Invalid orderd sets",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 50
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 0,
+                            "y": 29
+                        },
+                        "id": 15,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.link-failures), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Link failures",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 50
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 6,
+                            "y": 29
+                        },
+                        "id": 16,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.lr_in), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Link reset IN",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 1
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 12,
+                            "y": 29
+                        },
+                        "id": 17,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.lr_out), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Link reset OUT",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 50
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 18,
+                            "y": 29
+                        },
+                        "id": 18,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.loss-of-sync), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Loss of sync",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 50
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 0,
+                            "y": 38
+                        },
+                        "id": 33,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.loss-of-signal), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "Loss of signal",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 50
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 6,
+                            "y": 38
+                        },
+                        "id": 19,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.class-3-discards), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "C3 discards",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 50
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 12,
+                            "y": 38
+                        },
+                        "id": 20,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.c3_rxto), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "C3 RXTO discards",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    },
+                    {
+                        "datasource": "HDS_Graphite",
+                        "fieldConfig": {
+                            "defaults": {
+                                "custom": {
+                                    "align": null,
+                                    "displayMode": "color-background",
+                                    "filterable": false
+                                },
+                                "mappings": [
+
+                                ],
+                                "thresholds": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "green",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "#EAB839",
+                                            "value": 50
+                                        },
+                                        {
+                                            "color": "red",
+                                            "value": 100
+                                        }
+                                    ]
+                                }
+                            },
+                            "overrides": [
+
+                            ]
+                        },
+                        "gridPos": {
+                            "h": 9,
+                            "w": 6,
+                            "x": 18,
+                            "y": 38
+                        },
+                        "id": 21,
+                        "options": {
+                            "showHeader": true,
+                            "sortBy": [
+                                {
+                                    "desc": true,
+                                    "displayName": "Difference"
+                                }
+                            ]
+                        },
+                        "pluginVersion": "7.2.1",
+                        "targets": [
+                            {
+                                "refId": "A",
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.c3_txto), 5, 7, 8)"
+                            }
+                        ],
+                        "timeFrom": null,
+                        "timeShift": null,
+                        "title": "C3 TXTO discards",
+                        "transformations": [
+                            {
+                                "id": "reduce",
+                                "options": {
+                                    "reducers": [
+                                        "max",
+                                        "mean",
+                                        "sum"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "table"
+                    }
+                ],
+                "title": "Error Overview",
+                "type": "row"
+            },
+            {
+                "collapsed": true,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 20
                 },
                 "id": 23,
                 "panels": [
@@ -1398,7 +1398,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1451,7 +1451,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.pcs), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.pcs), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -1510,7 +1510,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1563,7 +1563,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.enc_out), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.enc_out), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -1622,7 +1622,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1675,7 +1675,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.crc-errors), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.crc-errors), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -1734,7 +1734,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1787,7 +1787,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.inv_os), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.inv_os), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -1846,7 +1846,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -1899,7 +1899,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.link-failures), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.link-failures), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -1958,7 +1958,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2011,7 +2011,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.lr_in), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.lr_in), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -2070,7 +2070,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2123,7 +2123,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.lr_out), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.lr_out), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -2182,7 +2182,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2235,7 +2235,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.loss-of-sync), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.loss-of-sync), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -2294,7 +2294,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2347,7 +2347,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.loss-of-signal), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.loss-of-signal), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -2406,7 +2406,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2459,7 +2459,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.class-3-discards), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.class-3-discards), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -2518,7 +2518,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2571,7 +2571,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.c3_rxto), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.c3_rxto), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -2630,7 +2630,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2683,7 +2683,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.c3_txto), 1), 5, 7, 8)"
+                                "target": "aliasByNode(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.c3_txto), 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -2746,7 +2746,7 @@
                     "h": 1,
                     "w": 24,
                     "x": 0,
-                    "y": 30
+                    "y": 21
                 },
                 "id": 39,
                 "panels": [
@@ -2757,7 +2757,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2870,7 +2870,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -2923,7 +2923,7 @@
                         "targets": [
                             {
                                 "refId": "A",
-                                "target": "aliasByNode(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.rx-power-dbm, 5, 7, 8)"
+                                "target": "aliasByNode(brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.$Port.tx-power-dbm, 5, 7, 8)"
                             }
                         ],
                         "thresholds": [
@@ -2934,7 +2934,7 @@
 
                         ],
                         "timeShift": null,
-                        "title": "SPF RX power in dBm",
+                        "title": "SPF TX power in dBm",
                         "tooltip": {
                             "shared": true,
                             "sort": 0,
@@ -2983,7 +2983,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -3047,7 +3047,7 @@
 
                         ],
                         "timeShift": null,
-                        "title": "SPF TX power in milliwatt",
+                        "title": "SPF RX power in milliwatt",
                         "tooltip": {
                             "shared": true,
                             "sort": 0,
@@ -3096,7 +3096,7 @@
                         "bars": false,
                         "dashLength": 10,
                         "dashes": false,
-                        "datasource": "Default",
+                        "datasource": "HDS_Graphite",
                         "fieldConfig": {
                             "defaults": {
                                 "custom": {
@@ -3207,7 +3207,7 @@
                 "type": "row"
             }
         ],
-        "refresh": "5m",
+        "refresh": "1m",
         "schemaVersion": 26,
         "style": "dark",
         "tags": [
@@ -3220,14 +3220,17 @@
                     "allValue": null,
                     "current": {
                         "selected": true,
+                        "tags": [
+
+                        ],
                         "text": [
-                            "SAN_A"
+                            "FABRIC_B"
                         ],
                         "value": [
-                            "SAN_A"
+                            "FABRIC_B"
                         ]
                     },
-                    "datasource": "Default",
+                    "datasource": "HDS_Graphite",
                     "definition": "brocade.fos.stats.ports.*",
                     "hide": 0,
                     "includeAll": false,
@@ -3253,11 +3256,18 @@
                 {
                     "allValue": null,
                     "current": {
-                        "selected": false,
-                        "text": "bufa01",
-                        "value": "bufa01"
+                        "selected": true,
+                        "tags": [
+
+                        ],
+                        "text": [
+                            "defb03"
+                        ],
+                        "value": [
+                            "defb03"
+                        ]
                     },
-                    "datasource": "Default",
+                    "datasource": "HDS_Graphite",
                     "definition": "brocade.fos.stats.ports.$Fabric.*",
                     "hide": 0,
                     "includeAll": true,
@@ -3287,7 +3297,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "Default",
+                    "datasource": "HDS_Graphite",
                     "definition": "brocade.fos.stats.ports.$Fabric.$Switch.*",
                     "hide": 0,
                     "includeAll": true,
@@ -3313,11 +3323,18 @@
                 {
                     "allValue": null,
                     "current": {
-                        "selected": false,
-                        "text": "All",
-                        "value": "$__all"
+                        "selected": true,
+                        "tags": [
+
+                        ],
+                        "text": [
+                            "6"
+                        ],
+                        "value": [
+                            "6"
+                        ]
                     },
-                    "datasource": "Default",
+                    "datasource": "HDS_Graphite",
                     "definition": "brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.*",
                     "hide": 0,
                     "includeAll": true,
@@ -3343,11 +3360,15 @@
                 {
                     "allValue": null,
                     "current": {
-                        "selected": false,
-                        "text": "All",
-                        "value": "$__all"
+                        "selected": true,
+                        "text": [
+                            "30"
+                        ],
+                        "value": [
+                            "30"
+                        ]
                     },
-                    "datasource": "Default",
+                    "datasource": "HDS_Graphite",
                     "definition": "brocade.fos.stats.ports.$Fabric.$Switch.$Porttype.$Slot.*",
                     "hide": 0,
                     "includeAll": true,
@@ -3382,7 +3403,7 @@
         "timezone": "",
         "title": "Brocade: Port Status (Realtime)",
         "uid": "E3YjE7xGk",
-        "version": 11
+        "version": 16
     },
     "overwrite": true
 }
