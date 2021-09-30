@@ -4,8 +4,7 @@
 [logging]
 logdir = /opt/fos2graphite/log/
 # Loglevel can be FATAL, ERROR, WARN, INFO, DEBUG and TRACE
-loglevel = DEBUG
-#loglevel = INFO
+loglevel = INFO
 
 # The graphite section specifies the connection information for the carbon-cache.
 # The host need to be specified with IP currently.
@@ -40,8 +39,18 @@ IT_collection = alias
 # Can be used to avoid collision with other tools polling switches every full minute
 # Can also be used to reduce load to carbon by usings different settings for each fabric
 refresh_offset = 0
+# fos2graphite has an option to monitor virtual fabrics. In this case a full section need to be defined for each individual
+# virtual fabric!
+# The virtual fabric is specified by defining the vFID of the virtual switch switch off the vFabric on the defined seed switch.
+# 
+# vFID = <vFID (e.g. 10)>
+#
+# Since a single pyhsical switch can contain multiple virtual / logical switches it is possible to define if switch hardware infos (CPU, Flash, Mem)
+# should be monitored through the virtual switch to avoid collecting information for one hardware multiple times through als virtual switches.
+#
+# monitor_switchhardware = <0|1>
 
-[Fabric_2]
+[Virtual_Fabric_22]
 seedswitch = 192.168.1.3
 user = restuser
 password = restpasswd
@@ -52,3 +61,5 @@ config_refresh_interval = 900
 metric_file = /opt/fos2graphite/conf/metrics.conf
 IT_collection = alias
 refresh_offset = 30
+vFID = 22
+monitor_switchhardware = 1

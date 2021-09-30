@@ -224,6 +224,14 @@ sub readconfig {
                             $fabricdetails{$section}{'refresh_offset'} = $values[1];
                         }
                     }
+                    if($line=~"^vFID") {
+			$line =~ s/\s//;
+                        $fabricdetails{$section}{'virtual_fabric'} = $values[1];
+                    }
+                    if($line=~"^monitor_switchhardware") {
+                        $line =~ s/\s//;
+                        $fabricdetails{$section}{'monitor_switchhw'} = $values[1];
+                    }
                 }
             }           
         }
@@ -259,7 +267,7 @@ sub readMetrics {
                             $metrics{$values[0]}{'name'} = $values[0];
                         }
                         $metrics{$values[0]}{'category'} = $values[2];
-                        print ">".$values[0]."<.>".$values[1]."<.>".$values[2]."<\n";
+                        #print ">".$values[0]."<.>".$values[1]."<.>".$values[2]."<\n";
                     }
                 } 
             }
@@ -277,6 +285,7 @@ sub restLogin {
         $fqdn = $switchfqdns{$switch};
     }
     my $url = 'https://'.$fqdn.'/rest/login';
+    $log->debug("URL for login: ".$url);
     my $req = HTTP::Request->new(POST => $url);
     $req->header('Accept' => 'application/yang-data+json');
     $req->header('Content-Type' => 'application/yang-data+json');
@@ -323,6 +332,9 @@ sub getFabricSwitches {
     my $seedswitch = $_[1];
     my $token = $_[2];
     my $url = 'https://'.$seedswitch.'/rest/running/brocade-fabric/fabric-switch';
+    if(defined($fabricdetails{$fabric}{virtual_fabric})) {
+        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
+    }
     my $req = HTTP::Request->new(GET => $url);
         $req->header('Accept' => 'application/yang-data+json');
         $req->header('Content-Type' => 'application/yang-data+json');
@@ -343,7 +355,7 @@ sub getFabricSwitches {
                 }
                 my $dnsname = lc(gethostbyaddr(inet_aton($switchattr{"ip-address"}), AF_INET));
 		        $switchfqdns{$switchattr{"switch-user-friendly-name"}} = $dnsname;
-                $log->info("Discovered switch ".$switchattr{"switch-user-friendly-name"}." (".$switchattr{"ip-address"}.") as member of fabric ".$fabric);
+                $log->info("Discovered switch ".$switchattr{"switch-user-friendly-name"}." (".$switchattr{"ip-address"}.") as member of fabric ".$fabric." and will use DNS-name: ".$dnsname);
                 $log->info("Will use ".$dnsname." for Switch: ".$switchattr{"switch-user-friendly-name"});
                 $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"IP"} = $switchattr{"ip-address"};
                 $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"FQDN"} = $dnsname;
@@ -375,10 +387,13 @@ sub getFCPortCounters {
         $fqdn = $switchfqdns{$switch};
     }
     my $url = 'https://'.$fqdn.'/rest/running/brocade-interface/fibrechannel-statistics/';
+    if(defined($fabricdetails{$fabric}{virtual_fabric})) {
+        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
+    }
     my $req = HTTP::Request->new(GET => $url);
-        $req->header('Accept' => 'application/yang-data+json');
-        $req->header('Content-Type' => 'application/yang-data+json');
-        $req->header('Authorization' => $token);
+    $req->header('Accept' => 'application/yang-data+json');
+    $req->header('Content-Type' => 'application/yang-data+json');
+    $req->header('Authorization' => $token);
     my $querystart = int (gettimeofday * 1000);
     my $resp = $ua->request($req);
     my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
@@ -459,6 +474,9 @@ sub getPortSettings {
             $fqdn = $switchfqdns{$switch};
         }
         my $url = 'https://'.$fqdn.'/rest/running/brocade-interface/fibrechannel/';
+        if(defined($fabricdetails{$fabric}{virtual_fabric})) {
+            $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
+        }
         my $req = HTTP::Request->new(GET => $url);
         $req->header('Accept' => 'application/yang-data+json');
         $req->header('Content-Type' => 'application/yang-data+json');
@@ -515,6 +533,14 @@ sub getSystemResources {
     my $switch = $_[1];
     my $token = $_[2];
     my $mode = $_[3];
+
+    if(defined($fabricdetails{$fabric}{'monitor_switchhw'})) {
+        if($fabricdetails{$fabric}{'monitor_switchhw'} == 0) {
+           $log->info("Skipping System Resource logging for ".$fabric."/".$switch." due to config");
+           return;
+        }
+    }
+
     $log->debug("Getting system counter for ".$fabric." ".$switch." with mode ".$mode."!");
     my $fqdn = $switch;
     if(defined($switchfqdns{$switch})) {
@@ -574,6 +600,9 @@ sub getMediaCounters {
         $fqdn = $switchfqdns{$switch};
     }
     my $url = 'https://'.$fqdn.'/rest/running/brocade-media/media-rdp/';
+    if(defined($fabricdetails{$fabric}{virtual_fabric})) {
+        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
+    }
     my $req = HTTP::Request->new(GET => $url);
     $req->header('Accept' => 'application/yang-data+json');
     $req->header('Content-Type' => 'application/yang-data+json');
@@ -664,7 +693,11 @@ sub getNameserver {
     if(defined($switchfqdns{$switch})) {
         $fqdn = $switchfqdns{$switch};
     }
-    my $url = 'https://'.$fqdn.'/rest/running/brocade-name-server/fibrechannel-name-server';
+    my $url = 'https://'.$fqdn.'/rest/running/brocade-name-server/fibrechannel-name-server'; 
+    if(defined($fabricdetails{$fabric}{virtual_fabric})) {
+        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
+    }
+    $log->debug("Requesting URL: ".$url);
     my $req = HTTP::Request->new(GET => $url);
     $req->header('Accept' => 'application/yang-data+json');
     $req->header('Content-Type' => 'application/yang-data+json');
@@ -696,11 +729,9 @@ sub getNameserver {
             }
         }
     } else {
-        $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
-        $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
-        $log->info("Trying to logout from ".$switch);
-        restLogout($switch,$token);
-        exit(($resp->code)-100);
+        $log->warn("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
+        $log->warn("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
+        $log->warn("This might be related to a switch with no name server entries... So trying to continue...");
     }
 }
 
@@ -714,6 +745,9 @@ sub getAliases {
         $fqdn = $switchfqdns{$switch};
     } 
     my $url = 'https://'.$fqdn.'/rest/running/brocade-zone/defined-configuration/alias';
+    if(defined($fabricdetails{$fabric}{virtual_fabric})) {
+        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
+    }
     my $req = HTTP::Request->new(GET => $url);
     $req->header('Accept' => 'application/yang-data+json');
     $req->header('Content-Type' => 'application/yang-data+json');
@@ -748,11 +782,9 @@ sub getAliases {
     } else {
         $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
         $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
-        exit(($resp->code)-100);
+	    $log->warn("This might be related to a switch with aliases or zoning active... So trying to continue...");
     }
 }
-
-
 
 sub reportmetrics {
     my $fabric = $_[0];
