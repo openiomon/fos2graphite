@@ -41,6 +41,7 @@ use Systemd::Daemon qw( -hard notify );
 
 my $graphitehost = "127.0.0.1";
 my $graphiteport = "2003";
+my $usetag = 0;
 
 my $socketcnt = 0;
 my $sockettimer;
@@ -181,6 +182,13 @@ sub readconfig {
                     if($line =~ "^graphite_port") {
                         my @values = split("=",$line);
                         $graphiteport = $values[1];
+                    }
+                    if($line =~"^metric_format") {
+                        $line =~ s/\s//g;
+                        my @values = split("=",$line);
+                        if($values[1] =~ "graphite-tag") {
+                            $usetag = 1;
+                        }
                     }
                 }
                 default {
@@ -399,6 +407,9 @@ sub getFCPortCounters {
     my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
     my $now = time;
     my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".fibrechannel-statistics.duration ".$queryduration." ".$now;
+    if($usetag) {
+        $statsstring = 'fos2graphite_duration;query=fibrechannel-statistics;switch='.$switch.' '.$queryduration.' '.$now;
+    }
     toGraphite($statsstring);
     if ($resp->is_success) {
         my $responsecontent = $resp->decoded_content;
@@ -429,6 +440,9 @@ sub getFCPortCounters {
                         my $metricstring = "";
                         if(($porttype ne "U_PORT")||($fabricdetails{$fabric}{'collect_uports'})) {
                             $metricstring = "brocade.fos.".$metrics{$keyname}{'category'}.".ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$portattr{$keyname}." ".$now;
+                            if($usetag) {
+                                $metricstring = 'fosports_'.$metricname.';fabric='.$fabric.';category='.$metrics{$keyname}{'category'}.';switch='.$switch.';porttype='.$porttype.';slot='.$slot.';port='.$portnumber.' '.$portattr{$keyname}.' '.$now;
+                            }
                             toGraphite($metricstring);
                             if(defined($fabricdetails{$fabric}{'IT_collection'})) {
                                 if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") || ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN")) {
@@ -438,11 +452,17 @@ sub getFCPortCounters {
                                             my $devicetype = $nameserver{$wwpn}{'devicetype'};
                                             if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") && (defined($aliases{$wwpn}))) {
                                                 $metricstring = "brocade.fos.".$metrics{$keyname}{'category'}.".devices.".$fabric.".".$devicetype.".".$aliases{$wwpn}.".".$metricname." ".$portattr{$keyname}." ".$now;
+                                                if($usetag) {
+                                                   $metricstring = 'fosinittarget_'.$metricname.';fabric='.$fabric.';category='.$metrics{$keyname}{'category'}.';devicetype='.$devicetype.';alias='.$aliases{$wwpn}.' '.$portattr{$keyname}.' '.$now;
+                                                }
                                                 toGraphite($metricstring);
                                             } elsif ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN") {
                                                 my $plainwwpn = $wwpn;
                                                 $plainwwpn =~ s/\://g;
                                                 $metricstring = "brocade.fos.".$metrics{$keyname}{'category'}.".devices.".$fabric.".".$devicetype.".".$wwpn.".".$metricname." ".$portattr{$keyname}." ".$now;
+                                                if($usetag) {
+                                                    $metricstring = 'fosinittarget_'.$metricname.';fabric='.$fabric.';category='.$metrics{$keyname}{'category'}.';devicetype='.$devicetype.';alias='.$wwpn.' '.$portattr{$keyname}.' '.$now;
+                                                }
                                                 toGraphite($metricstring);
                                             }
                                         }
@@ -486,6 +506,9 @@ sub getPortSettings {
         my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
         my $now = time;
         my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".fibrechannel.duration ".$queryduration." ".$now;
+        if($usetag) {
+            $statsstring = 'fos2graphite_duration;query=fibrechannel;switch='.$switch.' '.$queryduration.' '.$now;
+        }
         toGraphite($statsstring);
         if ($resp->is_success) {
                 my $responsecontent = $resp->decoded_content;
@@ -556,6 +579,9 @@ sub getSystemResources {
     my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
     my $now = time;
     my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".system-resources.duration ".$queryduration." ".$now;
+    if($usetag) {
+        $statsstring = 'fos2graphite_duration;query=system-resources;switch='.$switch.' '.$queryduration.' '.$now;
+    }
     toGraphite($statsstring);
     if ($resp->is_success) {
         my $responsecontent = $resp->decoded_content;
@@ -574,6 +600,9 @@ sub getSystemResources {
                         }
                     }
                     my $metricstring = "brocade.fos.".$metrics{$counter}{'category'}.".switches.".$fabric.".".$switch.".".$metricname." ".$counterhash{$counter}." ".$now;
+                    if($usetag) {
+                        $metricstring = 'fosswitch_'.$metricname.';category='.$metrics{$counter}{'category'}.';fabric='.$fabric.';switch='.$switch.' '.$counterhash{$counter}.' '.$now;
+                    }
                     toGraphite($metricstring);
                 }
             }   
@@ -612,6 +641,9 @@ sub getMediaCounters {
     my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
     my $now = time;
     my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".brocade-media.duration ".$queryduration." ".$now;
+    if($usetag) {
+        $statsstring = 'fos2graphite_duration;query=brocade-media;switch='.$switch.' '.$queryduration.' '.$now;
+    }
     toGraphite($statsstring);
     if ($resp->is_success) {
         my $responsecontent = $resp->decoded_content;
@@ -645,6 +677,9 @@ sub getMediaCounters {
                                     $dbm = sprintf("%.2f",(10*(log($metricvalue/1000)/log(10))));
                                 }
                                 $metricstring = "brocade.fos.".$metrics{$metric}{'category'}.".ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname."-dbm ".$dbm." ".$now;
+                                if($usetag) {
+                                    $metricstring = 'fosports_'.$metricname.'-dbm;fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';switch='.$switch.';porttype='.$porttype.';slot='.$slot.';port='.$portnumber.' '.$dbm.' '.$now;
+                                }
                                 toGraphite($metricstring);
                                 if(defined($fabricdetails{$fabric}{'IT_collection'})) {
                                     if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") || ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN")) {
@@ -654,11 +689,17 @@ sub getMediaCounters {
                                                 my $devicetype = $nameserver{$wwpn}{'devicetype'};
                                                 if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") && (defined($aliases{$wwpn}))) {
                                                     $metricstring = "brocade.fos.".$metrics{$metric}{'category'}.".devices.".$fabric.".".$devicetype.".".$aliases{$wwpn}.".".$metricname."-dbm ".$dbm." ".$now;
+                                                    if($usetag) {
+                                                        $metricstring = 'fosinittarget_'.$metricname.'-dbm;fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';devicetype='.$devicetype.';alias='.$aliases{$wwpn}.' '.$dbm.' '.$now;
+                                                    }
                                                     toGraphite($metricstring);
                                                 } elsif ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN") {
                                                     my $plainwwpn = $wwpn;
                                                     $plainwwpn =~ s/\://g;
                                                     $metricstring = "brocade.fos.".$metrics{$metric}{'category'}.".devices.".$fabric.".".$devicetype.".".$wwpn.".".$metricname."-dbm ".$dbm." ".$now;
+                                                    if($usetag) {
+                                                        $metricstring = 'fosinittarget_'.$metricname.'-dbm;fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';devicetype='.$devicetype.';alias='.$wwpn.' '.$dbm.' '.$now;
+                                                    }
                                                     toGraphite($metricstring);
                                                 }
                                             }
@@ -667,6 +708,9 @@ sub getMediaCounters {
                                 }
                             } 
                             $metricstring = "brocade.fos.".$metrics{$metric}{'category'}.".ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$mediaattr{$metric}." ".$now;
+                            if($usetag) {
+                                $metricstring = 'fosports_'.$metricname.';fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';switch='.$switch.';porttype='.$porttype.';slot='.$slot.';port='.$portnumber.' '.$mediaattr{$metric}.' '.$now;
+                            }
                             toGraphite($metricstring);
                         }
                     }
@@ -707,6 +751,9 @@ sub getNameserver {
     my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
     my $now = time;
     my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".brocade-nameserver.duration ".$queryduration." ".$now;
+    if($usetag) {
+        $statsstring = 'fos2graphite_duration;query=brocade-nameserver;switch='.$switch.' '.$queryduration.' '.$now;
+    }
     toGraphite($statsstring);
     if ($resp->is_success) {
         my $responsecontent = $resp->decoded_content;
@@ -757,6 +804,9 @@ sub getAliases {
     my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
     my $now = time;
     my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".brocade-zone.duration ".$queryduration." ".$now;
+    if($usetag) {
+        $statsstring = 'fos2graphite_duration;query=brocade-zone;switch='.$switch.' '.$queryduration.' '.$now;
+    }
     toGraphite($statsstring);
     if ($resp->is_success) {
         %aliases = ();
