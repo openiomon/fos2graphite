@@ -8,9 +8,12 @@ loglevel = INFO
 
 # The graphite section specifies the connection information for the carbon-cache.
 # The host need to be specified with IP currently.
+# The metric_format will specify whether metrics are reported in classic dot-separated format or using tags (for use with VictoriaMetrics).
+# Options for metric_format are graphite-tag or graphite-dot (default)
 [graphite]
 graphite_host = 127.0.0.1
 graphite_port = 2003
+metric_format = graphite-dot
 
 [Fabric_1]
 # IP or DNS name of seed switch to be used to discover fabric
