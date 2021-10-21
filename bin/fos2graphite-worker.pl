@@ -436,11 +436,15 @@ sub getFCPortCounters {
                                 next;
                             }
                         }
+                        if($usetag) {
+                            $metricname =~ s/-/_/g;
+                        }
                         $log->trace($switch." => Name: ".$portattr{"name"}." : Key: ".$keyname." => ".$portattr{$keyname});
                         my $metricstring = "";
                         if(($porttype ne "U_PORT")||($fabricdetails{$fabric}{'collect_uports'})) {
                             $metricstring = "brocade.fos.".$metrics{$keyname}{'category'}.".ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname." ".$portattr{$keyname}." ".$now;
                             if($usetag) {
+
                                 $metricstring = 'fosports_'.$metricname.';fabric='.$fabric.';category='.$metrics{$keyname}{'category'}.';switch='.$switch.';porttype='.$porttype.';slot='.$slot.';port='.$portnumber.' '.$portattr{$keyname}.' '.$now;
                             }
                             toGraphite($metricstring);
@@ -594,6 +598,9 @@ sub getSystemResources {
                 #if(grep( /^$counter$/, @metrics)) {
                 if(defined($metrics{$counter})) {
                     my $metricname = $metrics{$counter}{'name'};
+                    if($usetag) {
+                        $metricname =~ s/-/_/g;
+                    }
                     if($mode eq "perf") {
                         if($metrics{$counter}{'category'} ne "perf") {
                             next;
@@ -665,6 +672,9 @@ sub getMediaCounters {
                         my $metricvalue = $mediaattr{$metric};
                         my $metricstring = "";
                         my $metricname = $metrics{$metric}{'name'};
+                        if($usetag) {
+                            $metricname =~ s/-/_/g;
+                        }
                         if($mode eq "perf") {
                             if($metrics{$metric}{'category'} ne "perf") {
                                 next;
@@ -678,7 +688,7 @@ sub getMediaCounters {
                                 }
                                 $metricstring = "brocade.fos.".$metrics{$metric}{'category'}.".ports.".$fabric.".".$switch.".".$porttype.".".$slot.".".$portnumber.".".$metricname."-dbm ".$dbm." ".$now;
                                 if($usetag) {
-                                    $metricstring = 'fosports_'.$metricname.'-dbm;fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';switch='.$switch.';porttype='.$porttype.';slot='.$slot.';port='.$portnumber.' '.$dbm.' '.$now;
+                                    $metricstring = 'fosports_'.$metricname.'_dbm;fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';switch='.$switch.';porttype='.$porttype.';slot='.$slot.';port='.$portnumber.' '.$dbm.' '.$now;
                                 }
                                 toGraphite($metricstring);
                                 if(defined($fabricdetails{$fabric}{'IT_collection'})) {
@@ -690,7 +700,7 @@ sub getMediaCounters {
                                                 if(($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") && (defined($aliases{$wwpn}))) {
                                                     $metricstring = "brocade.fos.".$metrics{$metric}{'category'}.".devices.".$fabric.".".$devicetype.".".$aliases{$wwpn}.".".$metricname."-dbm ".$dbm." ".$now;
                                                     if($usetag) {
-                                                        $metricstring = 'fosinittarget_'.$metricname.'-dbm;fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';devicetype='.$devicetype.';alias='.$aliases{$wwpn}.' '.$dbm.' '.$now;
+                                                        $metricstring = 'fosinittarget_'.$metricname.'_dbm;fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';devicetype='.$devicetype.';alias='.$aliases{$wwpn}.' '.$dbm.' '.$now;
                                                     }
                                                     toGraphite($metricstring);
                                                 } elsif ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN") {
@@ -698,7 +708,7 @@ sub getMediaCounters {
                                                     $plainwwpn =~ s/\://g;
                                                     $metricstring = "brocade.fos.".$metrics{$metric}{'category'}.".devices.".$fabric.".".$devicetype.".".$wwpn.".".$metricname."-dbm ".$dbm." ".$now;
                                                     if($usetag) {
-                                                        $metricstring = 'fosinittarget_'.$metricname.'-dbm;fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';devicetype='.$devicetype.';alias='.$wwpn.' '.$dbm.' '.$now;
+                                                        $metricstring = 'fosinittarget_'.$metricname.'_dbm;fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';devicetype='.$devicetype.';alias='.$wwpn.' '.$dbm.' '.$now;
                                                     }
                                                     toGraphite($metricstring);
                                                 }
