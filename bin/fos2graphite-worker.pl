@@ -868,7 +868,9 @@ sub reportmetrics {
                 $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
                 $log->info("Getting nameserver and alias configuration");
                 getNameserver($fabric,$switch,$token);
-                getAliases($fabric,$switch,$token);
+                if($fabricdetails{$fabric}{'IT_collection'} ne "WWPN") {
+                    getAliases($fabric,$switch,$token);
+                }
                 $conftime = $curtime;
             }
             getPortSettings($fabric,$switch,$token);
