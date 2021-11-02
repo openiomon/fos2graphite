@@ -868,7 +868,7 @@ sub reportmetrics {
                 $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
                 $log->info("Getting nameserver and alias configuration");
                 getNameserver($fabric,$switch,$token);
-                if($fabricdetails{$fabric}{'IT_collection'} ne "WWPN") {
+                if($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") {
                     getAliases($fabric,$switch,$token);
                 }
                 $conftime = $curtime;
