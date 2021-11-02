@@ -2,7 +2,7 @@ Summary: fos2graphite is a module of openiomon which is used to transfer statist
 Name: fos2graphite
 Version: 0.1
 prefix: /opt
-Release: 6
+Release: 7
 URL: http://www.openiomon.org
 License: GPL
 Group: Applications/Internet
@@ -36,7 +36,8 @@ mkdir -p ${RPM_BUILD_ROOT}/opt/fos2graphite/bin/
 mkdir -p ${RPM_BUILD_ROOT}/opt/fos2graphite/conf
 mkdir -p ${RPM_BUILD_ROOT}/opt/fos2graphite/log/
 mkdir -p ${RPM_BUILD_ROOT}/opt/fos2graphite/lib/
-mkdir -p ${RPM_BUILD_ROOT}/opt/fos2graphite/dashboards/
+mkdir -p ${RPM_BUILD_ROOT}/opt/fos2graphite/dashboards/graphite
+mkdir -p ${RPM_BUILD_ROOT}/opt/fos2graphite/dashboards/prometheus
 mkdir -p ${RPM_BUILD_ROOT}/opt/fos2graphite/build/
 mkdir -p ${RPM_BUILD_ROOT}/etc/logrotate.d/
 install -m 655 %{_builddir}/fos2graphite-%{version}/bin/* ${RPM_BUILD_ROOT}/opt/fos2graphite/bin/
@@ -45,7 +46,8 @@ install -m 655 %{_builddir}/fos2graphite-%{version}/conf/*.example ${RPM_BUILD_R
 install -m 655 %{_builddir}/fos2graphite-%{version}/build/fos2graphite_logrotate ${RPM_BUILD_ROOT}/etc/logrotate.d/fos2graphite
 #install -m 655 %{_builddir}/fos2graphite-%{version}/lib/* ${RPM_BUILD_ROOT}/opt/fos2graphite/lib
 cp -a %{_builddir}/fos2graphite-%{version}/lib/* ${RPM_BUILD_ROOT}/opt/fos2graphite/lib/
-cp -a %{_builddir}/fos2graphite-%{version}/dashboards/*.json ${RPM_BUILD_ROOT}/opt/fos2graphite/dashboards/
+cp -a %{_builddir}/fos2graphite-%{version}/dashboards/graphite/*.json ${RPM_BUILD_ROOT}/opt/fos2graphite/dashboards/graphite
+cp -a %{_builddir}/fos2graphite-%{version}/dashboards/prometheus/*.json ${RPM_BUILD_ROOT}/opt/fos2graphite/dashboards/prometheus
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -58,7 +60,8 @@ rm -rf ${RPM_BUILD_ROOT}
 %defattr(644,openiomon,openiomon,755)
 /opt/fos2graphite/conf/fos2graphite.conf.example
 /opt/fos2graphite/conf/storage-schemas.conf.example
-/opt/fos2graphite/dashboards/*
+/opt/fos2graphite/dashboards/graphite/*
+/opt/fos2graphite/dashboards/prometheus/*
 /opt/fos2graphite/log/
 
 
@@ -67,6 +70,9 @@ rm -rf ${RPM_BUILD_ROOT}
 ln -s -f /opt/fos2graphite/bin/fos2graphite.pl /bin/fos2graphite
 
 %changelog
+* Tue Nov 02 2021 Timo Drach <timo.drach@openiomon.org>
+- Added dashboards for VictoriaMetrics using PromQL
+- Updated import / export scripts for dashboards
 * Tue Oct 05 2021 Timo Drach <timo.drach@openiomon.org>
 - Added support for virtual fabric and graphite-tag format
 * Thu Feb 18 2021 Timo Drachh <timo.drach@openiomon.org>
