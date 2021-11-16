@@ -767,6 +767,9 @@ sub getNameserver {
     toGraphite($statsstring);
     if ($resp->is_success) {
         my $responsecontent = $resp->decoded_content;
+        # replacing invalid single backslashes with double backslash in JSON response
+        # using - (dash) as regex delimiter to make it more readable
+        $responsecontent =~ s-(?<!\\)\\(?![\\"bfnrt])-\\\\-g;
         my %json = %{decode_json($responsecontent)};
         my @nsshow = $json{"Response"}{'fibrechannel-name-server'};
         %nameserver = ();
@@ -862,7 +865,7 @@ sub reportmetrics {
             my $printtime = strftime('%m/%d/%Y %H:%M:%S',localtime($curtime));
             $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
             initsocket();
-            $log->info("Loging in to ".$fabric." / ".$switch);
+            $log->info("Logging in to ".$fabric." / ".$switch);
             my $token = restLogin($switch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
             if(($curtime - $conftime)>=$fabricdetails{$fabric}{'config_interval'}) {
                 $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
@@ -875,13 +878,13 @@ sub reportmetrics {
             }
             getPortSettings($fabric,$switch,$token);
             if(($curtime - $statstime)>=$fabricdetails{$fabric}{'stats_interval'}) {
-                $log->info("Getting performance- and errorcounters for ".$fabric." / ".$switch);
+                $log->info("Getting performance- and error-counters for ".$fabric." / ".$switch);
                 getSystemResources($fabric,$switch,$token,'ALL');
                 getFCPortCounters($fabric,$switch,$token,'ALL');
                 getMediaCounters($fabric,$switch,$token,'ALL');
                 $statstime = $curtime;
             } else {
-                $log->info("Getting only performancecounters for ".$fabric." / ".$switch);
+                $log->info("Getting only performance-counters for ".$fabric." / ".$switch);
                 getSystemResources($fabric,$switch,$token,'perf');
                 getFCPortCounters($fabric,$switch,$token,'perf');
                 getMediaCounters($fabric,$switch,$token,'perf');     
@@ -972,7 +975,7 @@ sub initsocket {
     );
     die "cannot connect to the server $!\n" unless $socket;
     setsockopt($socket, SOL_SOCKET, SO_KEEPALIVE, 1);
-    $log->debug("Opening connection ".$socket->sockhost().":".$socket->sockport()." => ".$socket->peerhost().":".$socket->peerport());
+    $log->debug("Opening Socket ".$socket->sockhost().":".$socket->sockport()." => ".$socket->peerhost().":".$socket->peerport());
 }
 
 sub closesocket {

@@ -102,17 +102,22 @@ Alternatively, there is a simple shell script to import all dashboards at once.
    `/opt/fos2graphite/bin/import_grafana_dashboards.sh https://grafana.company.com:3000 /opt/fos2graphite/dashboards/graphite MyGraphiteDatasource`  
 
 ## Changelog
+### 0.1.9
+* workaround for invalid JSON response in FOS9 name-server query
 
-### 0.1.4
-* First public release
+### 0.1.8
+* skip Alias query when "IT_collection" Parameter is set to "WWPN"
+
+### 0.1.7
+* Added PromQL dashboards (tested with VictoriaMetrics)
+* reworked dashboard import function
 
 ### 0.1.6
 * Added support for vFabric using vFID Parameters
 * Added support for graphite-tag format to be used with Virtoria Metrics backend
 
-### 0.1.7
-* Added PromQL dashboards (tested with VictoriaMetrics)
-* reworked dashboard import function
+### 0.1.4
+* First public release
 
 # Disclaimer
 This source and the whole package comes without warranty. It may or may not harm your computer. Please use with care. Any damage cannot be related back to the author.
