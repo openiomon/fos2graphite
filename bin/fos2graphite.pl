@@ -19,6 +19,8 @@
 use strict;
 use warnings;
 use v5.10;
+use feature qw( switch );
+no if $] >= 5.018, warnings => qw( experimental::smartmatch );
 
 use constant false => 0;
 use constant true  => 1;
@@ -233,7 +235,6 @@ sub registerservice {
             print $sfh "After=network-online.target\n";
             print $sfh "After=go-carbon.service\n\n";
             print $sfh "[Service]\n";
-            print $sfh "Environment=\"PERL5LIB=".$libdir."perl5/:".$libdir."perl5/x86_64-linux-thread-multi/:".join(":",@INC)."\"\n";
             print $sfh "User=".$serviceuser."\n";
             print $sfh "Group=".$servicegroup."\n";
             print $sfh "Type=notify\n";
