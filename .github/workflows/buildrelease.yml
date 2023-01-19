@@ -1,0 +1,55 @@
+name: Build RPM and Create Release
+
+# Controls when the action will run. Triggers the workflow on push 
+on: workflow_dispatch
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:  
+  SyntaxCheck:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Perl
+      uses: shogo82148/actions-setup-perl@v1
+      with:
+        perl-version: '5.26'
+        install-modules: File::stat Getopt::Long IO::Socket::INET IO::Socket::UNIX Log::Log4perl Time::HiRes Time::Local Time::Piece LWP::UserAgent
+    - name: perl -V
+      run: perl -V
+    - run: for f in `find . -name "fos2graphite*.pl"`; do perl -c $f; done
+    
+  RPMbuild:
+    # 'needs' will force sequential execution  
+    needs: SyntaxCheck
+    
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v3
+    
+    # Runs a community action
+    - name: build RPM package
+      id: rpm
+      uses: naveenrajm7/rpmbuild@master
+      with:
+        spec_file: "build/fos2graphite.spec"
+    
+    - name: Print output
+      run: ls -lR ${{ steps.rpm.outputs.rpm_dir_path }}
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        # Artifact name
+        name: Binary RPM
+        # Directory containing files to upload
+        path: ${{ steps.rpm.outputs.rpm_dir_path }}
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+       files: "${{ steps.rpm.outputs.rpm_dir_path }}noarch/*.rpm"
