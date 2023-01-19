@@ -60,20 +60,20 @@ sub console {
 
 
 sub printUsage {
-        print("Usage:\n");
-        print("$0 [OPTIONS]\n");
-        print("OPTIONS:\n");
-        print("   -conf <file>                  conf file containig parameter for the services\n");
-        print("   -register <fabric|ALL>        Resister a systemd service for datacolection of the specified fabric\n");
-        print("   -deregister <fabric|ALL>      Deresister a systemd service for datacolection of the specified fabric\n");
-        print("   -enable <fabric|ALL>          Enable a systemd service for datacolection of the specified fabric\n");
-        print("   -disable <fabric|ALL>         Disable a systemd service for datacolection of the specified fabric\n");
-        print("   -start <fabric|ALL>           Start the service for datacolection of the specified fabric\n");
-        print("   -stop <fabric|ALL>            Stop the service for datacolection of the specified fabric\n");
-        print("   -restart <fabric|ALL>         Restart the service for datacolection of the specified fabric\n");
-        print("   -status <fabric|ALL>          Display the status of the service for datacolection of the specified fabric\n");
-        print("   -h                            print this output\n");
-        print("\n");
+    print("Usage:\n");
+    print("$0 [OPTIONS]\n");
+    print("OPTIONS:\n");
+    print("   -conf <file>                  conf file containig parameter for the services\n");
+    print("   -register <fabric|ALL>        Resister a systemd service for datacolection of the specified fabric\n");
+    print("   -deregister <fabric|ALL>      Deresister a systemd service for datacolection of the specified fabric\n");
+    print("   -enable <fabric|ALL>          Enable a systemd service for datacolection of the specified fabric\n");
+    print("   -disable <fabric|ALL>         Disable a systemd service for datacolection of the specified fabric\n");
+    print("   -start <fabric|ALL>           Start the service for datacolection of the specified fabric\n");
+    print("   -stop <fabric|ALL>            Stop the service for datacolection of the specified fabric\n");
+    print("   -restart <fabric|ALL>         Restart the service for datacolection of the specified fabric\n");
+    print("   -status <fabric|ALL>          Display the status of the service for datacolection of the specified fabric\n");
+    print("   -h                            print this output\n");
+    print("\n");
 }
 sub parseCmdArgs {
     my $help = "";
@@ -379,4 +379,3 @@ if($enable ne "") {
 if($disable ne "") {
     service($disable,'disable');
 }
-

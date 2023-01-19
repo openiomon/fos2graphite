@@ -11,7 +11,7 @@
 
 A tool to retrieve Broadcom (former Brocade) SAN Switch Performance counters from the SAN switches / directors using REST API and write them to a Carbon/Graphite backend.
 * Written in Perl.
-* tested on RHEL / CentOS 7
+* tested on RHEL / CentOS 7 & 8
 * works with FOS 8.2.x
 * RPM package available
 
@@ -24,11 +24,17 @@ A tool to retrieve Broadcom (former Brocade) SAN Switch Performance counters fro
 ## Installation
 Install on RHEL via RPM package: `yum install fos2graphite-0.x-x.rpm`
 
-Perl dependencies that are not available in RHEL / CentOS 7 repositories:
+Perl dependencies that are not available in RHEL / CentOS repositories:
 * Log::Log4perl (RPM perl-Log-Log4perl available in [EPEL repository](https://fedoraproject.org/wiki/EPEL))
-* Systemd::Daemon (included in the release package, [view in CPAN](https://metacpan.org/pod/Systemd::Daemon))
 
 For other Linux distributions you can just clone the repository. Default installation folder is `/opt/fos2graphite`. The service operates with a user called "openiomon"
+
+**SElinux Note**
+If you use SElinux in enforcing mode, you need to set the context for the log directory manually. Otherwise logrotate will fail. Use the following commands:
+```
+semanage fcontext -a -t var_log_t /opt/hds2graphite/log(/.*)?
+restorecon /opt/hds2graphite/log/
+```
 
 ## Configuration
 1. Edit the `/opt/bna2graphite/conf/fos2graphite.conf`, settings you have to edit for a start:
@@ -102,6 +108,11 @@ Alternatively, there is a simple shell script to import all dashboards at once.
    `/opt/fos2graphite/bin/import_grafana_dashboards.sh https://grafana.company.com:3000 /opt/fos2graphite/dashboards/graphite MyGraphiteDatasource`  
 
 ## Changelog
+### 0.2.0
+* Added support for RHEL 8
+* removed dependency to Perl module Systemd::Daemon
+* log worker die message during graphite socket init
+
 ### 0.1.9
 * workaround for invalid JSON response in FOS9 name-server query
 

@@ -38,7 +38,6 @@ use Time::Local;
 use JSON;
 
 #Variables for Graphite-Communication
-
 my $graphitehost = "127.0.0.1";
 my $graphiteport = "2003";
 my $usetag = 0;
@@ -110,23 +109,23 @@ my %nameserver;
 my %aliases;
 
 sub printUsage {
-        print("Usage:\n");
-        print("$0 [OPTIONS]\n");
-        print("OPTIONS:\n");
-        print("   -conf <file>                  conf file containig parameter for the import\n");
-        print("   -fabric <fabricname>          Name of the Fabric that should be imported\n");
-        print("   -daemon                       Flag which will supress the output to console\n");
-        print("   -h                            print this output\n");
-        print("\n");
+    print("Usage:\n");
+    print("$0 [OPTIONS]\n");
+    print("OPTIONS:\n");
+    print("   -conf <file>                  conf file containig parameter for the import\n");
+    print("   -fabric <fabricname>          Name of the Fabric that should be imported\n");
+    print("   -daemon                       Flag which will supress the output to console\n");
+    print("   -h                            print this output\n");
+    print("\n");
 }
 
 sub parseCmdArgs{
-        my $help = "";
-        GetOptions (    "conf=s"                => \$conf,              # String
-                        "fabric=s"              => \$fabric,            # String
-                        "daemon"                => \$daemon,            # flag
-                        "h"                     => \$help)              # flag
-        or die("Error in command line arguments\n");
+    my $help = "";
+    GetOptions (    "conf=s"                => \$conf,              # String
+                    "fabric=s"              => \$fabric,            # String
+                    "daemon"                => \$daemon,            # flag
+                    "h"                     => \$help)              # flag
+    or die("Error in command line arguments\n");
 
     if($conf eq "") {
         print "Please specify config file!\n";
@@ -277,7 +276,6 @@ sub readMetrics {
                             $metrics{$values[0]}{'name'} = $values[0];
                         }
                         $metrics{$values[0]}{'category'} = $values[2];
-                        #print ">".$values[0]."<.>".$values[1]."<.>".$values[2]."<\n";
                     }
                 } 
             }
@@ -352,14 +350,12 @@ sub getFabricSwitches {
     my $resp = $ua->request($req);
     if ($resp->is_success) {
         my $responsecontent = $resp->decoded_content;
-        #print $responsecontent."\n";
         my %json = %{decode_json($responsecontent)};
         my @fabricswitches = $json{"Response"}{"fabric-switch"};
         foreach my $fabricswitch (@fabricswitches) {
             my @singleswitches = @{$fabricswitch};
             foreach my $singleswitch (@singleswitches){
                 my %switchattr = %{$singleswitch};
-                #print $switchattr{"switch-user-friendly-name"}."\n";
                 if(($switchattr{"switch-user-friendly-name"} =~ "^fcr") || ($switchattr{"firmware-version"} =~ "AMPOS") || ($switchattr{"ip-address"} eq "0.0.0.0")) {
                     next;
                 }
@@ -415,7 +411,6 @@ sub getFCPortCounters {
     toGraphite($statsstring);
     if ($resp->is_success) {
         my $responsecontent = $resp->decoded_content;
-        #print $responsecontent."\n";
         my %json = %{decode_json($responsecontent)};
         my @portstatistics = $json{"Response"}{"fibrechannel-statistics"};
         foreach my $portarray (@portstatistics) {
@@ -430,7 +425,6 @@ sub getFCPortCounters {
                     $porttype = $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"longdistance"};
                 }   
                 foreach my $keyname (keys %portattr) {
-                    #if ( grep( /^$keyname$/, @metrics ) ) {
                     if (defined($metrics{$keyname})) {
                         my $metricname = $metrics{$keyname}{'name'};
                         if($mode eq "perf") {
@@ -492,68 +486,68 @@ sub getFCPortCounters {
 }
 
 sub getPortSettings {
-        my $fabric = $_[0];
-        my $switch = $_[1];
-        my $token = $_[2];
-        my $fqdn = $switch;
-        if(defined($switchfqdns{$switch})) {
-            $fqdn = $switchfqdns{$switch};
-        }
-        my $url = 'https://'.$fqdn.'/rest/running/brocade-interface/fibrechannel/';
-        if(defined($fabricdetails{$fabric}{virtual_fabric})) {
-            $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
-        }
-        my $req = HTTP::Request->new(GET => $url);
-        $req->header('Accept' => 'application/yang-data+json');
-        $req->header('Content-Type' => 'application/yang-data+json');
-        $req->header('Authorization' => $token);
-        my $querystart = int (gettimeofday * 1000);
-        my $resp = $ua->request($req);
-        my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
-        my $now = time;
-        my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".fibrechannel.duration ".$queryduration." ".$now;
-        if($usetag) {
-            $statsstring = 'fos2graphite_duration;query=fibrechannel;switch='.$switch.' '.$queryduration.' '.$now;
-        }
-        toGraphite($statsstring);
-        if ($resp->is_success) {
-                my $responsecontent = $resp->decoded_content;
-                my %json = %{decode_json($responsecontent)};
-                my @portstatistics = $json{"Response"}{"fibrechannel"};
-                foreach my $portarray (@portstatistics) {
-                        my @ports = @{$portarray};
-                        foreach my $port (@ports) {
-                                my %portattr = %{$port};
-                                my $portname = $portattr{"name"};
-                                my @portvalues = split('/',$portname);
-                                my $slot = $portvalues[0];
-                                my $portnumber = $portvalues[1];
-                                my $porttype = $portattr{"port-type"};
-                                my $longdistance = $portattr{"long-distance"};  
-                                my @wwns=();
-                                if(defined($portattr{"neighbor"}{"wwn"})) {
-                                    @wwns = @{$portattr{"neighbor"}{"wwn"}};
-                                    if(($loglevel eq "DEBUG") || ($loglevel eq "TRACE")) {
-                                        foreach my $wwn (@wwns) {
-                                            $log->debug($switch.": ".$slot."/".$portnumber." has attached WWPN: ".$wwn);
-                                        }
+    my $fabric = $_[0];
+    my $switch = $_[1];
+    my $token = $_[2];
+    my $fqdn = $switch;
+    if(defined($switchfqdns{$switch})) {
+        $fqdn = $switchfqdns{$switch};
+    }
+    my $url = 'https://'.$fqdn.'/rest/running/brocade-interface/fibrechannel/';
+    if(defined($fabricdetails{$fabric}{virtual_fabric})) {
+        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
+    }
+    my $req = HTTP::Request->new(GET => $url);
+    $req->header('Accept' => 'application/yang-data+json');
+    $req->header('Content-Type' => 'application/yang-data+json');
+    $req->header('Authorization' => $token);
+    my $querystart = int (gettimeofday * 1000);
+    my $resp = $ua->request($req);
+    my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
+    my $now = time;
+    my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".fibrechannel.duration ".$queryduration." ".$now;
+    if($usetag) {
+        $statsstring = 'fos2graphite_duration;query=fibrechannel;switch='.$switch.' '.$queryduration.' '.$now;
+    }
+    toGraphite($statsstring);
+    if ($resp->is_success) {
+            my $responsecontent = $resp->decoded_content;
+            my %json = %{decode_json($responsecontent)};
+            my @portstatistics = $json{"Response"}{"fibrechannel"};
+            foreach my $portarray (@portstatistics) {
+                    my @ports = @{$portarray};
+                    foreach my $port (@ports) {
+                            my %portattr = %{$port};
+                            my $portname = $portattr{"name"};
+                            my @portvalues = split('/',$portname);
+                            my $slot = $portvalues[0];
+                            my $portnumber = $portvalues[1];
+                            my $porttype = $portattr{"port-type"};
+                            my $longdistance = $portattr{"long-distance"};  
+                            my @wwns=();
+                            if(defined($portattr{"neighbor"}{"wwn"})) {
+                                @wwns = @{$portattr{"neighbor"}{"wwn"}};
+                                if(($loglevel eq "DEBUG") || ($loglevel eq "TRACE")) {
+                                    foreach my $wwn (@wwns) {
+                                        $log->debug($switch.": ".$slot."/".$portnumber." has attached WWPN: ".$wwn);
                                     }
                                 }
-                                $log->debug("FCID for ".$portname." of ".$switch." is ".$portattr{"fcid-hex"});
-                                $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"porttype"}=$porttypes{$porttype};
-                                $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"longdistance"}=$distancemodes{$longdistance};
-                                $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"fcid"} = $portattr{"fcid-hex"};
-                                $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"neighbors"} = \@wwns;
-                        }
-                }
-        } else {
-                $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
-                $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
-                $log->info("Trying to logout from ".$switch);
-                restLogout($switch,$token);
-                $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
-                exit(($resp->code)-100);
-        }
+                            }
+                            $log->debug("FCID for ".$portname." of ".$switch." is ".$portattr{"fcid-hex"});
+                            $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"porttype"}=$porttypes{$porttype};
+                            $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"longdistance"}=$distancemodes{$longdistance};
+                            $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"fcid"} = $portattr{"fcid-hex"};
+                            $portsettings{$fabric}{$switch}{$slot}{$portnumber}{"neighbors"} = \@wwns;
+                    }
+            }
+    } else {
+            $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
+            $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
+            $log->info("Trying to logout from ".$switch);
+            restLogout($switch,$token);
+            $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
+            exit(($resp->code)-100);
+    }
 }
 
 
@@ -597,7 +591,6 @@ sub getSystemResources {
             my %counterhash = %{$counters};
             foreach my $counter (keys %counterhash) {
                 $log->trace($fabric.": ".$switch." - ".$counter." = ".$counterhash{$counter});
-                #if(grep( /^$counter$/, @metrics)) {
                 if(defined($metrics{$counter})) {
                     my $metricname = $metrics{$counter}{'name'};
                     if($usetag) {
@@ -867,7 +860,7 @@ sub reportmetrics {
             my $printtime = strftime('%m/%d/%Y %H:%M:%S',localtime($curtime));
             $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
             initsocket();
-            $log->info("Loging in to ".$fabric." / ".$switch);
+            $log->info("Logging in to ".$fabric." / ".$switch);
             my $token = restLogin($switch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
             if(($curtime - $conftime)>=$fabricdetails{$fabric}{'config_interval'}) {
                 $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
@@ -880,13 +873,13 @@ sub reportmetrics {
             }
             getPortSettings($fabric,$switch,$token);
             if(($curtime - $statstime)>=$fabricdetails{$fabric}{'stats_interval'}) {
-                $log->info("Getting performance- and errorcounters for ".$fabric." / ".$switch);
+                $log->info("Getting performance- and error-counters for ".$fabric." / ".$switch);
                 getSystemResources($fabric,$switch,$token,'ALL');
                 getFCPortCounters($fabric,$switch,$token,'ALL');
                 getMediaCounters($fabric,$switch,$token,'ALL');
                 $statstime = $curtime;
             } else {
-                $log->info("Getting only performancecounters for ".$fabric." / ".$switch);
+                $log->info("Getting only performance-counters for ".$fabric." / ".$switch);
                 getSystemResources($fabric,$switch,$token,'perf');
                 getFCPortCounters($fabric,$switch,$token,'perf');
                 getMediaCounters($fabric,$switch,$token,'perf');     
@@ -945,7 +938,6 @@ sub checkreporter {
 sub toGraphite() {
     $socketcnt+=1;
     my $message = $_[0];
-    #print $message."\n";
     $socket->send($message."\n");
     if(($socketdelay>0)&&!($socketcnt % $delaymetric)) {
         nanosleep($socketdelay);
@@ -975,7 +967,7 @@ sub initsocket {
         PeerPort => $graphiteport,
         Proto => 'tcp',
     );
-    die "cannot connect to the server $!\n" unless $socket;
+    $log->logdie("cannot connect to the server $!") unless $socket;
     setsockopt($socket, SOL_SOCKET, SO_KEEPALIVE, 1);
     $log->debug("Opening connection ".$socket->sockhost().":".$socket->sockport()." => ".$socket->peerhost().":".$socket->peerport());
 }
@@ -986,7 +978,6 @@ sub closesocket {
 }
 
 # Sub to initialize Systemd Service
-
 sub initservice {
     if(defined $ENV{'NOTIFY_SOCKET'}) {
         if($mainpid == $$) {
@@ -1003,7 +994,6 @@ sub initservice {
 }
 
 # Sub to update status of Systemd Service when running as Daemon
-
 sub servicestatus {
     my $message = $_[0];
     if(defined $ENV{'NOTIFY_SOCKET'}) {
@@ -1022,7 +1012,6 @@ sub servicestatus {
 }
 
 # Sub to signal a stop of the script to the service when running as Daemon
-
 sub stopservice {
     if(defined $ENV{'NOTIFY_SOCKET'}) {
         if($mainpid == $$) {
@@ -1039,8 +1028,7 @@ sub stopservice {
     }
 }
 
-# Sub to send heartbeat wo watchdog of Systemd service when running as Daemon.
-
+# Sub to send heartbeat to watchdog of Systemd service when running as Daemon.
 sub alive {
     if(defined $ENV{'NOTIFY_SOCKET'}) {
         if($mainpid == $$) {
