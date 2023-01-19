@@ -20,14 +20,15 @@ use strict;
 use warnings;
 use v5.10;
 use POSIX ":sys_wait_h";
-
-use lib '/opt/fos2graphite/lib/perl5/';
+use feature qw( switch );
+no if $] >= 5.018, warnings => qw( experimental::smartmatch );
 
 use POSIX qw(strftime);
 use POSIX qw(ceil);
 use Time::HiRes qw(nanosleep usleep gettimeofday tv_interval);
 use Socket;
 use IO::Socket::INET;
+use IO::Socket::UNIX;
 use LWP::UserAgent;
 use constant false => 0;
 use constant true  => 1;
@@ -35,7 +36,6 @@ use Log::Log4perl;
 use Getopt::Long;
 use Time::Local;
 use JSON;
-use Systemd::Daemon qw( -hard notify );
 
 #Variables for Graphite-Communication
 
@@ -67,6 +67,8 @@ my $daemon = false;
 my $conf = '/opt/fos2graphite/conf/fos2graphite.conf';
 my $logfile = "/opt/fos2graphite/";
 my $loglevel = "INFO";
+
+my $mainpid = $$;
 
 my %porttypes = (
     0 => "Unknown",
@@ -865,7 +867,7 @@ sub reportmetrics {
             my $printtime = strftime('%m/%d/%Y %H:%M:%S',localtime($curtime));
             $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
             initsocket();
-            $log->info("Logging in to ".$fabric." / ".$switch);
+            $log->info("Loging in to ".$fabric." / ".$switch);
             my $token = restLogin($switch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
             if(($curtime - $conftime)>=$fabricdetails{$fabric}{'config_interval'}) {
                 $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
@@ -878,13 +880,13 @@ sub reportmetrics {
             }
             getPortSettings($fabric,$switch,$token);
             if(($curtime - $statstime)>=$fabricdetails{$fabric}{'stats_interval'}) {
-                $log->info("Getting performance- and error-counters for ".$fabric." / ".$switch);
+                $log->info("Getting performance- and errorcounters for ".$fabric." / ".$switch);
                 getSystemResources($fabric,$switch,$token,'ALL');
                 getFCPortCounters($fabric,$switch,$token,'ALL');
                 getMediaCounters($fabric,$switch,$token,'ALL');
                 $statstime = $curtime;
             } else {
-                $log->info("Getting only performance-counters for ".$fabric." / ".$switch);
+                $log->info("Getting only performancecounters for ".$fabric." / ".$switch);
                 getSystemResources($fabric,$switch,$token,'perf');
                 getFCPortCounters($fabric,$switch,$token,'perf');
                 getMediaCounters($fabric,$switch,$token,'perf');     
@@ -901,7 +903,7 @@ sub reportmetrics {
 sub startreporter {
     my $fabric = $_[0];
     servicestatus('Running reporters...');
-    foreach my $switch (keys $fabricdetails{$fabric}{"switches"}) {
+    foreach my $switch (keys %{$fabricdetails{$fabric}{"switches"}}) {
         my $pid = fork();
         if(!$pid) {
             reportmetrics($fabric,$switch);
@@ -975,7 +977,7 @@ sub initsocket {
     );
     die "cannot connect to the server $!\n" unless $socket;
     setsockopt($socket, SOL_SOCKET, SO_KEEPALIVE, 1);
-    $log->debug("Opening Socket ".$socket->sockhost().":".$socket->sockport()." => ".$socket->peerhost().":".$socket->peerport());
+    $log->debug("Opening connection ".$socket->sockhost().":".$socket->sockport()." => ".$socket->peerhost().":".$socket->peerport());
 }
 
 sub closesocket {
@@ -986,30 +988,73 @@ sub closesocket {
 # Sub to initialize Systemd Service
 
 sub initservice {
-    notify( READY => 1 );
-    $log->trace("Service is initialized...");
+    if(defined $ENV{'NOTIFY_SOCKET'}) {
+        if($mainpid == $$) {
+            my $sock = IO::Socket::UNIX->new(
+                Type => SOCK_DGRAM(),
+                Peer => $ENV{'NOTIFY_SOCKET'},
+            ) or $log->logdie("Unable to open socket for systemd communication");
+            print $sock "READY=1\n";
+            $log->info("Service is initialized...");
+        }
+    } else {
+        $log->trace("Looks like we are not runnings as systemd-service!");
+    }
 }
 
 # Sub to update status of Systemd Service when running as Daemon
 
 sub servicestatus {
     my $message = $_[0];
-    notify( STATUS => $message );
-    $log->trace("Status message: ".$message." is send to service...");
+    if(defined $ENV{'NOTIFY_SOCKET'}) {
+        if($mainpid == $$) {
+            my $sock = IO::Socket::UNIX->new(
+                Type => SOCK_DGRAM(),
+                Peer => $ENV{'NOTIFY_SOCKET'},
+            ) or $log->logdie("Unable to open socket for systemd communication");
+            print $sock "STATUS=$message\n";
+            $log->trace("Servicemessage has been send: ".$message);
+            close($sock);
+        }
+    } else {
+        $log->trace("Looks like we are not runnings as systemd-service!");
+    }
 }
 
 # Sub to signal a stop of the script to the service when running as Daemon
 
 sub stopservice {
-    notify ( STOPPING => 1 )
+    if(defined $ENV{'NOTIFY_SOCKET'}) {
+        if($mainpid == $$) {
+            my $sock = IO::Socket::UNIX->new(
+                Type => SOCK_DGRAM(),
+                Peer => $ENV{'NOTIFY_SOCKET'},
+            ) or $log->logdie("Unable to open socket for systemd communication");
+            print $sock "STOPPING=1\n";
+            $log->info("Service is shutting down...");
+            close($sock);
+        }
+    } else {
+        $log->trace("Looks like we are not runnings as systemd-service!");
+    }
 }
 
 # Sub to send heartbeat wo watchdog of Systemd service when running as Daemon.
 
 sub alive {
-    notify ( WATCHDOG => 1 );
-    if($loglevel eq "TRACE") {
-        $log->trace("Heartbeat is send to watchdog of service...");
+    if(defined $ENV{'NOTIFY_SOCKET'}) {
+        if($mainpid == $$) {
+            my $sock = IO::Socket::UNIX->new(
+                Type => SOCK_DGRAM(),
+                Peer => $ENV{'NOTIFY_SOCKET'},
+            ) or $log->logdie("Unable to open socket for systemd communication");
+            print $sock "WATCHDOG=1\n";
+            $log->trace("Watchdog message has been send to systemd...");
+            close($sock);
+        }
+
+    } else {
+        $log->trace("Looks like we are not runnings as systemd-service!");
     }
 }
 
@@ -1036,7 +1081,7 @@ readMetrics();
 
 servicestatus("Discovering fabric...");
 if($fabricdetails{$fabric}{"ssl_verfiy_host"} == 0) {
-    $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0 });
+    $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0, SSL_verify_mode=>0x00 });
 } else {
     $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 1 });
 }
