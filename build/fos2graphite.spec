@@ -50,7 +50,6 @@ rm -rf ${RPM_BUILD_ROOT}
 %config(noreplace) %attr(644,openiomon,openiomon) /opt/fos2graphite/conf/*.conf
 %config(noreplace) %attr(644,root,root) /etc/logrotate.d/fos2graphite
 %attr(755,openiomon,openiomon) /opt/fos2graphite/bin/*
-%attr(755,openiomon,openiomon) /opt/fos2graphite/lib/perl5/
 %defattr(644,openiomon,openiomon,755)
 /opt/fos2graphite/conf/fos2graphite.conf.example
 /opt/fos2graphite/conf/storage-schemas.conf.example
@@ -62,7 +61,7 @@ rm -rf ${RPM_BUILD_ROOT}
 ln -s -f /opt/fos2graphite/bin/fos2graphite.pl /bin/fos2graphite
 
 %changelog
-* Thu Jan 19 2022 Timo Drach <timo.drach@openiomon.org>
+* Thu Jan 19 2023 Timo Drach <timo.drach@openiomon.org>
 - remove perl lib from package
 - added dependency to Perl IO::Socket::UNIX
 * Tue Dec 15 2020 Timo Drach <timo.drach@openiomon.org>
