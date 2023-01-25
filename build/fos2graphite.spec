@@ -1,8 +1,8 @@
 Summary: fos2graphite is a module of openiomon which is used to transfer statistics from the Brocade SAN swtches to a graphite system to be able to display this statistics in Grafana.
 Name: fos2graphite
-Version: 0.2
+Version: 0.2.1
 prefix: /opt
-Release: 0
+Release: 1
 URL: https://github.com/openiomon/%{name}
 License: GPL
 Group: Applications/Internet
@@ -61,6 +61,8 @@ rm -rf ${RPM_BUILD_ROOT}
 ln -s -f /opt/fos2graphite/bin/fos2graphite.pl /bin/fos2graphite
 
 %changelog
+* Wed Jan 25 2023 Timo Drach <timo.drach@openiomon.org>
+- corrected package versioning scheme
 * Thu Jan 19 2023 Timo Drach <timo.drach@openiomon.org>
 - remove perl lib from package
 - added dependency to Perl IO::Socket::UNIX
