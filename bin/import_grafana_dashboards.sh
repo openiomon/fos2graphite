@@ -36,13 +36,17 @@ print_help() {
 import_dash() {
     IMPORT_DIR="${DIRECTORY}*.json";
 
+    #remove potential trailing slash from Grafana Target URL
+    HOST=$(echo $HOST | sed -e 's/\/$//')
+
     for files in $IMPORT_DIR;do
-        #FILECONTENT=$(sed -e "s/.*\"datasource\":.*/\"datasource\": \"${DATASOURCENAME}\"\,/" ${files})
-        FILECONTENT=$(sed -e "s/.*\"datasource\": \"\${.*/\"datasource\": \"${DATASOURCENAME}\"\,/" ${files})
+        FILECONTENT=$(sed -e 's/\${.*}/'"${DATASOURCENAME}"'/' ${files})
 
         if [ $? -ne 0 ] ; then
             echo "modify datasource name via sed failed"
-            echo ${FILECONTENT}
+            exit 1
+            # DEBUG
+            #echo ${FILECONTENT}
             echo ""
         fi
 
