@@ -43,7 +43,7 @@ my $graphiteport = "2003";
 my $usetag = 0;
 
 my $socketcnt = 0;
-my $sockettimer;
+my $sockettimer = [gettimeofday];
 my $maxmetricsperminute = 500000;
 my $socketdelay = 10000;
 my $delaymetric = 100;
