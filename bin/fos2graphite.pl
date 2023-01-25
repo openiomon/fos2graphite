@@ -32,8 +32,8 @@ my $servicegroup = 'openiomon';
 my $watchdog = 300;
 my $libdir = "/opt/fos2graphite/lib/";
 my $workdir = "/opt/fos2graphite/";
-my $stdoutopt = 'null';
-my $stderropt = 'null';
+my $stdoutopt = 'journal';
+my $stderropt = 'journal';
 
 my $conf = '/opt/fos2graphite/conf/fos2graphite.conf';
 
