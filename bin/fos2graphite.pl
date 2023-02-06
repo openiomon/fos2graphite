@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ### =============================================================================
 ###
-###  File Name        : fos2graphite-worker.pl
+###  File Name        : fos2graphite.pl
 ###
 ###  Project Name     : Brocade Grafana
 ###
@@ -47,7 +47,7 @@ my $status = "";
 my $restart = "";
 
 my $logfile = '/opt/fos2graphite/log/fos2graphite.log';
-my $loglevel = 'DEBUG';
+my $loglevel = 'INFO';
 my $log;
 
 my %fabricdetails;
@@ -57,7 +57,6 @@ sub console {
     print $message,"\n";
     $log->info($message);
 }
-
 
 sub printUsage {
     print("Usage:\n");
@@ -75,6 +74,7 @@ sub printUsage {
     print("   -h                            print this output\n");
     print("\n");
 }
+
 sub parseCmdArgs {
     my $help = "";
     GetOptions (    "conf=s"            => \$conf,              # String
@@ -89,12 +89,12 @@ sub parseCmdArgs {
                     "h"                 => \$help)              # flag
     or die("Error in command line arguments\n");
 
-    if($help) {
+    if ($help) {
         printUsage();
         exit(0);
     }
 
-    if(!-f $conf) {
+    if (!-f $conf) {
         print "Configuration file: ".$conf." cannot be found! Please specify configuration file!\n\n";
         printUsage();
         exit(1);
@@ -102,32 +102,32 @@ sub parseCmdArgs {
         readconfig();
     }
 
-    if(($register eq "") && ($deregister eq "") && ($enable eq "") && ($disable eq "") && ($start eq "") && ($stop eq "") && ($restart eq "") && ($status eq "") ) {
+    if (($register eq "") && ($deregister eq "") && ($enable eq "") && ($disable eq "") && ($start eq "") && ($stop eq "") && ($restart eq "") && ($status eq "") ) {
         printUsage();
         exit(1);
     }
 
-    if(($register ne "") && ($deregister ne "")) {
+    if (($register ne "") && ($deregister ne "")) {
         print "Cannot register and deregister service at the same time!\n";
         exit(1);
     }
 
-    if(($enable ne "") && ($disable ne "")) {
+    if (($enable ne "") && ($disable ne "")) {
         print "Cannot enable and disable service at the same time!\n";
         exit(1);
     }
 
-    if(($start ne "") && ($stop ne "")) {
+    if (($start ne "") && ($stop ne "")) {
         print "Cannot start and stop service at the same time!\n";
         exit(1);
     }
 
-    if(($start ne "") && ($restart ne "")) {
+    if (($start ne "") && ($restart ne "")) {
         print "Cannot start and restart service at the same time!\n";
         exit(1);
     }
 
-    if(($stop ne "") && ($restart ne "")) {
+    if (($stop ne "") && ($restart ne "")) {
         print "Cannot stop and restart service at the same time!\n";
         exit(1);
     }
@@ -135,7 +135,7 @@ sub parseCmdArgs {
 }
 
 sub readconfig {
-    if(!-f $conf) {
+    if (!-f $conf) {
         print "Cannot open specified config file! ".$conf." Please check!\n";
         exit(1);
     }
@@ -145,52 +145,52 @@ sub readconfig {
         my $line = $_;
         chomp($line);
         $line =~ s/\s//g;
-        if($line =~ "^#" || $line eq "") {
+        if ($line =~ "^#" || $line eq "") {
             next;
         }
-        if($line=~'^\[') {
+        if ($line=~'^\[') {
             $section = $line;
             $section =~s/\[//;
             $section =~s/\]//;
-        } else {
-            given($section) {
-                when('logging') {
-                    if($line =~ "^logdir") {
-                        my @values = split("=",$line);
-                        my $logdir = $values[1];
-                        $logfile = $logdir.'fos2graphite.log';
-                    }
-                    if($line =~"^loglevel") {
-                        my @values = split("=",$line);
-                        $loglevel = $values[1];
-                    }
-                }
-                when('graphite') {
-                    # Information is not needed in service wrapper!
-                }
-                default {
+            next;
+        }
+        given($section) {
+            when('logging') {
+                if ($line =~ "^logdir") {
                     my @values = split("=",$line);
-                    if($line =~ "^seedswitch") {
-                        $fabricdetails{$section}{'seedswitch'} = $values[1];
-                    }
-                    if($line =~ "^user") {
-                        $fabricdetails{$section}{'user'} = $values[1];
-                    }
-                    if($line =~ "^password") {
-                        $fabricdetails{$section}{'password'} = $values[1];
-                    }
-                    if($line =~ "^log_uports") {
-                        $fabricdetails{$section}{'log_uports'} = $values[1];
-                    }
-                    if($line =~ "^counter_refresh_interval") {
-                        $fabricdetails{$section}{'refresh_interval'} = $values[1];
-                    }
-                    if($line =~ "^config_refresh_interval^") {
-                        $fabricdetails{$section}{'config_interval'} = $values[1];
-                    }
-                    if($line =~ "^metric_file") {
-                        $fabricdetails{$section}{'metric_file'} = $values[1];
-                    }
+                    my $logdir = $values[1];
+                    $logfile = $logdir.'fos2graphite.log';
+                }
+                if ($line =~"^loglevel") {
+                    my @values = split("=",$line);
+                    $loglevel = $values[1];
+                }
+            }
+            when('graphite') {
+                # Information is not needed in service wrapper!
+            }
+            default {
+                my @values = split("=",$line);
+                if ($line =~ "^seedswitch") {
+                    $fabricdetails{$section}{'seedswitch'} = $values[1];
+                }
+                if ($line =~ "^user") {
+                    $fabricdetails{$section}{'user'} = $values[1];
+                }
+                if ($line =~ "^password") {
+                    $fabricdetails{$section}{'password'} = $values[1];
+                }
+                if ($line =~ "^log_uports") {
+                    $fabricdetails{$section}{'log_uports'} = $values[1];
+                }
+                if ($line =~ "^counter_refresh_interval") {
+                    $fabricdetails{$section}{'refresh_interval'} = $values[1];
+                }
+                if ($line =~ "^config_refresh_interval^") {
+                    $fabricdetails{$section}{'config_interval'} = $values[1];
+                }
+                if ($line =~ "^metric_file") {
+                    $fabricdetails{$section}{'metric_file'} = $values[1];
                 }
             }
         }
@@ -200,28 +200,27 @@ sub readconfig {
 sub reloadsystemctl {
     console("Reloading systemctl daemon...");
     my $rc = system('systemctl daemon-reload');
-    if($rc != 0) {
+    if ($rc != 0) {
         console("Reload of systemctl daemon with command systemctl daemon-reload was not successful! Please ivenstigate!");
     } else {
         console("Reload was done successful!");
     }
 }
 
-
 sub registerservice {
     my $fabric = $_[0];
-    if($fabric eq 'ALL') {
+    if ($fabric eq 'ALL') {
         foreach my $fabric (sort keys %fabricdetails) {
             registerservice($fabric);
         }
     } else {
-        if(!defined $fabricdetails{$fabric}) {
+        if (!defined $fabricdetails{$fabric}) {
             console("Fabric ".$fabric." cannot be found of configuration file ".$conf." ! Please check configuration file and add fabric information!");
             exit(1);
         }
         console("Registering service for ".$fabric);
         my $servicefile = '/etc/systemd/system/fos2graphite-'.$fabric.'.service';
-        if(-f $servicefile) {
+        if (-f $servicefile) {
             console("There is already a service with the name fos2graphite-".$fabric." registerd. You can either start, stop or restart the service. For updates to servicefile please deregister an register again.");
         } else {
 
@@ -258,13 +257,13 @@ sub registerservice {
 
 sub deregisterservice {
     my $fabric = $_[0];
-    if($fabric eq 'ALL') {
+    if ($fabric eq 'ALL') {
         foreach my $fabric (sort keys %fabricdetails) {
             deregisterservice($fabric);
         }
     } else {
         console("Trying to deregister service for fabric ".$fabric."...");
-        if(!-f '/etc/systemd/system/fos2graphite-'.$fabric.'.service'){
+        if (!-f '/etc/systemd/system/fos2graphite-'.$fabric.'.service'){
             console("There is no service registered for fabric ".$fabric."! Nothing to do...");
             return(0);
         }
@@ -276,16 +275,15 @@ sub deregisterservice {
     }
 }
 
-
 sub servicestatus {
     my $fabric = $_[0];
     $log->debug("Query service status for ".$fabric);
-    if($fabric eq 'ALL') {
+    if ($fabric eq 'ALL') {
         foreach my $fabric (sort keys %fabricdetails) {
             servicestatus($fabric);
         }
     } else {
-        if(!-f '/etc/systemd/system/fos2graphite-'.$fabric.'.service') {
+        if (!-f '/etc/systemd/system/fos2graphite-'.$fabric.'.service') {
             console("There is not service registered for ".$fabric."! Please register service using fos2graphite -register ".$fabric);
             return(0);
         } else {
@@ -294,7 +292,7 @@ sub servicestatus {
             $log->debug("Execute: ".$servicecmd." with result: ");
             foreach my $line (@result) {
                 chomp $line;
-                if($line =~ ".service - FOS2GRAPHITE Service") {
+                if ($line =~ ".service - FOS2GRAPHITE Service") {
                     $line = substr($line,4);
                 }
                 print $line."\n";
@@ -305,24 +303,23 @@ sub servicestatus {
     }
 }
 
-
 sub service {
     my $fabric = $_[0];
     my $action = $_[1];
-    if($fabric eq 'ALL') {
+    if ($fabric eq 'ALL') {
         foreach my $fabric (sort keys %fabricdetails) {
             service($fabric,$action);
         }
     } else {
         console("Trying to ".$action." service for fabric ".$fabric."...");
-        if(!-f '/etc/systemd/system/fos2graphite-'.$fabric.'.service'){
+        if (!-f '/etc/systemd/system/fos2graphite-'.$fabric.'.service'){
             console("\tService cannot be found for fabric ".$fabric.". Please register service or correct defined fabrics or verify configuration file!");
             return(0);
         }
         my $cmd = 'systemctl '.$action.' fos2graphite-'.$fabric.' > /dev/null 2>&1';
         $log->debug("Running system command: ".$cmd);
         my $rc = system($cmd);
-        if($rc==0) {
+        if ($rc==0) {
             console("Service ".$action."ed for fabric ".$fabric."!");
         } else {
             console("Failed to ".$action." service for fabric ".$fabric."! Please investigate!");
@@ -330,7 +327,7 @@ sub service {
     }
 }
 
-
+# MAIN
 parseCmdArgs();
 
 my $log4perlConf  = qq(
@@ -339,43 +336,43 @@ log4perl.appender.FileAppndr1          = Log::Log4perl::Appender::File
 log4perl.appender.FileAppndr1.filename = $logfile
 log4perl.appender.FileAppndr1.owner    = $serviceuser
 log4perl.appender.FileAppndr1.group    = $servicegroup
-log4perl.appender.FileAppndr1.umask    = 0000
+log4perl.appender.FileAppndr1.umask    = 0022
 log4perl.appender.FileAppndr1.layout   = Log::Log4perl::Layout::PatternLayout
 log4perl.appender.FileAppndr1.layout.ConversionPattern = %d [%p] (%F:%L) %M > %m %n
 );
 Log::Log4perl->init(\$log4perlConf);
 $log = Log::Log4perl->get_logger('main.report');
 
-if($register ne "") {
+if ($register ne "") {
     registerservice($register);
     reloadsystemctl();
 }
 
-if($deregister ne "") {
+if ($deregister ne "") {
     deregisterservice($deregister);
     reloadsystemctl();
 }
 
-if($status ne "") {
+if ($status ne "") {
     servicestatus($status);
 }
 
-if($start ne "") {
+if ($start ne "") {
     service($start,'start');
 }
 
-if($stop ne "") {
+if ($stop ne "") {
     service($stop,'stop');
 }
 
-if($restart ne "") {
+if ($restart ne "") {
     service($restart,'restart');
 }
 
-if($enable ne "") {
+if ($enable ne "") {
     service($enable,'enable');
 }
 
-if($disable ne "") {
+if ($disable ne "") {
     service($disable,'disable');
 }

@@ -108,6 +108,11 @@ Alternatively, there is a simple shell script to import all dashboards at once.
    `/opt/fos2graphite/bin/import_grafana_dashboards.sh https://grafana.company.com:3000 /opt/fos2graphite/dashboards/graphite MyGraphiteDatasource`  
 
 ## Changelog
+### master
+* add REST API logout when systemd service is stopped gracefully
+* fix media counters missing for initiator-target collection
+* change file permissions for log files are set to 644 instead of 666
+
 ### 0.2.1
 * fix bugs for datasource renaming in import script
 * fix initialization of sockettimer in RHEL8
