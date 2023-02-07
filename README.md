@@ -110,6 +110,8 @@ Alternatively, there is a simple shell script to import all dashboards at once.
 ## Changelog
 ### master
 * add REST API logout when systemd service is stopped gracefully
+* add port speed collection to allow calculation of port usage
+* add port usage percent counter to ISL dashboard
 * fix media counters missing for initiator-target collection
 * change file permissions for log files are set to 644 instead of 666
 
