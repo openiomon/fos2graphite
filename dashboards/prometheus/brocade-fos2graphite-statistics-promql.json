@@ -172,8 +172,8 @@
       {
         "current": {
           "selected": true,
-          "text": "Prometheus-Test",
-          "value": "Prometheus-Test"
+          "text": "Prometheus",
+          "value": "Prometheus"
         },
         "hide": 0,
         "includeAll": false,
@@ -194,7 +194,7 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(fos2graphite_duration,query)",
-        "hide": 1,
+        "hide": 2,
         "includeAll": true,
         "multi": true,
         "name": "Queries",
@@ -219,6 +219,6 @@
   "timezone": "",
   "title": "Brocade: fos2graphite statistics - Prometheus",
   "uid": "0cxKlrJ4z",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
