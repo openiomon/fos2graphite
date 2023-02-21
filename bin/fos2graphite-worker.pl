@@ -53,8 +53,6 @@ my $watchdog = 300;
 # maxdelay is set to $watchdogtime in nanoseconds deviced by 1000 since we are sending the alive singnal every 100.000 inserts but the delay is done every 100 inserts. The factor 0.9 adds in some tollerance to avaid watchdog is killing service because delay for inserts is to high! This might happen if the 1st 100.000 inserts are done in less than 2 seconds...
 my $maxdelay = ($watchdog*1000*1000*1000)/1000*0.9;
 
-
-my $ua;
 my %args; # variable to store command line options for use with getopts
 my $log; # log4perl logger
 
@@ -286,7 +284,8 @@ sub restLogin {
     my $switch = $_[0];
     my $user = $_[1];
     my $passwd = $_[2];
-    $log->debug("Logging in to ".$switch." with user: ".$user);
+    my $ua;
+    $log->debug("Login to ".$switch." with user: ".$user);
     my $fqdn = $switch;
     if (defined($switchfqdns{$switch})) {
         $fqdn = $switchfqdns{$switch};
@@ -297,6 +296,11 @@ sub restLogin {
     $req->header('Accept' => 'application/yang-data+json');
     $req->header('Content-Type' => 'application/yang-data+json');
     $req->authorization_basic($user,$passwd);
+    if ($fabricdetails{$fabric}{"ssl_verfiy_host"} == 0) {
+        $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0, SSL_verify_mode=>0x00 });
+    } else {
+        $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 1 });
+    }
     my $resp = $ua->request($req);
     if ($resp->is_success) {
         my $responseheader = $resp->header("Authorization");
@@ -304,8 +308,8 @@ sub restLogin {
         $killswitch = $fqdn;
         return($responseheader);
     } else {
-        $log->error("Failed to POST data from ".$url." with HTTP POST error code: ".$resp->code);
-        $log->error("Failed to POST data from ".$url." with HTTP POST error message: ".$resp->message);
+        $log->error("Failed to POST data to ".$url." with HTTP error code: ".$resp->code);
+        $log->error("Failed to POST data to ".$url." with HTTP error message: ".$resp->message);
         $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
         exit(($resp->code)-100);
     }
@@ -314,51 +318,100 @@ sub restLogin {
 sub restLogout {
     my $switch = $_[0];
     my $token = $_[1];
+    my $ua;
     my $fqdn = $switch;
     if (defined($switchfqdns{$switch})) {
         $fqdn = $switchfqdns{$switch};
     }
-    $log->debug("Logging out from ".$switch." by removing token: ".$token);
+    $log->debug("Logout from ".$switch." by removing token: ".$token);
     my $url = 'https://'.$fqdn.'/rest/logout';
     my $req = HTTP::Request->new(POST => $url);
     $req->header('Accept' => 'application/yang-data+json');
     $req->header('Content-Type' => 'application/yang-data+json');
     $req->header('Authorization' => $token);
+    if ($fabricdetails{$fabric}{"ssl_verfiy_host"} == 0) {
+        $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0, SSL_verify_mode=>0x00 });
+    } else {
+        $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 1 });
+    }
     my $resp = $ua->request($req);
     if ($resp->is_success) {
         $killtoken = "";
         $killswitch = "";
         return(0);
     } else {
-        $log->error("Failed to POST data from ".$url." with HTTP POST error code: ".$resp->code);
-        $log->error("Failed to POST data from ".$url." with HTTP POST error message: ".$resp->message);
+        $log->error("Failed to POST data to ".$url." with HTTP error code: ".$resp->code);
+        $log->error("Failed to POST data to ".$url." with HTTP error message: ".$resp->message);
         $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
         exit(($resp->code)-100);
     }
 }
 
+sub http_get {
+    my $switch = $_[0];
+    my $token = $_[1];
+    my $apiendpoint = $_[2];
+    my $ua;
+    my $fqdn = $switch;
+    if (defined($switchfqdns{$switch})) {
+        $fqdn = $switchfqdns{$switch};
+    }
+    my $geturl = 'https://'.$fqdn.'/rest/running'.$apiendpoint;
+    my $req = HTTP::Request->new(GET => $geturl);
+    $req->header('Accept' => 'application/yang-data+json');
+    $req->header('Content-Type' => 'application/yang-data+json');
+    $req->header('Authorization' => $token);
+    my $debugcmd = 'curl -ks -X GET -H "Content-Type: application/yang-data+json" -H "Accept: application/yang-data+json" -H "Authorization: <<token>>" -i '.$geturl;
+    $log->debug($debugcmd);
+    if ($fabricdetails{$fabric}{"ssl_verfiy_host"} == 0) {
+        $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0, SSL_verify_mode=>0x00 });
+    } else {
+        $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 1 });
+    }
+    my $querystart = int (gettimeofday * 1000);
+    my $resp = $ua->request($req);
+    my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
+    # split api endpoint string on / (forward slash) and use last string as query name
+    my $queryname = (split /\//, $apiendpoint)[-1];
+    my $now = time;
+    my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".".$queryname.".duration ".$queryduration." ".$now;
+    if ($usetag) {
+        $statsstring = 'fos2graphite_duration;query='.$queryname.';switch='.$switch.' '.$queryduration.' '.$now;
+    }
+    toGraphite($statsstring);
+    if ($resp->is_success) {
+        my $responsecontent = $resp->decoded_content;
+        if ($apiendpoint eq '/brocade-name-server/fibrechannel-name-server'){
+            # replacing invalid single backslashes with double backslash in JSON response, see Brocade Defect ID FOS-836363
+            # using - (dash) as regex delimiter to make it more readable
+            $responsecontent =~ s-(?<!\\)\\(?![\\"bfnrt])-\\\\-g;
+        }
+        return($responsecontent);
+    }    
+
+    # name server or alias query might return empty, so the function shouldn't error out in that case
+    if ($apiendpoint eq '/brocade-name-server/fibrechannel-name-server' or $apiendpoint eq '/brocade-zone/defined-configuration/alias') {
+        $log->warn("Failed to GET data from ".$geturl." with HTTP error code: ".$resp->code);
+        $log->warn("Failed to GET data from ".$geturl." with HTTP error message: ".$resp->message);
+        $log->warn("This might be caused by a switch with no name-server entries, or no aliases or zoning active. So trying to continue...");
+        return undef;
+    }
+    $log->error("Failed to GET data from ".$geturl." with HTTP error code: ".$resp->code);
+    $log->error("Failed to GET data from ".$geturl." with HTTP error message: ".$resp->message);
+    $log->debug("Trying to logout from ".$switch);
+    restLogout($switch,$token);
+    $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
+    exit(($resp->code)-100);
+}
+
 sub getFabricSwitches {
     my $fabric = $_[0];
     my $seedswitch = $_[1];
-    my $token = $_[2];
-    my $url = 'https://'.$seedswitch.'/rest/running/brocade-fabric/fabric-switch';
-    if (defined($fabricdetails{$fabric}{virtual_fabric})) {
-        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
-    }
-    my $req = HTTP::Request->new(GET => $url);
-        $req->header('Accept' => 'application/yang-data+json');
-        $req->header('Content-Type' => 'application/yang-data+json');
-        $req->header('Authorization' => $token);
-    my $resp = $ua->request($req);
-    if (!$resp->is_success) {
-        $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
-        $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
-        $log->debug("Trying to logout from ".$seedswitch);
-        restLogout($seedswitch,$token);
-        $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
-        exit(($resp->code)-100);
-    }
-    my $responsecontent = $resp->decoded_content;
+    servicestatus("Discovering fabric...");
+    $log->debug("Login to seed switch ".$fabric." / ".$seedswitch);
+    my $token = restLogin($seedswitch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
+    initsocket();
+    my $responsecontent = http_get($seedswitch,$token,'/brocade-fabric/fabric-switch');
     my %json = %{decode_json($responsecontent)};
     my @fabricswitches = $json{"Response"}{"fabric-switch"};
     foreach my $fabricswitch (@fabricswitches) {
@@ -379,7 +432,9 @@ sub getFabricSwitches {
             $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"DOMAINID"} = $switchattr{"domain-id"};
         }
     }
-    return($responsecontent);
+    $log->debug("Logout from seed switch".$fabric." / ".$seedswitch);
+    restLogout($seedswitch,$token);
+    closesocket();
 }
 
 sub getFCPortCounters {
@@ -392,32 +447,8 @@ sub getFCPortCounters {
     if (defined($switchfqdns{$switch})) {
         $fqdn = $switchfqdns{$switch};
     }
-    my $url = 'https://'.$fqdn.'/rest/running/brocade-interface/fibrechannel-statistics/';
-    if (defined($fabricdetails{$fabric}{virtual_fabric})) {
-        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
-    }
-    my $req = HTTP::Request->new(GET => $url);
-    $req->header('Accept' => 'application/yang-data+json');
-    $req->header('Content-Type' => 'application/yang-data+json');
-    $req->header('Authorization' => $token);
-    my $querystart = int (gettimeofday * 1000);
-    my $resp = $ua->request($req);
-    my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
     my $now = time;
-    my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".fibrechannel-statistics.duration ".$queryduration." ".$now;
-    if ($usetag) {
-        $statsstring = 'fos2graphite_duration;query=fibrechannel-statistics;switch='.$switch.' '.$queryduration.' '.$now;
-    }
-    toGraphite($statsstring);
-    if (!$resp->is_success) {
-        $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
-        $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
-        $log->debug("Trying to logout from ".$switch);
-        restLogout($switch,$token);
-        $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
-        exit(($resp->code)-100);
-    }
-    my $responsecontent = $resp->decoded_content;
+    my $responsecontent = http_get($switch,$token,'/brocade-interface/fibrechannel-statistics/');
     my %json = %{decode_json($responsecontent)};
     my @portstatistics = $json{"Response"}{"fibrechannel-statistics"};
     foreach my $portarray (@portstatistics) {
@@ -490,37 +521,9 @@ sub getPortSettings {
     my $fabric = $_[0];
     my $switch = $_[1];
     my $token = $_[2];
-    my $fqdn = $switch;
-    if (defined($switchfqdns{$switch})) {
-        $fqdn = $switchfqdns{$switch};
-    }
-    my $url = 'https://'.$fqdn.'/rest/running/brocade-interface/fibrechannel/';
-    if (defined($fabricdetails{$fabric}{virtual_fabric})) {
-        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
-    }
-    my $req = HTTP::Request->new(GET => $url);
-    $req->header('Accept' => 'application/yang-data+json');
-    $req->header('Content-Type' => 'application/yang-data+json');
-    $req->header('Authorization' => $token);
-    my $querystart = int (gettimeofday * 1000);
-    my $resp = $ua->request($req);
-    my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
+    $log->debug("Getting port settings for ".$fabric." ".$switch."!");
     my $now = time;
-    my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".fibrechannel.duration ".$queryduration." ".$now;
-    if ($usetag) {
-        $statsstring = 'fos2graphite_duration;query=fibrechannel;switch='.$switch.' '.$queryduration.' '.$now;
-    }
-    toGraphite($statsstring);
-    if (!$resp->is_success) {
-        $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
-        $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
-        $log->debug("Trying to logout from ".$switch);
-        restLogout($switch,$token);
-        $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
-        exit(($resp->code)-100);
-    }
-
-    my $responsecontent = $resp->decoded_content;
+    my $responsecontent = http_get($switch,$token,'/brocade-interface/fibrechannel/');
     my %json = %{decode_json($responsecontent)};
     my @portstatistics = $json{"Response"}{"fibrechannel"};
     foreach my $portarray (@portstatistics) {
@@ -560,6 +563,7 @@ sub getPortSettings {
             }
         }
     }
+    $log->debug("Finished getting port settings for ".$fabric." ".$switch."!");
 }
 
 sub getSystemResources {
@@ -570,39 +574,13 @@ sub getSystemResources {
 
     if (defined($fabricdetails{$fabric}{'monitor_switchhw'})) {
         if ($fabricdetails{$fabric}{'monitor_switchhw'} == 0) {
-           $log->info("Skipping System Resource logging for ".$fabric."/".$switch." due to config");
+           $log->info("Skipping system resource statistics for ".$fabric."/".$switch." due to config parameter.");
            return;
         }
     }
-
     $log->debug("Getting system counter for ".$fabric." ".$switch." with mode ".$mode."!");
-    my $fqdn = $switch;
-    if (defined($switchfqdns{$switch})) {
-        $fqdn = $switchfqdns{$switch};
-    }
-    my $url = 'https://'.$fqdn.'/rest/running/brocade-maps/system-resources/';
-    my $req = HTTP::Request->new(GET => $url);
-    $req->header('Accept' => 'application/yang-data+json');
-    $req->header('Content-Type' => 'application/yang-data+json');
-    $req->header('Authorization' => $token);
-    my $querystart = int (gettimeofday * 1000);
-    my $resp = $ua->request($req);
-    my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
     my $now = time;
-    my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".system-resources.duration ".$queryduration." ".$now;
-    if ($usetag) {
-        $statsstring = 'fos2graphite_duration;query=system-resources;switch='.$switch.' '.$queryduration.' '.$now;
-    }
-    toGraphite($statsstring);
-    if (!$resp->is_success) {
-        $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
-        $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
-        $log->debug("Trying to logout from ".$switch);
-        restLogout($switch,$token);
-        $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
-        exit(($resp->code)-100);
-    }
-    my $responsecontent = $resp->decoded_content;
+    my $responsecontent = http_get($switch,$token,'/brocade-maps/system-resources/');
     my %json = %{decode_json($responsecontent)};
     my @systemperfcounters = $json{"Response"}{"system-resources"};
     foreach my $counters (@systemperfcounters) {
@@ -634,37 +612,9 @@ sub getMediaCounters {
     my $token = $_[2];
     my $mode = $_[3];
     $log->debug("Getting media counter for ".$fabric." ".$switch." with mode ".$mode."!");
-    my $fqdn = $switch;
-    if (defined($switchfqdns{$switch})) {
-        $fqdn = $switchfqdns{$switch};
-    }
-    my $url = 'https://'.$fqdn.'/rest/running/brocade-media/media-rdp/';
-    if (defined($fabricdetails{$fabric}{virtual_fabric})) {
-        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
-    }
-    my $req = HTTP::Request->new(GET => $url);
-    $req->header('Accept' => 'application/yang-data+json');
-    $req->header('Content-Type' => 'application/yang-data+json');
-    $req->header('Authorization' => $token);
-    my $querystart = int (gettimeofday * 1000);
-    my $resp = $ua->request($req);
-    my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
     my $now = time;
-    my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".brocade-media.duration ".$queryduration." ".$now;
-    if ($usetag) {
-        $statsstring = 'fos2graphite_duration;query=brocade-media;switch='.$switch.' '.$queryduration.' '.$now;
-    }
-    toGraphite($statsstring);
-    if (!$resp->is_success) {
-        $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
-        $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
-        $log->debug("Trying to logout from ".$switch);
-        restLogout($switch,$token);
-        $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
-        exit(($resp->code)-100);
-    }
-    my $responsecontent = $resp->decoded_content;
-    my %json =  %{decode_json($responsecontent)};
+    my $responsecontent = http_get($switch,$token,'/brocade-media/media-rdp/');
+    my %json = %{decode_json($responsecontent)};
     my @mediastatistics = $json{"Response"}{"media-rdp"};
     foreach my $mediaarray (@mediastatistics) {
         my @medias = @{$mediaarray};
@@ -771,39 +721,12 @@ sub getNameserver {
     my $fabric = $_[0];
     my $switch = $_[1];
     my $token = $_[2];
-    $log->info("Getting name server config from ".$switch." from fabric: ".$fabric);
-    my $fqdn = $switch;
-    if (defined($switchfqdns{$switch})) {
-        $fqdn = $switchfqdns{$switch};
-    }
-    my $url = 'https://'.$fqdn.'/rest/running/brocade-name-server/fibrechannel-name-server';
-    if (defined($fabricdetails{$fabric}{virtual_fabric})) {
-        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
-    }
-    $log->debug("Requesting URL: ".$url);
-    my $req = HTTP::Request->new(GET => $url);
-    $req->header('Accept' => 'application/yang-data+json');
-    $req->header('Content-Type' => 'application/yang-data+json');
-    $req->header('Authorization' => $token);
-    my $querystart = int (gettimeofday * 1000);
-    my $resp = $ua->request($req);
-    my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
-    my $now = time;
-    my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".brocade-nameserver.duration ".$queryduration." ".$now;
-    if ($usetag) {
-        $statsstring = 'fos2graphite_duration;query=brocade-nameserver;switch='.$switch.' '.$queryduration.' '.$now;
-    }
-    toGraphite($statsstring);
-    if (!$resp->is_success) {
-        $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
-        $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
-        $log->warn("This might be related to a switch with no name server entries... So trying to continue...");
+
+    $log->debug("Getting name server config from ".$switch." from fabric: ".$fabric);
+    my $responsecontent = http_get($switch,$token,'/brocade-name-server/fibrechannel-name-server');
+    if (!defined($responsecontent)){
         return;
     }
-    my $responsecontent = $resp->decoded_content;
-    # replacing invalid single backslashes with double backslash in JSON response
-    # using - (dash) as regex delimiter to make it more readable
-    $responsecontent =~ s-(?<!\\)\\(?![\\"bfnrt])-\\\\-g;
     my %json = %{decode_json($responsecontent)};
     my @nsshow = $json{"Response"}{'fibrechannel-name-server'};
     %nameserver = ();
@@ -828,36 +751,13 @@ sub getAliases {
     my $fabric = $_[0];
     my $switch = $_[1];
     my $token = $_[2];
-    $log->info("Getting aliases from ".$switch." for fabric: ".$fabric);
-    my $fqdn = $switch;
-    if (defined($switchfqdns{$switch})) {
-        $fqdn = $switchfqdns{$switch};
-    }
-    my $url = 'https://'.$fqdn.'/rest/running/brocade-zone/defined-configuration/alias';
-    if (defined($fabricdetails{$fabric}{virtual_fabric})) {
-        $url .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
-    }
-    my $req = HTTP::Request->new(GET => $url);
-    $req->header('Accept' => 'application/yang-data+json');
-    $req->header('Content-Type' => 'application/yang-data+json');
-    $req->header('Authorization' => $token);
-    my $querystart = int (gettimeofday * 1000);
-    my $resp = $ua->request($req);
-    my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
-    my $now = time;
-    my $statsstring = "brocade.fos2graphite.stats.query.".$switch.".brocade-zone.duration ".$queryduration." ".$now;
-    if ($usetag) {
-        $statsstring = 'fos2graphite_duration;query=brocade-zone;switch='.$switch.' '.$queryduration.' '.$now;
-    }
-    toGraphite($statsstring);
-    if (!$resp->is_success) {
-        $log->error("Failed to GET data from ".$url." with HTTP GET error code: ".$resp->code);
-        $log->error("Failed to GET data from ".$url." with HTTP GET error message: ".$resp->message);
-        $log->warn("This might be related to a switch with aliases or zoning active... So trying to continue...");
+
+    $log->debug("Getting aliases from ".$switch." for fabric: ".$fabric);
+    %aliases = ();
+    my $responsecontent = http_get($switch,$token,'/brocade-zone/defined-configuration/alias');
+    if (!defined($responsecontent)){
         return;
     }
-    %aliases = ();
-    my $responsecontent = $resp->decoded_content;
     my %json = %{decode_json($responsecontent)};
     my @allaliases = $json{"Response"}{"alias"};
     foreach my $aliarrayref (@allaliases) {
@@ -895,7 +795,7 @@ sub reportmetrics {
             my $printtime = strftime('%m/%d/%Y %H:%M:%S',localtime($curtime));
             $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
             initsocket();
-            $log->info("Logging in to ".$fabric." / ".$switch);
+            $log->info("Login to ".$fabric." / ".$switch);
             my $token = restLogin($switch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
             if (($curtime - $conftime)>=$fabricdetails{$fabric}{'config_interval'}) {
                 $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
@@ -949,8 +849,8 @@ sub checkreporter {
             my $res = waitpid($pids{$switch}, WNOHANG);
             if ($res) {
                 my $rc = $?>>8;
-                $log->error("Looks like PID: ".$pids{$switch}." for switch ".$switch." is not running! It ended with returncode ".$rc);
-                $log->error("Restarting for Switch ".$switch);
+                $log->error("Child process with PID: ".$pids{$switch}." for switch ".$switch." is no longer running! It ended with returncode ".$rc);
+                $log->error("Restarting child process for switch ".$switch);
                 sleep(10);
                 my $pid = fork();
                 if (!$pid) {
@@ -970,8 +870,14 @@ sub checkreporter {
 }
 
 sub toGraphite() {
-    $socketcnt+=1;
     my $message = $_[0];
+    $socketcnt+=1;
+    if (!defined($message)){
+        my $parent = (caller(1))[3];
+        my $grandparent = (caller(2))[3];
+        $log->error("Received no valid message from calling function: ".$parent." -> ".$grandparent);
+        return;
+    }
     $socket->send($message."\n");
     if (($socketdelay>0)&&!($socketcnt % $delaymetric)) {
         nanosleep($socketdelay);
@@ -995,19 +901,24 @@ sub toGraphite() {
 }
 
 sub initsocket {
+    # check if socket is already open
+    if (defined($socket)){
+        return;
+    }
     $socket = new IO::Socket::INET (
         PeerHost => $graphitehost,
         PeerPort => $graphiteport,
         Proto => 'tcp',
     );
-    $log->logdie("cannot connect to the server $!") unless $socket;
+    $log->logdie("Cannot connect to the graphite server $!") unless $socket;
     setsockopt($socket, SOL_SOCKET, SO_KEEPALIVE, 1);
-    $log->debug("Opening connection ".$socket->sockhost().":".$socket->sockport()." => ".$socket->peerhost().":".$socket->peerport());
+    $log->debug("Opening socket from ".$socket->sockhost().":".$socket->sockport()." to target ".$socket->peerhost().":".$socket->peerport());
 }
 
 sub closesocket {
-    $log->debug("Closing Socket ".$socket->sockhost().":".$socket->sockport()." - ".$socket->peerhost().":".$socket->peerport());
+    $log->debug("Closing Socket from ".$socket->sockhost().":".$socket->sockport()." to target ".$socket->peerhost().":".$socket->peerport());
     $socket->shutdown(2);
+    $socket = undef();
 }
 
 # Sub to initialize Systemd Service
@@ -1110,17 +1021,7 @@ initservice();
 
 readMetrics();
 
-servicestatus("Discovering fabric...");
-if ($fabricdetails{$fabric}{"ssl_verfiy_host"} == 0) {
-    $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0, SSL_verify_mode=>0x00 });
-} else {
-    $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 1 });
-}
-
-my $token = restLogin($fabricdetails{$fabric}{"seedswitch"},$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
-
-getFabricSwitches($fabric,$fabricdetails{$fabric}{"seedswitch"},$token);
-restLogout($fabricdetails{$fabric}{"seedswitch"},$token);
+getFabricSwitches($fabric,$fabricdetails{$fabric}{"seedswitch"});
 
 startreporter($fabric);
 checkreporter($fabric);
