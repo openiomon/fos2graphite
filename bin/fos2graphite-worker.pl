@@ -368,9 +368,10 @@ sub http_get {
     } else {
         $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 1 });
     }
-    my $querystart = int (gettimeofday * 1000);
+    my $querystart = [gettimeofday];
     my $resp = $ua->request($req);
-    my $queryduration = ((int (gettimeofday * 1000)) - $querystart);
+    # get and report duration in microseconds
+    my $queryduration = int(tv_interval($querystart, [gettimeofday]) * 1000 * 1000);
     # split api endpoint string on / (forward slash) and use last string as query name
     my $queryname = (split /\//, $apiendpoint)[-1];
     my $now = time;
