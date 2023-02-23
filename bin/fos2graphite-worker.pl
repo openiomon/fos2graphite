@@ -380,6 +380,7 @@ sub http_get {
         $statsstring = 'fos2graphite_duration;query='.$queryname.';switch='.$switch.' '.$queryduration.' '.$now;
     }
     toGraphite($statsstring);
+    my @returnarray = ();
     if ($resp->is_success) {
         my $responsecontent = $resp->decoded_content;
         if ($apiendpoint eq '/brocade-name-server/fibrechannel-name-server'){
@@ -387,7 +388,9 @@ sub http_get {
             # using - (dash) as regex delimiter to make it more readable
             $responsecontent =~ s-(?<!\\)\\(?![\\"bfnrt])-\\\\-g;
         }
-        return($responsecontent);
+        my %json = %{decode_json($responsecontent)};
+        @returnarray = $json{"Response"}{$queryname};
+        return(@returnarray);
     }    
 
     # name server or alias query might return empty, so the function shouldn't error out in that case
@@ -395,7 +398,7 @@ sub http_get {
         $log->warn("Failed to GET data from ".$geturl." with HTTP error code: ".$resp->code);
         $log->warn("Failed to GET data from ".$geturl." with HTTP error message: ".$resp->message);
         $log->warn("This might be caused by a switch with no name-server entries, or no aliases or zoning active. So trying to continue...");
-        return undef;
+        return (@returnarray);
     }
     $log->error("Failed to GET data from ".$geturl." with HTTP error code: ".$resp->code);
     $log->error("Failed to GET data from ".$geturl." with HTTP error message: ".$resp->message);
@@ -412,9 +415,7 @@ sub getFabricSwitches {
     $log->debug("Login to seed switch ".$fabric." / ".$seedswitch);
     my $token = restLogin($seedswitch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
     initsocket();
-    my $responsecontent = http_get($seedswitch,$token,'/brocade-fabric/fabric-switch');
-    my %json = %{decode_json($responsecontent)};
-    my @fabricswitches = $json{"Response"}{"fabric-switch"};
+    my @fabricswitches = http_get($seedswitch,$token,'/brocade-fabric/fabric-switch');
     foreach my $fabricswitch (@fabricswitches) {
         my @singleswitches = @{$fabricswitch};
         foreach my $singleswitch (@singleswitches){
@@ -449,9 +450,7 @@ sub getFCPortCounters {
         $fqdn = $switchfqdns{$switch};
     }
     my $now = time;
-    my $responsecontent = http_get($switch,$token,'/brocade-interface/fibrechannel-statistics/');
-    my %json = %{decode_json($responsecontent)};
-    my @portstatistics = $json{"Response"}{"fibrechannel-statistics"};
+    my @portstatistics = http_get($switch,$token,'/brocade-interface/fibrechannel-statistics/');
     foreach my $portarray (@portstatistics) {
         my @ports = @{$portarray};
         foreach my $port (@ports) {
@@ -524,9 +523,7 @@ sub getPortSettings {
     my $token = $_[2];
     $log->debug("Getting port settings for ".$fabric." ".$switch."!");
     my $now = time;
-    my $responsecontent = http_get($switch,$token,'/brocade-interface/fibrechannel/');
-    my %json = %{decode_json($responsecontent)};
-    my @portstatistics = $json{"Response"}{"fibrechannel"};
+    my @portstatistics = http_get($switch,$token,'/brocade-interface/fibrechannel/');
     foreach my $portarray (@portstatistics) {
         my @ports = @{$portarray};
         foreach my $port (@ports) {
@@ -581,9 +578,7 @@ sub getSystemResources {
     }
     $log->debug("Getting system counter for ".$fabric." ".$switch." with mode ".$mode."!");
     my $now = time;
-    my $responsecontent = http_get($switch,$token,'/brocade-maps/system-resources/');
-    my %json = %{decode_json($responsecontent)};
-    my @systemperfcounters = $json{"Response"}{"system-resources"};
+    my @systemperfcounters = http_get($switch,$token,'/brocade-maps/system-resources/');
     foreach my $counters (@systemperfcounters) {
         my %counterhash = %{$counters};
         foreach my $counter (keys %counterhash) {
@@ -614,9 +609,7 @@ sub getMediaCounters {
     my $mode = $_[3];
     $log->debug("Getting media counter for ".$fabric." ".$switch." with mode ".$mode."!");
     my $now = time;
-    my $responsecontent = http_get($switch,$token,'/brocade-media/media-rdp/');
-    my %json = %{decode_json($responsecontent)};
-    my @mediastatistics = $json{"Response"}{"media-rdp"};
+    my @mediastatistics = http_get($switch,$token,'/brocade-media/media-rdp/');
     foreach my $mediaarray (@mediastatistics) {
         my @medias = @{$mediaarray};
         foreach my $media (@medias) {
@@ -724,13 +717,11 @@ sub getNameserver {
     my $token = $_[2];
 
     $log->debug("Getting name server config from ".$switch." from fabric: ".$fabric);
-    my $responsecontent = http_get($switch,$token,'/brocade-name-server/fibrechannel-name-server');
-    if (!defined($responsecontent)){
+    %nameserver = ();
+    my @nsshow = http_get($switch,$token,'/brocade-name-server/fibrechannel-name-server');
+    if (!scalar(@nsshow)){
         return;
     }
-    my %json = %{decode_json($responsecontent)};
-    my @nsshow = $json{"Response"}{'fibrechannel-name-server'};
-    %nameserver = ();
     foreach my $nsarrayref (@nsshow) {
         my @nsarray = @{$nsarrayref};
         for my $nshashref (@nsarray) {
@@ -755,12 +746,10 @@ sub getAliases {
 
     $log->debug("Getting aliases from ".$switch." for fabric: ".$fabric);
     %aliases = ();
-    my $responsecontent = http_get($switch,$token,'/brocade-zone/defined-configuration/alias');
-    if (!defined($responsecontent)){
+    my @allaliases = http_get($switch,$token,'/brocade-zone/defined-configuration/alias');
+    if (!scalar(@allaliases)){
         return;
     }
-    my %json = %{decode_json($responsecontent)};
-    my @allaliases = $json{"Response"}{"alias"};
     foreach my $aliarrayref (@allaliases) {
         my @aliarray = @{$aliarrayref};
         foreach my $aliashashref (@aliarray) {
@@ -1019,9 +1008,7 @@ $SIG{TERM} = \&serviceshutdown;
 $SIG{KILL} = \&serviceshutdown;
 
 initservice();
-
 readMetrics();
-
 getFabricSwitches($fabric,$fabricdetails{$fabric}{"seedswitch"});
 
 startreporter($fabric);
