@@ -108,12 +108,12 @@ Alternatively, there is a simple shell script to import all dashboards at once.
    `/opt/fos2graphite/bin/import_grafana_dashboards.sh https://grafana.company.com:3000 /opt/fos2graphite/dashboards/graphite MyGraphiteDatasource`  
 
 ## Changelog
-### master
+### 0.3.0
 * add REST API logout when systemd service is stopped gracefully
 * add port speed collection to allow calculation of port usage
 * add port usage percent counter to ISL dashboard
 * fix media counters missing for initiator-target collection
-* change file permissions for log files are set to 644 instead of 666
+* change file permissions for log files, set to 644 instead of 666
 * change graphite metric names / prometheus label names for query duration meta information (due to internal code changes)
 * change query duration values to microseconds
 * add/change fos2graphite statistics dashboards to use new metric names
