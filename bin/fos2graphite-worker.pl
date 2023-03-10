@@ -348,15 +348,19 @@ sub restLogout {
 }
 
 sub http_get {
-    my $switch = $_[0];
-    my $token = $_[1];
-    my $apiendpoint = $_[2];
+    my $fabric = $_[0];
+    my $switch = $_[1];
+    my $token = $_[2];
+    my $apiendpoint = $_[3];
     my $ua;
     my $fqdn = $switch;
     if (defined($switchfqdns{$switch})) {
         $fqdn = $switchfqdns{$switch};
     }
     my $geturl = 'https://'.$fqdn.'/rest/running'.$apiendpoint;
+    if($apiendpoint ne '/brocade-maps/system-resources/' && defined($fabricdetails{$fabric}{virtual_fabric})) {
+        $geturl .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
+    }
     my $req = HTTP::Request->new(GET => $geturl);
     $req->header('Accept' => 'application/yang-data+json');
     $req->header('Content-Type' => 'application/yang-data+json');
@@ -415,7 +419,7 @@ sub getFabricSwitches {
     $log->debug("Login to seed switch ".$fabric." / ".$seedswitch);
     my $token = restLogin($seedswitch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
     initsocket();
-    my @fabricswitches = http_get($seedswitch,$token,'/brocade-fabric/fabric-switch');
+    my @fabricswitches = http_get($fabric,$seedswitch,$token,'/brocade-fabric/fabric-switch');
     foreach my $fabricswitch (@fabricswitches) {
         my @singleswitches = @{$fabricswitch};
         foreach my $singleswitch (@singleswitches){
@@ -450,7 +454,7 @@ sub getFCPortCounters {
         $fqdn = $switchfqdns{$switch};
     }
     my $now = time;
-    my @portstatistics = http_get($switch,$token,'/brocade-interface/fibrechannel-statistics/');
+    my @portstatistics = http_get($fabric,$switch,$token,'/brocade-interface/fibrechannel-statistics/');
     foreach my $portarray (@portstatistics) {
         my @ports = @{$portarray};
         foreach my $port (@ports) {
@@ -523,7 +527,7 @@ sub getPortSettings {
     my $token = $_[2];
     $log->debug("Getting port settings for ".$fabric." ".$switch."!");
     my $now = time;
-    my @portstatistics = http_get($switch,$token,'/brocade-interface/fibrechannel/');
+    my @portstatistics = http_get($fabric,$switch,$token,'/brocade-interface/fibrechannel/');
     foreach my $portarray (@portstatistics) {
         my @ports = @{$portarray};
         foreach my $port (@ports) {
@@ -578,7 +582,7 @@ sub getSystemResources {
     }
     $log->debug("Getting system counter for ".$fabric." ".$switch." with mode ".$mode."!");
     my $now = time;
-    my @systemperfcounters = http_get($switch,$token,'/brocade-maps/system-resources/');
+    my @systemperfcounters = http_get($fabric,$switch,$token,'/brocade-maps/system-resources/');
     foreach my $counters (@systemperfcounters) {
         my %counterhash = %{$counters};
         foreach my $counter (keys %counterhash) {
@@ -609,7 +613,7 @@ sub getMediaCounters {
     my $mode = $_[3];
     $log->debug("Getting media counter for ".$fabric." ".$switch." with mode ".$mode."!");
     my $now = time;
-    my @mediastatistics = http_get($switch,$token,'/brocade-media/media-rdp/');
+    my @mediastatistics = http_get($fabric,$switch,$token,'/brocade-media/media-rdp/');
     foreach my $mediaarray (@mediastatistics) {
         my @medias = @{$mediaarray};
         foreach my $media (@medias) {
@@ -718,7 +722,7 @@ sub getNameserver {
 
     $log->debug("Getting name server config from ".$switch." from fabric: ".$fabric);
     %nameserver = ();
-    my @nsshow = http_get($switch,$token,'/brocade-name-server/fibrechannel-name-server');
+    my @nsshow = http_get($fabric,$switch,$token,'/brocade-name-server/fibrechannel-name-server');
     if (!scalar(@nsshow)){
         return;
     }
@@ -746,7 +750,7 @@ sub getAliases {
 
     $log->debug("Getting aliases from ".$switch." for fabric: ".$fabric);
     %aliases = ();
-    my @allaliases = http_get($switch,$token,'/brocade-zone/defined-configuration/alias');
+    my @allaliases = http_get($fabric,$switch,$token,'/brocade-zone/defined-configuration/alias');
     if (!scalar(@allaliases)){
         return;
     }
