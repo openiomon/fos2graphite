@@ -108,6 +108,9 @@ Alternatively, there is a simple shell script to import all dashboards at once.
    `/opt/fos2graphite/bin/import_grafana_dashboards.sh https://grafana.company.com:3000 /opt/fos2graphite/dashboards/graphite MyGraphiteDatasource`  
 
 ## Changelog
+### 0.3.1
+* fix virtual fabric support, was broken in 0.3.0
+ 
 ### 0.3.0
 * add REST API logout when systemd service is stopped gracefully
 * add port speed collection to allow calculation of port usage
