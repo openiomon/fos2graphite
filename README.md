@@ -32,8 +32,8 @@ For other Linux distributions you can just clone the repository. Default install
 **SElinux Note**
 If you use SElinux in enforcing mode, you need to set the context for the log directory manually. Otherwise logrotate will fail. Use the following commands:
 ```
-semanage fcontext -a -t var_log_t "/opt/hds2graphite/log(/.*)?"
-restorecon -Rv /opt/hds2graphite/log/
+semanage fcontext -a -t var_log_t "/opt/fos2graphite/log(/.*)?"
+restorecon -Rv /opt/fos2graphite/log/
 ```
 
 ## Configuration
