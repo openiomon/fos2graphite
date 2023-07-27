@@ -734,6 +734,8 @@ sub getNameserver {
             my $portname = $nshash{'port-name'};
             my $nodename =  $nshash{'node-name'};
             my $devicetype = $nshash{'name-server-device-type'};
+            # remove illegal characters for graphite line protocol
+            $devicetype =~ s/\(.*//g;
             $devicetype =~ s/\s/_/g;
             $devicetype =~ s/\//_/g;
             $log->debug($portname." has nodename: ".$nodename." at PID: ".$pid." with type: ".$devicetype);
