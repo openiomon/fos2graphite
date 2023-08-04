@@ -1,24 +1,33 @@
 {
-  "__inputs": [],
+  "__inputs": [
+    {
+      "name": "DS_GRAPHITE",
+      "label": "Graphite",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "graphite",
+      "pluginName": "Graphite"
+    }
+  ],
   "__elements": {},
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.3.6"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph (old)",
-      "version": ""
+      "version": "10.0.2"
     },
     {
       "type": "datasource",
       "id": "graphite",
       "name": "Graphite",
       "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
     }
   ],
   "annotations": {
@@ -51,535 +60,106 @@
   "liveNow": false,
   "panels": [
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "graphite",
         "uid": "$Datasource"
       },
-      "fill": 0,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "µs"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 9,
         "w": 12,
         "x": 0,
         "y": 0
       },
-      "hiddenSeries": false,
       "id": 2,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": true,
-        "show": true,
-        "sort": "max",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
+      "maxPerRow": 2,
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.3.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
+      "repeat": "Queries",
+      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
             "uid": "$Datasource"
           },
           "refId": "A",
-          "target": "aliasByNode(brocade.fos2graphite.stats.query.*.fabric-switch.duration, 4)",
+          "target": "aliasByNode(brocade.fos2graphite.stats.query.*.$Queries.duration, 4)",
           "textEditor": true
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "HTTP response time query: fabric-switch",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:17277",
-          "format": "µs",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:17278",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "uid": "$Datasource"
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      },
-      "hiddenSeries": false,
-      "id": 7,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": true,
-        "show": true,
-        "sort": "max",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.3.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "$Datasource"
-          },
-          "refId": "A",
-          "target": "aliasByNode(brocade.fos2graphite.stats.query.*.fibrechannel.duration, 4)"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "HTTP response time query: fibrechannel",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:17277",
-          "format": "µs",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:17278",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "graphite",
-        "uid": "$Datasource"
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 9
-      },
-      "hiddenSeries": false,
-      "id": 4,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": true,
-        "show": true,
-        "sort": "max",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.3.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "$Datasource"
-          },
-          "refId": "A",
-          "target": "aliasByNode(brocade.fos2graphite.stats.query.*.media-rdp.duration, 4)",
-          "textEditor": true
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "HTTP response time query: media-rdp",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:17277",
-          "format": "µs",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:17278",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "uid": "$Datasource"
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 9
-      },
-      "hiddenSeries": false,
-      "id": 3,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": true,
-        "show": true,
-        "sort": "max",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.3.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "$Datasource"
-          },
-          "refId": "A",
-          "target": "aliasByNode(brocade.fos2graphite.stats.query.*.fibrechannel-statistics.duration, 4)"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "HTTP response time query: fibrechannel-statistics",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:17277",
-          "format": "µs",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:17278",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "graphite",
-        "uid": "$Datasource"
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 18
-      },
-      "hiddenSeries": false,
-      "id": 6,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": true,
-        "show": true,
-        "sort": "max",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "connected",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.3.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "$Datasource"
-          },
-          "refId": "A",
-          "target": "aliasByNode(brocade.fos2graphite.stats.query.*.fibrechannel-name-server.duration, 4)",
-          "textEditor": true
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "HTTP response time query: name-server",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:17277",
-          "format": "µs",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:17278",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "uid": "$Datasource"
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 18
-      },
-      "hiddenSeries": false,
-      "id": 5,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": true,
-        "show": true,
-        "sort": "max",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.3.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "$Datasource"
-          },
-          "refId": "A",
-          "target": "aliasByNode(brocade.fos2graphite.stats.query.*.system-resources.duration, 4)"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "HTTP response time query: system-resources",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:17277",
-          "format": "µs",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:17278",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "title": "HTTP response time query: $Queries",
+      "type": "timeseries"
     }
   ],
-  "schemaVersion": 37,
+  "refresh": false,
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [
     "fos2graphite"
@@ -589,8 +169,8 @@
       {
         "current": {
           "selected": false,
-          "text": "LocalGraphite",
-          "value": "LocalGraphite"
+          "text": "Graphite",
+          "value": "Graphite"
         },
         "hide": 0,
         "includeAll": false,
@@ -603,6 +183,29 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "graphite",
+          "uid": "${DS_GRAPHITE}"
+        },
+        "definition": "brocade.fos2graphite.stats.query.*.*",
+        "hide": 2,
+        "includeAll": true,
+        "multi": true,
+        "name": "Queries",
+        "options": [],
+        "query": {
+          "queryType": "Default",
+          "refId": "A",
+          "target": "brocade.fos2graphite.stats.query.*.*"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       }
     ]
   },

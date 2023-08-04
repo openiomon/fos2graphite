@@ -1,26 +1,21 @@
 {
   "__inputs": [
     {
-      "name": "DS_LOCALGRAPHITE",
-      "label": "LocalGraphite",
+      "name": "DS_GRAPHITE",
+      "label": "Graphite",
       "description": "",
       "type": "datasource",
       "pluginId": "graphite",
       "pluginName": "Graphite"
     }
   ],
+  "__elements": {},
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.1.6"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph (old)",
-      "version": ""
+      "version": "10.0.2"
     },
     {
       "type": "datasource",
@@ -39,13 +34,22 @@
       "id": "table",
       "name": "Table",
       "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
     }
   ],
   "annotations": {
     "list": [
       {
         "builtIn": 1,
-        "datasource": "${DS_LOCALGRAPHITE}",
+        "datasource": {
+          "type": "graphite",
+          "uid": "${DS_GRAPHITE}"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -55,15 +59,18 @@
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1633699178878,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -72,103 +79,119 @@
       },
       "id": 7,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Performance: Long distance ISLs",
       "type": "row"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 0,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 9,
         "w": 9,
         "x": 0,
         "y": 1
       },
-      "hiddenSeries": false,
       "id": 2,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
           "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.LS_PORT.*.*.in-octets), 1), 5, 7, 8))"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "RX throughput of long distance ISLs for $Fabric / $Switch",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1890",
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1891",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -207,112 +230,122 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
           "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.LS_PORT.*.*.in-octets), 1))"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "RX throughput of long distance ISLs for $Fabric / $Switch",
       "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 0,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 9,
         "w": 9,
         "x": 12,
         "y": 1
       },
-      "hiddenSeries": false,
       "id": 4,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
           "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.LS_PORT.*.*.out-octets), 1), 5, 7, 8))"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "TX throughput of long distance ISLs for $Fabric / $Switch",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1890",
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1891",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -351,21 +384,26 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
           "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.LS_PORT.*.*.out-octets), 1))"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "TX throughput of long distance ISLs for $Fabric / $Switch",
       "type": "stat"
     },
     {
       "collapsed": true,
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -375,15 +413,21 @@
       "id": 9,
       "panels": [
         {
-          "datasource": "${DS_LOCALGRAPHITE}",
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "thresholds"
               },
               "custom": {
-                "align": null,
-                "displayMode": "color-background-solid"
+                "cellOptions": {
+                  "mode": "basic",
+                  "type": "color-background"
+                },
+                "inspect": false
               },
               "decimals": 2,
               "displayName": "",
@@ -414,13 +458,26 @@
           "id": 11,
           "links": [],
           "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
             "showHeader": true
           },
-          "pluginVersion": "8.1.6",
+          "pluginVersion": "10.0.2",
           "repeat": "errorcounter",
           "repeatDirection": "h",
           "targets": [
             {
+              "datasource": {
+                "type": "graphite",
+                "uid": "${DS_GRAPHITE}"
+              },
               "refId": "A",
               "target": "aliasByNode(highestAverage(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.LS_PORT.*.*.$errorcounter), 20), 5, 7, 8)"
             }
@@ -441,12 +498,24 @@
           "type": "table"
         }
       ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Errors: Long distance ISLs",
       "type": "row"
     },
     {
       "collapsed": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -455,103 +524,120 @@
       },
       "id": 23,
       "panels": [],
-      "title": "Performance: Standard distance ISLs",
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Performance: Standard distance ISLs and ICLs",
       "type": "row"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 0,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 9,
         "w": 9,
         "x": 0,
         "y": 12
       },
-      "hiddenSeries": false,
       "id": 24,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
-          "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.E_PORT.*.*.in-octets), 1), 5, 7, 8))"
+          "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.{E_PORT,ICL_PORT}.*.*.in-octets), 1), 5, 7, 8))",
+          "textEditor": true
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "RX throughput of ISLs for $Fabric / $Switch",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1890",
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1891",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -590,112 +676,124 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
-          "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.E_PORT.*.*.in-octets), 1))"
+          "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.{E_PORT,ICL_PORT}.*.*.in-octets), 1))",
+          "textEditor": true
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "RX throughput of ISLs for $Fabric / $Switch",
       "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 0,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 9,
         "w": 9,
         "x": 12,
         "y": 12
       },
-      "hiddenSeries": false,
       "id": 26,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
-          "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.E_PORT.*.*.out-octets), 1), 5, 7, 8))"
+          "target": "sortByMaxima(aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.{E_PORT,ICL_PORT}.*.*.out-octets), 1), 5, 7, 8))",
+          "textEditor": true
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "TX throughput of ISLs for $Fabric / $Switch",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1890",
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1891",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -734,21 +832,27 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.1.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
-          "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.E_PORT.*.*.out-octets), 1))"
+          "target": "averageSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.ports.$Fabric.$Switch.{E_PORT,ICL_PORT}.*.*.out-octets), 1))",
+          "textEditor": true
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "TX throughput of ISLs for $Fabric / $Switch",
       "type": "stat"
     },
     {
-      "collapsed": true,
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "collapsed": false,
+      "datasource": {
+        "type": "graphite",
+        "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -756,80 +860,108 @@
         "y": 21
       },
       "id": 29,
-      "panels": [
+      "panels": [],
+      "targets": [
         {
-          "datasource": "${DS_LOCALGRAPHITE}",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {
-                "align": null,
-                "displayMode": "color-background-solid"
-              },
-              "decimals": 2,
-              "displayName": "",
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "rgba(50, 172, 45, 0.97)",
-                    "value": null
-                  },
-                  {
-                    "color": "rgba(237, 129, 40, 0.89)",
-                    "value": 1
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
+          "datasource": {
+            "type": "graphite",
+            "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
           },
-          "gridPos": {
-            "h": 8,
-            "w": 6,
-            "x": 0,
-            "y": 22
-          },
-          "id": 37,
-          "links": [],
-          "options": {
-            "showHeader": true
-          },
-          "pluginVersion": "8.1.6",
-          "repeat": "errorcounter",
-          "repeatDirection": "h",
-          "targets": [
-            {
-              "refId": "A",
-              "target": "aliasByNode(highestAverage(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.E_PORT.*.*.$errorcounter), 20), 5, 7, 8)"
-            }
-          ],
-          "title": "$errorcounter for $Fabric / $Switch",
-          "transformations": [
-            {
-              "id": "reduce",
-              "options": {
-                "includeTimeField": false,
-                "reducers": [
-                  "mean",
-                  "max"
-                ]
-              }
-            }
-          ],
-          "type": "table"
+          "refId": "A"
         }
       ],
-      "title": "Errors: Standard distance ISLs",
+      "title": "Errors: Standard distance ISLs and ICLs",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "cellOptions": {
+              "mode": "basic",
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "decimals": 2,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
+              },
+              {
+                "color": "rgba(237, 129, 40, 0.89)",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 22
+      },
+      "id": 37,
+      "links": [],
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.0.2",
+      "repeat": "errorcounter",
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
+          "refId": "A",
+          "target": "aliasByNode(highestAverage(nonNegativeDerivative(brocade.fos.stats.ports.$Fabric.$Switch.{E_PORT,ICL_PORT}.*.*.$errorcounter), 20), 5, 7, 8)",
+          "textEditor": true
+        }
+      ],
+      "title": "$errorcounter for $Fabric / $Switch",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "reducers": [
+              "mean",
+              "max"
+            ]
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
-  "refresh": "1m",
-  "schemaVersion": 30,
+  "refresh": false,
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [
     "Brocade",
@@ -838,20 +970,19 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_LOCALGRAPHITE}",
+        "datasource": {
+          "type": "graphite",
+          "uid": "${DS_GRAPHITE}"
+        },
         "definition": "brocade.fos.stats.ports.*",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": null,
         "multi": true,
         "name": "Fabric",
         "options": [],
         "query": "brocade.fos.stats.ports.*",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -861,20 +992,19 @@
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_LOCALGRAPHITE}",
+        "datasource": {
+          "type": "graphite",
+          "uid": "${DS_GRAPHITE}"
+        },
         "definition": "brocade.fos.stats.ports.$Fabric.*",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": null,
         "multi": true,
         "name": "Switch",
         "options": [],
         "query": "brocade.fos.stats.ports.$Fabric.*",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
         "sort": 0,
@@ -884,9 +1014,8 @@
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": [
             "All"
           ],
@@ -895,10 +1024,8 @@
           ]
         },
         "description": "all counter names for errors, used for panel repeat",
-        "error": null,
         "hide": 2,
         "includeAll": true,
-        "label": null,
         "multi": true,
         "name": "errorcounter",
         "options": [
@@ -976,12 +1103,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Brocade: ISL Overview (Realtime)",
   "uid": "j47zVwJMz",
-  "version": 9
+  "version": 2,
+  "weekStart": ""
 }

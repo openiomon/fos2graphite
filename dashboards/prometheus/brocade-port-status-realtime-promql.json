@@ -9,12 +9,13 @@
       "pluginName": "Prometheus"
     }
   ],
+  "__elements": {},
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.1.6"
+      "version": "10.0.2"
     },
     {
       "type": "panel",
@@ -51,7 +52,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -67,15 +71,18 @@
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1634735928811,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "FO7prsFnk"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -84,6 +91,15 @@
       },
       "id": 2,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "FO7prsFnk"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Performance Overview",
       "type": "row"
     },
@@ -92,7 +108,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "Bps"
@@ -128,7 +147,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.1.6",
+      "pluginVersion": "10.0.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -143,6 +162,10 @@
       "steppedLine": false,
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "exemplar": true,
           "expr": "sum (rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"}))",
           "interval": "",
@@ -150,6 +173,10 @@
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "exemplar": true,
           "expr": "sum (rate(fosports_out_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"}))",
           "hide": false,
@@ -159,9 +186,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Aggregated throughput for all selected ports ",
       "tooltip": {
         "shared": true,
@@ -170,9 +195,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -180,30 +203,27 @@
         {
           "$$hashKey": "object:12174",
           "format": "Bps",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "$$hashKey": "object:12175",
           "format": "Bps",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
-      "cacheTimeout": null,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -229,13 +249,13 @@
         "y": 1
       },
       "id": 5,
-      "interval": null,
       "links": [],
       "options": {
         "legend": {
           "calcs": [],
           "displayMode": "table",
           "placement": "bottom",
+          "showLegend": true,
           "values": [
             "value",
             "percent"
@@ -250,12 +270,17 @@
           "values": false
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "7.2.1",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "exemplar": true,
           "expr": "sum (rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"}))",
           "interval": "",
@@ -263,6 +288,10 @@
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "exemplar": true,
           "expr": "sum (rate(fosports_out_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"}))",
           "hide": false,
@@ -271,19 +300,22 @@
           "refId": "B"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Aggregated RX/TX Ratio all selected ports ",
       "type": "piechart"
     },
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -346,15 +378,21 @@
             "min"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.6",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "exemplar": true,
           "expr": "rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"})",
           "interval": "",
@@ -362,19 +400,22 @@
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Port RX throughput for all selected ports ",
       "type": "timeseries"
     },
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -437,15 +478,21 @@
             "min"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.1.6",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "exemplar": true,
           "expr": "rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"})",
           "interval": "",
@@ -453,14 +500,15 @@
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Port TX throughput for all selected ports ",
       "type": "timeseries"
     },
     {
       "collapsed": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "FO7prsFnk"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -469,18 +517,34 @@
       },
       "id": 9,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "FO7prsFnk"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Error Overview",
       "type": "row"
     },
     {
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "align": "left",
-            "displayMode": "color-background-solid",
-            "filterable": false
+            "cellOptions": {
+              "mode": "basic",
+              "type": "color-background"
+            },
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -512,6 +576,15 @@
       "id": 11,
       "maxPerRow": 4,
       "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": [
           {
@@ -520,11 +593,15 @@
           }
         ]
       },
-      "pluginVersion": "8.1.6",
+      "pluginVersion": "10.0.2",
       "repeat": "errorcounter",
       "repeatDirection": "h",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "exemplar": true,
           "expr": "rate(fosports_$errorcounter{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"})",
           "interval": "",
@@ -532,8 +609,6 @@
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "$errorcounter",
       "transformations": [
         {
@@ -551,7 +626,10 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "FO7prsFnk"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -561,7 +639,10 @@
       "id": 23,
       "panels": [
         {
-          "datasource": "${DS_PROMETHEUS}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "description": "",
           "fieldConfig": {
             "defaults": {
@@ -602,8 +683,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -632,7 +712,8 @@
                 "sum"
               ],
               "displayMode": "table",
-              "placement": "bottom"
+              "placement": "bottom",
+              "showLegend": true
             },
             "tooltip": {
               "mode": "single"
@@ -643,6 +724,10 @@
           "repeatDirection": "h",
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
               "exemplar": true,
               "expr": "rate(fosports_$errorcounter{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"})",
               "interval": "",
@@ -650,10 +735,17 @@
               "refId": "A"
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "$errorcounter",
           "type": "timeseries"
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "FO7prsFnk"
+          },
+          "refId": "A"
         }
       ],
       "title": "Error Details",
@@ -661,7 +753,10 @@
     },
     {
       "collapsed": true,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "FO7prsFnk"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -671,13 +766,18 @@
       "id": 39,
       "panels": [
         {
-          "datasource": "${DS_PROMETHEUS}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
@@ -711,8 +811,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -740,15 +839,21 @@
                 "min"
               ],
               "displayMode": "table",
-              "placement": "bottom"
+              "placement": "bottom",
+              "showLegend": true
             },
             "tooltip": {
-              "mode": "single"
+              "mode": "single",
+              "sort": "none"
             }
           },
           "pluginVersion": "8.1.6",
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
               "exemplar": true,
               "expr": "fosports_rx_power_dbm{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"}",
               "interval": "",
@@ -756,19 +861,22 @@
               "refId": "A"
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "SPF RX power in dBm",
           "type": "timeseries"
         },
         {
-          "datasource": "${DS_PROMETHEUS}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
@@ -802,8 +910,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -831,15 +938,21 @@
                 "min"
               ],
               "displayMode": "table",
-              "placement": "bottom"
+              "placement": "bottom",
+              "showLegend": true
             },
             "tooltip": {
-              "mode": "single"
+              "mode": "single",
+              "sort": "none"
             }
           },
           "pluginVersion": "8.1.6",
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
               "exemplar": true,
               "expr": "fosports_tx_power_dbm{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"}",
               "interval": "",
@@ -847,19 +960,22 @@
               "refId": "A"
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "SPF TX power in dBm",
           "type": "timeseries"
         },
         {
-          "datasource": "${DS_PROMETHEUS}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
@@ -893,8 +1009,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -902,7 +1017,7 @@
                   }
                 ]
               },
-              "unit": "mamp"
+              "unit": "mwatt"
             },
             "overrides": []
           },
@@ -922,15 +1037,21 @@
                 "min"
               ],
               "displayMode": "table",
-              "placement": "bottom"
+              "placement": "bottom",
+              "showLegend": true
             },
             "tooltip": {
-              "mode": "single"
+              "mode": "single",
+              "sort": "none"
             }
           },
           "pluginVersion": "8.1.6",
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
               "exemplar": true,
               "expr": "fosports_rx_power{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"}",
               "interval": "",
@@ -938,19 +1059,22 @@
               "refId": "A"
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "SPF RX power in milliwatt",
           "type": "timeseries"
         },
         {
-          "datasource": "${DS_PROMETHEUS}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
@@ -984,8 +1108,7 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -993,7 +1116,7 @@
                   }
                 ]
               },
-              "unit": "mamp"
+              "unit": "mwatt"
             },
             "overrides": []
           },
@@ -1013,15 +1136,21 @@
                 "min"
               ],
               "displayMode": "table",
-              "placement": "bottom"
+              "placement": "bottom",
+              "showLegend": true
             },
             "tooltip": {
-              "mode": "single"
+              "mode": "single",
+              "sort": "none"
             }
           },
           "pluginVersion": "8.1.6",
           "targets": [
             {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
               "exemplar": true,
               "expr": "fosports_tx_power{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\",slot=~\"$Slot\",port=~\"$Port\"}",
               "interval": "",
@@ -1029,10 +1158,17 @@
               "refId": "A"
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "SPF TX power in milliwatt",
           "type": "timeseries"
+        }
+      ],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "FO7prsFnk"
+          },
+          "refId": "A"
         }
       ],
       "title": "SFP Details",
@@ -1040,7 +1176,8 @@
     }
   ],
   "refresh": "5m",
-  "schemaVersion": 30,
+  "revision": 1,
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [
     "Brocade",
@@ -1050,15 +1187,14 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
         "definition": "label_values(fosports_rx_power{}, fabric)",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": false,
-        "label": null,
         "multi": true,
         "name": "Fabric",
         "options": [],
@@ -1076,15 +1212,14 @@
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
         "definition": "label_values(fosports_rx_power{fabric=~\"$Fabric\"}, switch)",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": null,
         "multi": true,
         "name": "Switch",
         "options": [],
@@ -1102,15 +1237,14 @@
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
         "definition": "label_values(fosports_rx_power{fabric=~\"$Fabric\",switch=~\"$Switch\"}, porttype)",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": null,
         "multi": true,
         "name": "Porttype",
         "options": [],
@@ -1128,15 +1262,14 @@
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
         "definition": "label_values(fosports_rx_power{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"$Porttype\"}, slot)",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": null,
         "multi": true,
         "name": "Slot",
         "options": [],
@@ -1147,22 +1280,21 @@
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 1,
+        "sort": 3,
         "tagValuesQuery": "",
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_PROMETHEUS}",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
         "definition": "label_values(fosports_rx_power{fabric=~\"$Fabric\",switch=~\"$Switch\", porttype=~\"$Porttype\", slot=~\"$Slot\"}, port)",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": null,
         "multi": true,
         "name": "Port",
         "options": [],
@@ -1173,14 +1305,13 @@
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 1,
+        "sort": 3,
         "tagValuesQuery": "",
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {
           "selected": true,
           "text": [
@@ -1191,10 +1322,8 @@
           ]
         },
         "description": "all counter names for errors, used for panel repeat",
-        "error": null,
         "hide": 2,
         "includeAll": true,
-        "label": null,
         "multi": true,
         "name": "errorcounter",
         "options": [
@@ -1279,5 +1408,6 @@
   "timezone": "",
   "title": "Brocade: Port Status (Realtime) - Prometheus",
   "uid": "bM1gpxvnk",
-  "version": 16
+  "version": 20,
+  "weekStart": ""
 }

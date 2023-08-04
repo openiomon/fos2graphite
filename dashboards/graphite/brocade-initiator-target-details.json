@@ -1,32 +1,21 @@
 {
   "__inputs": [
     {
-      "name": "DS_LOCALGRAPHITE",
-      "label": "LocalGraphite",
+      "name": "DS_GRAPHITE",
+      "label": "Graphite",
       "description": "",
       "type": "datasource",
       "pluginId": "graphite",
       "pluginName": "Graphite"
     }
   ],
+  "__elements": {},
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "8.1.6"
-    },
-    {
-      "type": "panel",
-      "id": "grafana-piechart-panel",
-      "name": "Pie Chart (old)",
-      "version": "1.6.0"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph (old)",
-      "version": ""
+      "version": "10.0.2"
     },
     {
       "type": "datasource",
@@ -36,8 +25,20 @@
     },
     {
       "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
       "id": "table",
       "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
       "version": ""
     }
   ],
@@ -45,7 +46,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -61,15 +65,18 @@
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1634825548769,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -78,380 +85,408 @@
       },
       "id": 7,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Performance Overview",
       "type": "row"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 1,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
         "y": 1
       },
-      "hiddenSeries": false,
       "id": 8,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
           "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), 6, 7)"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "Stacked RX Throughput",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:6171",
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:6172",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 1,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
         "y": 1
       },
-      "hiddenSeries": false,
       "id": 3,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
           "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), 6, 7)"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "Stacked TX Throughput",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:6171",
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:6172",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 1,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
         "y": 9
       },
-      "hiddenSeries": false,
       "id": 2,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
           "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), 6, 7)"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "RX Throughput Details",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:6171",
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:6172",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 1,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
         "y": 9
       },
-      "hiddenSeries": false,
       "id": 9,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
           "target": "aliasByNode(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), 6, 7)"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "TX Throughput Details",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:6171",
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:6172",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
       "collapsed": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -461,124 +496,147 @@
       "id": 5,
       "panels": [],
       "repeat": "Device",
+      "targets": [
+        {
+          "datasource": {
+            "type": "graphite",
+            "uid": "b0891d8c-45cd-473b-b37c-feeba52cba4a"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Performance Details $Device",
       "type": "row"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 1,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
         "y": 18
       },
-      "hiddenSeries": false,
       "id": 12,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "in-octets",
-          "yaxis": 1
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
         }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      },
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "A",
           "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), 'TX')"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "B",
           "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), 'RX')"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "RX / TX Throughput",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:7692",
-          "format": "Bps",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:7693",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "breakPoint": "50%",
-      "cacheTimeout": null,
-      "combine": {
-        "label": "Others",
-        "threshold": 0
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
       },
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "decimals": null,
-      "fontSize": "80%",
-      "format": "Bps",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 3,
@@ -586,158 +644,190 @@
         "y": 18
       },
       "id": 29,
-      "interval": null,
-      "legend": {
-        "header": "",
-        "percentage": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "values": true
-      },
-      "legendType": "Under graph",
       "links": [],
-      "nullPointMode": "connected",
-      "pieType": "pie",
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
       "pluginVersion": "7.2.1",
-      "strokeWidth": 1,
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "B",
           "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), 'RX')"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "C",
           "target": "alias(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), 'TX')"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "RX / TX Throughput",
-      "type": "grafana-piechart-panel",
-      "valueName": "current"
+      "type": "piechart"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 1,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 9,
         "x": 15,
         "y": 18
       },
-      "hiddenSeries": false,
       "id": 19,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "current",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "in-octets",
-          "yaxis": 1
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
         }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      },
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "hide": true,
           "refCount": 0,
           "refId": "A",
           "target": "sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.*-octets), 1))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 1,
           "refId": "B",
           "target": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), #A), 'RX')",
           "targetFull": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.in-octets), 1), sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.*-octets), 1))), 'RX')"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "C",
           "target": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), #A), 'TX')",
           "targetFull": "alias(asPercent(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.out-octets), 1), sumSeries(scaleToSeconds(nonNegativeDerivative(brocade.fos.perf.devices.$Fabric.$Type.$Device.*-octets), 1))), 'TX')"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "RX / TX Throughput",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:7692",
-          "format": "percent",
-          "label": null,
-          "logBase": 1,
-          "max": "100",
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:7693",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null,
-            "displayMode": "color-background-solid",
-            "filterable": false
+            "align": "auto",
+            "cellOptions": {
+              "mode": "basic",
+              "type": "color-background"
+            },
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -768,6 +858,15 @@
       },
       "id": 31,
       "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": [
           {
@@ -776,51 +875,81 @@
           }
         ]
       },
-      "pluginVersion": "8.1.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "A",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.crc-errors))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "B",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.itw))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "C",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.bad-eofs-received))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "D",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.address-errors))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "E",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.delimiter-errors))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "F",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.in-crc-errors))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "G",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.enc_out))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "H",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.pcs))"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Physical Errors",
       "transformations": [
         {
@@ -845,13 +974,20 @@
       "type": "table"
     },
     {
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null,
-            "displayMode": "color-background-solid",
-            "filterable": false
+            "align": "auto",
+            "cellOptions": {
+              "mode": "basic",
+              "type": "color-background"
+            },
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -882,6 +1018,15 @@
       },
       "id": 37,
       "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": [
           {
@@ -890,36 +1035,54 @@
           }
         ]
       },
-      "pluginVersion": "8.1.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "A",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.link-failures))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "B",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.loss-of-signal))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "C",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.loss-of-sync))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "D",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.lr_in))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "E",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.lr_out))"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Link Errors",
       "transformations": [
         {
@@ -944,13 +1107,20 @@
       "type": "table"
     },
     {
-      "datasource": "${DS_LOCALGRAPHITE}",
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null,
-            "displayMode": "color-background-solid",
-            "filterable": false
+            "align": "auto",
+            "cellOptions": {
+              "mode": "basic",
+              "type": "color-background"
+            },
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -981,6 +1151,15 @@
       },
       "id": 38,
       "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
         "showHeader": true,
         "sortBy": [
           {
@@ -989,26 +1168,36 @@
           }
         ]
       },
-      "pluginVersion": "8.1.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "A",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.class-3-discards))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "B",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.c3_rxto))"
         },
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refCount": 0,
           "refId": "C",
           "target": "aliasByMetric(nonNegativeDerivative(brocade.fos.stats.devices.$Fabric.$Type.$Device.c3_txto))"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Discard Errors",
       "transformations": [
         {
@@ -1033,185 +1222,190 @@
       "type": "table"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 0,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dBm"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
         "y": 37
       },
-      "hiddenSeries": false,
       "id": 47,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
           "target": "aliasByNode(brocade.fos.stats.devices.$Fabric.$Type.$Device.rx-power-dbm, 6)"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "SFP RX Power of $Device",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:18540",
-          "format": "dBm",
-          "label": null,
-          "logBase": 1,
-          "max": "2",
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:18541",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_LOCALGRAPHITE}",
-      "fill": 0,
-      "fillGradient": 0,
+      "datasource": {
+        "type": "graphite",
+        "uid": "${DS_GRAPHITE}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dBm"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
         "y": 37
       },
-      "hiddenSeries": false,
       "id": 48,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.1.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.0.2",
       "targets": [
         {
+          "datasource": {
+            "type": "graphite",
+            "uid": "${DS_GRAPHITE}"
+          },
           "refId": "A",
           "target": "aliasByNode(brocade.fos.stats.devices.$Fabric.$Type.$Device.tx-power-dbm, 6)"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "SFP TX Power of $Device",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:18540",
-          "format": "dBm",
-          "label": null,
-          "logBase": 1,
-          "max": "2",
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:18541",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     }
   ],
-  "schemaVersion": 30,
+  "refresh": "",
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [
     "Brocade",
@@ -1220,15 +1414,14 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_LOCALGRAPHITE}",
+        "datasource": {
+          "type": "graphite",
+          "uid": "${DS_GRAPHITE}"
+        },
         "definition": "brocade.fos.stats.devices.*",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": null,
         "multi": true,
         "name": "Fabric",
         "options": [],
@@ -1243,15 +1436,14 @@
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_LOCALGRAPHITE}",
+        "datasource": {
+          "type": "graphite",
+          "uid": "${DS_GRAPHITE}"
+        },
         "definition": "brocade.fos.stats.devices.$Fabric.*",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": null,
         "multi": true,
         "name": "Type",
         "options": [],
@@ -1266,15 +1458,14 @@
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {},
-        "datasource": "${DS_LOCALGRAPHITE}",
+        "datasource": {
+          "type": "graphite",
+          "uid": "${DS_GRAPHITE}"
+        },
         "definition": "brocade.fos.stats.devices.$Fabric.$Type.*",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": false,
-        "label": null,
         "multi": true,
         "name": "Device",
         "options": [],
@@ -1298,5 +1489,6 @@
   "timezone": "",
   "title": "Brocade: Initiator / Target Details (Realtime)",
   "uid": "a73yCj1Gk",
-  "version": 4
+  "version": 2,
+  "weekStart": ""
 }
