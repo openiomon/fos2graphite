@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.3.6"
+      "version": "10.0.2"
     },
     {
       "type": "datasource",
@@ -239,7 +239,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
           "datasource": {
@@ -399,7 +399,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
           "datasource": {
@@ -564,7 +564,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
           "datasource": {
@@ -731,7 +731,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
           "datasource": {
@@ -777,7 +777,10 @@
               },
               "custom": {
                 "align": "left",
-                "displayMode": "color-background-solid",
+                "cellOptions": {
+                  "mode": "basic",
+                  "type": "color-background"
+                },
                 "inspect": false
               },
               "decimals": 2,
@@ -885,7 +888,7 @@
           "refId": "A"
         }
       ],
-      "title": "Performance: Standard distance ISLs",
+      "title": "Performance: Standard distance ISLs and ICLs",
       "type": "row"
     },
     {
@@ -977,10 +980,12 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=\"E_PORT\"})",
+          "expr": "rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"E_PORT|ICL_PORT\"})",
           "interval": "",
           "legendFormat": "{{switch}}.{{slot}}.{{port}}",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -1030,17 +1035,19 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "avg(rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=\"E_PORT\"}))",
+          "expr": "avg(rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"E_PORT|ICL_PORT\"}))",
           "interval": "",
           "legendFormat": "RX throughput",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -1139,7 +1146,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "rate(fosports_out_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=\"E_PORT\"})",
+          "expr": "rate(fosports_out_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"E_PORT|ICL_PORT\"})",
           "interval": "",
           "legendFormat": "{{switch}}.{{slot}}.{{port}}",
           "range": true,
@@ -1192,7 +1199,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
           "datasource": {
@@ -1200,7 +1207,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "avg(rate(fosports_out_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=\"E_PORT\"}))",
+          "expr": "avg(rate(fosports_out_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"E_PORT|ICL_PORT\"}))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1303,7 +1310,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=\"E_PORT\"}) / ignoring(category) (fosports_portspeed /8)",
+          "expr": "rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"E_PORT|ICL_PORT\"}) / ignoring(category) (fosports_portspeed /8)",
           "interval": "",
           "legendFormat": "{{switch}}.{{slot}}.{{port}}",
           "range": true,
@@ -1357,7 +1364,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
           "datasource": {
@@ -1366,7 +1373,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "avg(rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=\"E_PORT\"}) / ignoring(category) (fosports_portspeed /8))",
+          "expr": "avg(rate(fosports_in_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"E_PORT|ICL_PORT\"}) / ignoring(category) (fosports_portspeed /8))",
           "interval": "",
           "legendFormat": "RX throughput",
           "range": true,
@@ -1470,7 +1477,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "rate(fosports_out_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=\"E_PORT\"}) / ignoring(category) (fosports_portspeed /8)",
+          "expr": "rate(fosports_out_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"E_PORT|ICL_PORT\"}) / ignoring(category) (fosports_portspeed /8)",
           "interval": "",
           "legendFormat": "{{switch}}.{{slot}}.{{port}}",
           "range": true,
@@ -1524,7 +1531,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.3.6",
+      "pluginVersion": "10.0.2",
       "targets": [
         {
           "datasource": {
@@ -1532,7 +1539,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "avg(rate(fosports_out_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=\"E_PORT\"}) / ignoring(category) (fosports_portspeed /8))",
+          "expr": "avg(rate(fosports_out_octets{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"E_PORT|ICL_PORT\"}) / ignoring(category) (fosports_portspeed /8))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1542,7 +1549,7 @@
       "type": "stat"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": {
         "type": "prometheus",
         "uid": "FO7prsFnk"
@@ -1554,85 +1561,7 @@
         "y": 39
       },
       "id": 29,
-      "panels": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {
-                "align": "left",
-                "displayMode": "color-background-solid"
-              },
-              "decimals": 2,
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "rgba(50, 172, 45, 0.97)"
-                  },
-                  {
-                    "color": "orange",
-                    "value": 1
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 6,
-            "x": 0,
-            "y": 22
-          },
-          "id": 42,
-          "links": [],
-          "maxPerRow": 4,
-          "options": {
-            "showHeader": true,
-            "sortBy": []
-          },
-          "pluginVersion": "8.1.6",
-          "repeat": "errorcounter",
-          "repeatDirection": "h",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "exemplar": true,
-              "expr": "rate(fosports_$errorcounter{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=\"E_PORT\"})",
-              "interval": "",
-              "legendFormat": "{{switch}}.{{slot}}.{{port}}",
-              "refId": "A"
-            }
-          ],
-          "title": "$errorcounter for $Fabric / $Switch",
-          "transformations": [
-            {
-              "id": "reduce",
-              "options": {
-                "includeTimeField": false,
-                "reducers": [
-                  "mean",
-                  "max"
-                ]
-              }
-            }
-          ],
-          "type": "table"
-        }
-      ],
+      "panels": [],
       "targets": [
         {
           "datasource": {
@@ -1642,12 +1571,105 @@
           "refId": "A"
         }
       ],
-      "title": "Errors: Standard distance ISLs",
+      "title": "Errors: Standard distance ISLs and ICLs",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "mode": "basic",
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgba(50, 172, 45, 0.97)",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 40
+      },
+      "id": 42,
+      "links": [],
+      "maxPerRow": 4,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "10.0.2",
+      "repeat": "errorcounter",
+      "repeatDirection": "h",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "rate(fosports_$errorcounter{fabric=~\"$Fabric\",switch=~\"$Switch\",porttype=~\"E_PORT|ICL_PORT\"})",
+          "interval": "",
+          "legendFormat": "{{switch}}.{{slot}}.{{port}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "$errorcounter for $Fabric / $Switch",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "reducers": [
+              "mean",
+              "max"
+            ]
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
-  "refresh": false,
-  "schemaVersion": 37,
+  "refresh": "",
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [
     "Brocade",
@@ -1708,7 +1730,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": [
             "All"
           ],
@@ -1804,6 +1826,6 @@
   "timezone": "",
   "title": "Brocade: ISL Overview (Realtime) - Prometheus",
   "uid": "ObFn1xD7z",
-  "version": 17,
+  "version": 19,
   "weekStart": ""
 }
