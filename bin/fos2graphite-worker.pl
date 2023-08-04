@@ -85,6 +85,9 @@ my %porttypes = (
     26 => "Ethernet_Flex_PORT",
     29 => "Flex_PORT",
     30 => "N_PORT",
+    31 => "Mirror_PORT",
+    32 => "ICL_PORT",
+    33 => "FC-LAG_PORT",
     32768 => "LB_PORT"
 );
 
@@ -536,7 +539,8 @@ sub getPortSettings {
             my @portvalues = split('/',$portname);
             my $slot = $portvalues[0];
             my $portnumber = $portvalues[1];
-            my $porttype = $porttypes{$portattr{"port-type"}};
+            # set to unknown if mapping table is incomplete
+            my $porttype = $porttypes{$portattr{"port-type"}} // $porttypes{0};
             my $portspeed = $portattr{"speed"};
             if ($porttype eq "E_PORT") {
                     $porttype = $distancemodes{$portattr{"long-distance"}};
