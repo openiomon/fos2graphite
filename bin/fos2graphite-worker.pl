@@ -144,6 +144,32 @@ sub parseCmdArgs{
     }
 }
 
+sub parseTimerange {
+	my %Units = ( 	map(($_,             1), qw(s second seconds sec secs)),
+					map(($_,            60), qw(m minute minutes min mins)),
+					map(($_,         60*60), qw(h hr hrs hour hours)),
+					map(($_,      60*60*24), qw(d day days)),
+					map(($_,    60*60*24*7), qw(w week weeks)),
+					map(($_,   60*60*24*30), qw(M month months mo mon mons)),
+					map(($_,  60*60*24*365), qw(y year years)) 
+	);
+	
+	my $value = $_[0];
+	$value =~ s/^\s*\+\s*//;	
+	if($value =~ /^\d*$/) {
+		return($value);
+	}	
+	my ($datevalue,$dateunit) = split(/(?=[a-zA-Z])/i, $value, 2);		
+	my $factor = 1;
+	if(defined $Units{$dateunit}) {
+		$factor = $Units{$dateunit};	
+	} else {
+		print "Invalid unit for timerange specified: ".$dateunit."\n";
+		exit(1);
+	}
+	return($datevalue * $factor);
+}
+
 sub readconfig {
     if (!-f $conf) {
         print "Cannot open specified config file! ".$conf." Please check!\n";
@@ -204,17 +230,26 @@ sub readconfig {
                 if ($line =~ "^password") {
                     $fabricdetails{$section}{'password'} = $values[1];
                 }
+				if ($line =~ "^credential_provider_script") {
+                    $fabricdetails{$section}{'cp'} = $values[1];
+                }
+				if ($line =~ "^credential_provider_cachetimeout") {
+                    $fabricdetails{$section}{'cp_timeout'} = parseTimerange($values[1]);
+                }
+				if ($line =~ "^credential_provider_retrievetimeout") {
+                    $fabricdetails{$section}{'cp_retrievetimeout'} = parseTimerange($values[1]);
+                }
                 if ($line =~ "^collect_uports") {
                     $fabricdetails{$section}{'collect_uports'} = $values[1];
                 }
                 if ($line =~ "^perf_refresh_interval") {
-                    $fabricdetails{$section}{'perf_interval'} = $values[1];
+                    $fabricdetails{$section}{'perf_interval'} = parseTimerange($values[1]);
                 }
                 if ($line =~ "^stats_refresh_interval") {
-                    $fabricdetails{$section}{'stats_interval'} = $values[1];
+                    $fabricdetails{$section}{'stats_interval'} = parseTimerange($values[1]);
                 }
                 if ($line =~ "^config_refresh_interval") {
-                    $fabricdetails{$section}{'config_interval'} = $values[1];
+                    $fabricdetails{$section}{'config_interval'} = parseTimerange($values[1]);
                 }
                 if ($line =~ "^metric_file") {
                     $fabricdetails{$section}{'metric_file'} = $values[1];
@@ -226,12 +261,13 @@ sub readconfig {
                     $fabricdetails{$section}{'IT_collection'} = uc($values[1]);
                 }
                 if ($line =~"refresh_offset") {
-                    if ($values[1] > 30) {
+                    my $confOffset = parseTimerange($values[1]);
+                    if ($confOffset > 30) {
                         $fabricdetails{$section}{'refresh_offset'} = 30;
-                    } elsif ($values[1] < 0) {
+                    } elsif ($confOffset < 0) {
                         $fabricdetails{$section}{'refresh_offset'} = 0;
                     } else {
-                        $fabricdetails{$section}{'refresh_offset'} = $values[1];
+                        $fabricdetails{$section}{'refresh_offset'} = $confOffset;
                     }
                 }
                 if ($line=~"^vFID") {
@@ -399,10 +435,10 @@ sub http_get {
         my %json = %{decode_json($responsecontent)};
         @returnarray = $json{"Response"}{$queryname};
         return(@returnarray);
-    }    
+    }
 
     # name server or alias query might return empty, so the function shouldn't error out in that case
-    if ($apiendpoint eq '/brocade-name-server/fibrechannel-name-server' or $apiendpoint eq '/brocade-zone/defined-configuration/alias') {
+    if (($apiendpoint eq '/brocade-name-server/fibrechannel-name-server' or $apiendpoint eq '/brocade-zone/defined-configuration/alias') and $resp->code == 404) {
         $log->warn("Failed to GET data from ".$geturl." with HTTP error code: ".$resp->code);
         $log->warn("Failed to GET data from ".$geturl." with HTTP error message: ".$resp->message);
         $log->warn("This might be caused by a switch with no name-server entries, or no aliases or zoning active. So trying to continue...");
@@ -416,13 +452,62 @@ sub http_get {
     exit(($resp->code)-100);
 }
 
+sub getCredential {
+	my $ccptimeout = 10;
+	my $fabric = $_[0];
+	my $switch = $_[1];
+	my $cpcmd = $fabricdetails{$fabric}{"cp"};
+	my $user = $fabricdetails{$fabric}{"user"};
+	my $passwd = "";
+
+    my $fqdn = $switch;
+    if (defined($switchfqdns{$switch})) {
+        $fqdn = $switchfqdns{$switch};
+    }
+	if (defined $fabricdetails{$fabric}{'cp_retrievetimeout'}) {
+		$ccptimeout = $fabricdetails{$fabric}{'cp_retrievetimeout'};
+	}
+	$cpcmd .= " ".$fqdn." ".$user;
+	$log->debug("Query ".$user." for ".$switch." from credential provider using script: ".$fabricdetails{$fabric}{"cp"}." with command: ".$cpcmd);
+	eval {
+		local $SIG{ALRM} = sub { die "timeout\n" };
+		alarm $ccptimeout;
+		$passwd = `$cpcmd`;
+		alarm 0;
+	};
+	if($?) {
+		$log->error("The credential provider script returned a non zero returncode while running command: ".$cpcmd);
+		exit(1);
+	}
+	if($@) {
+		if($@ eq "timeout\n") {
+			$log->error("The credential provider script didn't respond within the time out of ".$ccptimeout);			
+		} else {
+			$log->error("The credential provider script died without any good reponse code!");		
+		}
+		exit(1);
+	}
+	chomp($passwd);
+	if(length($passwd)<1) {
+		$log->error("Credential provider script returned an empty password if called with command: ".$cpcmd);
+		exit(1);
+	}
+	return($passwd);
+}
+
 sub getFabricSwitches {
     my $fabric = $_[0];
     my $seedswitch = $_[1];
     servicestatus("Discovering fabric...");
     $log->debug("Login to seed switch ".$fabric." / ".$seedswitch);
+	my $passwd = "";
+	if(defined $fabricdetails{$fabric}{"cp"}) {
+		$passwd = getCredential($fabric, $seedswitch);
+	} else {
+		$passwd = $fabricdetails{$fabric}{"password"};
+	}
     initsocket();
-    my $token = restLogin($seedswitch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
+    my $token = restLogin($seedswitch,$fabricdetails{$fabric}{"user"},$passwd);
     my @fabricswitches = http_get($fabric,$seedswitch,$token,'/brocade-fabric/fabric-switch');
     foreach my $fabricswitch (@fabricswitches) {
         my @singleswitches = @{$fabricswitch};
@@ -493,7 +578,7 @@ sub getFCPortCounters {
                     $metricstring = 'fosports_'.$metricname.';fabric='.$fabric.';category='.$metrics{$keyname}{'category'}.';switch='.$switch.';porttype='.$porttype.';slot='.$slot.';port='.$portnumber.' '.$metricvalue.' '.$now;
                 }
                 toGraphite($metricstring);
-                
+
                 # skip collection of fosinittarget metrics, if IT_collection is not enabled
                 if (!defined($fabricdetails{$fabric}{'IT_collection'}) || ($fabricdetails{$fabric}{'IT_collection'} ne "ALIAS") && ($fabricdetails{$fabric}{'IT_collection'} ne "WWPN")) {
                     next;
@@ -657,7 +742,7 @@ sub getMediaCounters {
                         $metricstring = 'fosports_'.$metricname.'_dbm;fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';switch='.$switch.';porttype='.$porttype.';slot='.$slot.';port='.$portnumber.' '.$dbm.' '.$now;
                     }
                     toGraphite($metricstring);
-                    
+
                     # skip collection of fosinittarget metrics, if IT_collection is not enabled
                     if (defined($fabricdetails{$fabric}{'IT_collection'}) && (($fabricdetails{$fabric}{'IT_collection'} eq "ALIAS") || ($fabricdetails{$fabric}{'IT_collection'} eq "WWPN"))) {
                         my @wwpns = @{$portsettings{$fabric}{$switch}{$slot}{$portnumber}{"neighbors"}};
@@ -688,7 +773,7 @@ sub getMediaCounters {
                     $metricstring = 'fosports_'.$metricname.';fabric='.$fabric.';category='.$metrics{$metric}{'category'}.';switch='.$switch.';porttype='.$porttype.';slot='.$slot.';port='.$portnumber.' '.$metricvalue.' '.$now;
                 }
                 toGraphite($metricstring);
-                
+
                 # skip collection of fosinittarget metrics, if IT_collection is not enabled
                 if (!defined($fabricdetails{$fabric}{'IT_collection'}) || ($fabricdetails{$fabric}{'IT_collection'} ne "ALIAS") && ($fabricdetails{$fabric}{'IT_collection'} ne "WWPN")) {
                     next;
@@ -784,20 +869,29 @@ sub reportmetrics {
     my $switch = $_[1];
     my $conftime = 0;
     my $statstime = 0;
+	my $credprovtime = 0;
+	my $passwd = "";
     $polltime = time();
     $polltime = $polltime - ($polltime % 60);
     if (defined($fabricdetails{$fabric}{'refresh_offset'})) {
         $polltime = $polltime - ($polltime % 60)+$fabricdetails{$fabric}{'refresh_offset'};
     }
     while(true) {
-
         my $curtime = time();
         if (($curtime - $polltime)>=$fabricdetails{$fabric}{'perf_interval'}) {
             my $printtime = strftime('%m/%d/%Y %H:%M:%S',localtime($curtime));
             $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
             initsocket();
             $log->info("Login to ".$fabric." / ".$switch);
-            my $token = restLogin($switch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
+			if(defined ($fabricdetails{$fabric}{"cp"})) {
+				if(($curtime - $credprovtime) >= $fabricdetails{$fabric}{'cp_timeout'}) {
+					$passwd = getCredential($fabric,$switch);
+					$credprovtime = $curtime;
+				}
+			} else {
+				$passwd = $fabricdetails{$fabric}{"password"};
+			}
+            my $token = restLogin($switch,$fabricdetails{$fabric}{"user"},$passwd);
             if (($curtime - $conftime)>=$fabricdetails{$fabric}{'config_interval'}) {
                 $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
                 $log->info("Getting nameserver and alias configuration");
@@ -934,7 +1028,7 @@ sub initservice {
             $log->info("Service is initialized...");
         }
     } else {
-        $log->trace("Looks like we are not runnings as systemd-service!");
+        $log->trace("Looks like we are not running as systemd-service!");
     }
 }
 
@@ -952,7 +1046,7 @@ sub servicestatus {
             close($sock);
         }
     } else {
-        $log->trace("Looks like we are not runnings as systemd-service!");
+        $log->trace("Looks like we are not running as systemd-service!");
     }
 }
 
@@ -969,7 +1063,7 @@ sub stopservice {
             close($sock);
         }
     } else {
-        $log->trace("Looks like we are not runnings as systemd-service!");
+        $log->trace("Looks like we are not running as systemd-service!");
     }
 }
 
@@ -987,7 +1081,7 @@ sub alive {
         }
 
     } else {
-        $log->trace("Looks like we are not runnings as systemd-service!");
+        $log->trace("Looks like we are not running as systemd-service!");
     }
 }
 

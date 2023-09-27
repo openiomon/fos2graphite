@@ -23,12 +23,12 @@ user = restuser
 password = restpasswd
 # Enable (1) or disable (0) logging of counter from offline ports
 collect_uports = 0
-# Interval in seconds used for querying counters marked as performance counters in mertics.conf
-perf_refresh_interval = 60
-# Interval in seconds used for querying counters marked as stats counters in mertics.conf
-stats_refresh_interval = 300
-# Interval in seconds used for querying changes in fabric and discovery of end devices
-config_refresh_interval = 900
+# Interval used for querying counters marked as performance counters in mertics.conf
+perf_refresh_interval = 1m
+# Interval used for querying counters marked as stats counters in mertics.conf
+stats_refresh_interval = 5m
+# Interval used for querying changes in fabric and discovery of end devices
+config_refresh_interval = 15m
 # Metric configuration file containing metrics to be imported
 metric_file = /opt/fos2graphite/conf/metrics.conf
 # Option to enable (1) or disable (0) SSL certificate verification
@@ -41,7 +41,7 @@ IT_collection = alias
 # Option to specify offset in seconds (between 0 and 30) to the full minute to start polling of the fabric
 # Can be used to avoid collision with other tools polling switches every full minute
 # Can also be used to reduce load to carbon by usings different settings for each fabric
-refresh_offset = 0
+refresh_offset = 0s
 # fos2graphite has an option to monitor virtual fabrics. In this case a full section need to be defined for each individual
 # virtual fabric!
 # The virtual fabric is specified by defining the vFID of the virtual switch switch off the vFabric on the defined seed switch.
@@ -52,17 +52,30 @@ refresh_offset = 0
 # should be monitored through the virtual switch to avoid collecting information for one hardware multiple times through als virtual switches.
 #
 # monitor_switchhardware = <0|1>
+#
+# Credential Provider Script - optional, can be used instead of password
+# Allows usage of Privileged Access Management solutions like CyberArk.
+# The script will be called with switch DNS name as first and username as second parameter. Example:
+# "./your_credential_script.sh brocade1.local restuser"
+credential_provider_script = /usr/local/bin/your_credential_script.sh
+# Timeout for the credential provider script call
+credential_provider_retrievetimeout = 20s
+# Password will be cached for the amount of time specified
+credential_provider_cachetimeout = 24h
+
+
+
 
 [Virtual_Fabric_22]
 seedswitch = 192.168.1.3
 user = restuser
 password = restpasswd
 collect_uports = 0
-perf_refresh_interval = 60
-stats_refresh_interval = 300
-config_refresh_interval = 900
+perf_refresh_interval = 1m
+stats_refresh_interval = 5m
+config_refresh_interval = 15m
 metric_file = /opt/fos2graphite/conf/metrics.conf
 IT_collection = alias
-refresh_offset = 30
+refresh_offset = 30s
 vFID = 22
 monitor_switchhardware = 1
