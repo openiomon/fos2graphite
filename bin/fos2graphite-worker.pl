@@ -288,7 +288,7 @@ sub restLogin {
     my $user = $_[1];
     my $passwd = $_[2];
     my $ua;
-    $log->debug("Login to ".$switch." with user: ".$user);
+    $log->debug("Try login to ".$switch." with user: ".$user);
     my $fqdn = $switch;
     if (defined($switchfqdns{$switch})) {
         $fqdn = $switchfqdns{$switch};
@@ -309,6 +309,7 @@ sub restLogin {
         my $responseheader = $resp->header("Authorization");
         $killtoken = $responseheader;
         $killswitch = $fqdn;
+        $log->debug("Successful login to ".$switch." Got token: ".$killtoken);
         return($responseheader);
     } else {
         $log->error("Failed to POST data to ".$url." with HTTP error code: ".$resp->code);
@@ -420,8 +421,8 @@ sub getFabricSwitches {
     my $seedswitch = $_[1];
     servicestatus("Discovering fabric...");
     $log->debug("Login to seed switch ".$fabric." / ".$seedswitch);
-    my $token = restLogin($seedswitch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
     initsocket();
+    my $token = restLogin($seedswitch,$fabricdetails{$fabric}{"user"},$fabricdetails{$fabric}{"password"});
     my @fabricswitches = http_get($fabric,$seedswitch,$token,'/brocade-fabric/fabric-switch');
     foreach my $fabricswitch (@fabricswitches) {
         my @singleswitches = @{$fabricswitch};
@@ -921,7 +922,7 @@ sub closesocket {
     $socket = undef();
 }
 
-# Sub to initialize Systemd Service
+# Sub to initialize Systemd service
 sub initservice {
     if (defined $ENV{'NOTIFY_SOCKET'}) {
         if ($mainpid == $$) {
@@ -937,7 +938,7 @@ sub initservice {
     }
 }
 
-# Sub to update status of Systemd Service when running as Daemon
+# Sub to update status of Systemd service when running as daemon
 sub servicestatus {
     my $message = $_[0];
     if (defined $ENV{'NOTIFY_SOCKET'}) {
@@ -947,7 +948,7 @@ sub servicestatus {
                 Peer => $ENV{'NOTIFY_SOCKET'},
             ) or $log->logdie("Unable to open socket for systemd communication");
             print $sock "STATUS=$message\n";
-            $log->trace("Servicemessage has been send: ".$message);
+            $log->trace("Service message has been sent: ".$message);
             close($sock);
         }
     } else {
@@ -955,7 +956,7 @@ sub servicestatus {
     }
 }
 
-# Sub to signal a stop of the script to the service when running as Daemon
+# Sub to signal a stop of the script to the service when running as daemon
 sub stopservice {
     if (defined $ENV{'NOTIFY_SOCKET'}) {
         if ($mainpid == $$) {
@@ -972,7 +973,7 @@ sub stopservice {
     }
 }
 
-# Sub to send heartbeat to watchdog of Systemd service when running as Daemon.
+# Sub to send heartbeat to watchdog of Systemd service when running as daemon.
 sub alive {
     if (defined $ENV{'NOTIFY_SOCKET'}) {
         if ($mainpid == $$) {
@@ -981,7 +982,7 @@ sub alive {
                 Peer => $ENV{'NOTIFY_SOCKET'},
             ) or $log->logdie("Unable to open socket for systemd communication");
             print $sock "WATCHDOG=1\n";
-            $log->trace("Watchdog message has been send to systemd...");
+            $log->trace("Watchdog message has been sent to systemd...");
             close($sock);
         }
 
@@ -992,7 +993,7 @@ sub alive {
 
 # Sub to end REST API sessions when service is shut down
 sub serviceshutdown {
-    $log->info("Received shutdown / kill signal for process $$ from systemd!" );
+    $log->info("Received shutdown / kill signal for process $$ from systemd or logdie!" );
     if (($killswitch ne "") && ($killtoken ne "")) {
         $log->debug("Trying to close session to $killswitch...");
         restLogout($killswitch,$killtoken);
@@ -1016,6 +1017,7 @@ $log = Log::Log4perl->get_logger('main.report');
 
 $SIG{TERM} = \&serviceshutdown;
 $SIG{KILL} = \&serviceshutdown;
+$SIG{__DIE__} = \&serviceshutdown;
 
 initservice();
 readMetrics();
