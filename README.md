@@ -12,7 +12,7 @@
 A tool to retrieve Broadcom (former Brocade) SAN Switch Performance counters from the SAN switches / directors using REST API and write them to a Carbon/Graphite backend.
 * Written in Perl.
 * tested on RHEL / CentOS 7 & 8
-* works with FOS 8.2.x
+* works with FOS 8.2.x & 9.1.x
 * RPM package available
 
 ## Features
@@ -20,6 +20,7 @@ A tool to retrieve Broadcom (former Brocade) SAN Switch Performance counters fro
 * configurable polling interval
 * configurable metrics
 * Workers run as systemd service
+* supports credential provider integration
 
 ## Installation
 Install on RHEL via RPM package: `yum install fos2graphite-0.x-x.rpm`
@@ -57,10 +58,12 @@ User and password used for all switches of fabric
 `password = restpasswd`  
 Enable (1) or disable (0) logging of counter from offline ports  
 `collect_uports = 0`  
-Interval in seconds used for querying counter  
-`counter_refresh_interval = 60`  
-Interval in seconds used for querying changes in fabric and discovery of end devices  
-`config_refresh_interval = 900`  
+Interval used for querying counters marked as performance counters in mertics.conf  
+`perf_refresh_interval = 1m`  
+Interval used for querying counters marked as stats counters in mertics.conf  
+`stats_refresh_interval = 5m`  
+Interval used for querying changes in fabric and discovery of end devices  
+`config_refresh_interval = 15m`  
 Metric configuration file containing metrics to be imported  
 `metric_file = /opt/fos2graphite/conf/metrics.conf`  
 Option to enable (1) or disable (0) SSL certificate verification  
@@ -83,6 +86,15 @@ The virtual fabric is specified by defining the vFID of the virtual switch switc
 Since a single pyhsical switch can contain multiple virtual / logical switches it is possible to define if switch hardware infos (CPU, Flash, Mem) should be monitored through the virtual switch to avoid collecting information for one hardware multiple times through als virtual switches. To enable (1) or disable (0).  
 `monitor_switchhardware = 0`
 
+Credential Provider can be used instead of password. Allows usage of Privileged Access Management solutions like CyberArk.
+The script will be called with switch DNS name as first and username as second parameter.  
+Example: `./your_credential_script.sh brocade1.local restuser`  
+Credential Provider Script location   
+`credential_provider_script = /usr/local/bin/your_credential_script.sh`  
+Timeout for the credential provider script call  
+`credential_provider_retrievetimeout = 20s`  
+Password will be cached for the amount of time specified  
+`credential_provider_cachetimeout = 24h`  
 
 2. Create a service
 `/opt/fos2graphite/bin/fos2graphite.pl -register <fabricname>`   
@@ -108,6 +120,14 @@ Alternatively, there is a simple shell script to import all dashboards at once.
    `/opt/fos2graphite/bin/import_grafana_dashboards.sh https://grafana.company.com:3000 /opt/fos2graphite/dashboards/graphite MyGraphiteDatasource`  
 
 ## Changelog
+### 0.4.0
+* add credential provider support
+* add support for FOS 9.1
+* add REST API logout when hitting "die" conditions
+* improved virtual fabric support to allow mix of vf-enabled and vf-disabled switches in a fabric
+* fix illegal characters for graphite line protocol
+* update dashboards to Grafana 10
+
 ### 0.3.1
 * fix virtual fabric support, was broken in 0.3.0
  
