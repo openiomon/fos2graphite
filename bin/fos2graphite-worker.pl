@@ -151,18 +151,18 @@ sub parseTimerange {
 					map(($_,      60*60*24), qw(d day days)),
 					map(($_,    60*60*24*7), qw(w week weeks)),
 					map(($_,   60*60*24*30), qw(M month months mo mon mons)),
-					map(($_,  60*60*24*365), qw(y year years)) 
+					map(($_,  60*60*24*365), qw(y year years))
 	);
-	
+
 	my $value = $_[0];
-	$value =~ s/^\s*\+\s*//;	
+	$value =~ s/^\s*\+\s*//;
 	if($value =~ /^\d*$/) {
 		return($value);
-	}	
-	my ($datevalue,$dateunit) = split(/(?=[a-zA-Z])/i, $value, 2);		
+	}
+	my ($datevalue,$dateunit) = split(/(?=[a-zA-Z])/i, $value, 2);
 	my $factor = 1;
 	if(defined $Units{$dateunit}) {
-		$factor = $Units{$dateunit};	
+		$factor = $Units{$dateunit};
 	} else {
 		print "Invalid unit for timerange specified: ".$dateunit."\n";
 		exit(1);
@@ -348,8 +348,7 @@ sub restLogin {
         $log->debug("Successful login to ".$switch." Got token: ".$killtoken);
         return($responseheader);
     } else {
-        $log->error("Failed to POST data to ".$url." with HTTP error code: ".$resp->code);
-        $log->error("Failed to POST data to ".$url." with HTTP error message: ".$resp->message);
+        $log->error("Failed to POST data to ".$url." with HTTP error: ".$resp->code." - ".$resp->message);
         $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
         exit(($resp->code)-100);
     }
@@ -380,8 +379,7 @@ sub restLogout {
         $killswitch = "";
         return(0);
     } else {
-        $log->error("Failed to POST data to ".$url." with HTTP error code: ".$resp->code);
-        $log->error("Failed to POST data to ".$url." with HTTP error message: ".$resp->message);
+        $log->error("Failed to POST data to ".$url." with HTTP error: ".$resp->code." - ".$resp->message);
         $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
         exit(($resp->code)-100);
     }
@@ -398,8 +396,13 @@ sub http_get {
         $fqdn = $switchfqdns{$switch};
     }
     my $geturl = 'https://'.$fqdn.'/rest/running'.$apiendpoint;
-    if($apiendpoint ne '/brocade-maps/system-resources/' && defined($fabricdetails{$fabric}{virtual_fabric})) {
-        $geturl .= '?vf-id='.$fabricdetails{$fabric}{virtual_fabric};
+    if(($apiendpoint ne '/brocade-maps/system-resources/') and ($apiendpoint ne '/brocade-fibrechannel-logical-switch/fibrechannel-logical-switch')){
+		if(($apiendpoint eq '/brocade-fabric/fabric-switch') && (defined($fabricdetails{$fabric}{virtual_fabric}))) {
+			$geturl .= '?vf-id='.$fabricdetails{$fabric}{"virtual_fabric"};
+		}
+		if(defined($fabricdetails{$fabric}{"switches"}{$switch}) and defined($fabricdetails{$fabric}{"switches"}{$switch}{"VFID"}))  {
+			$geturl .= '?vf-id='.$fabricdetails{$fabric}{"switches"}{$switch}{"VFID"};
+		}
     }
     my $req = HTTP::Request->new(GET => $geturl);
     $req->header('Accept' => 'application/yang-data+json');
@@ -432,20 +435,31 @@ sub http_get {
             # using - (dash) as regex delimiter to make it more readable
             $responsecontent =~ s-(?<!\\)\\(?![\\"bfnrt])-\\\\-g;
         }
-        my %json = %{decode_json($responsecontent)};
+		my %json;
+		eval {
+			%json = %{decode_json($responsecontent)};
+		};
+
+		if($@) {
+			$log->error("Unable to decode response json from URL query: ".$geturl);
+			$log->debug("JSON-Data: ".$responsecontent);
+		}
         @returnarray = $json{"Response"}{$queryname};
         return(@returnarray);
     }
 
     # name server or alias query might return empty, so the function shouldn't error out in that case
     if (($apiendpoint eq '/brocade-name-server/fibrechannel-name-server' or $apiendpoint eq '/brocade-zone/defined-configuration/alias') and $resp->code == 404) {
-        $log->warn("Failed to GET data from ".$geturl." with HTTP error code: ".$resp->code);
-        $log->warn("Failed to GET data from ".$geturl." with HTTP error message: ".$resp->message);
+        $log->warn("Failed to GET data from ".$geturl." with HTTP error: ".$resp->code." - ".$resp->message);
         $log->warn("This might be caused by a switch with no name-server entries, or no aliases or zoning active. So trying to continue...");
         return (@returnarray);
-    }
-    $log->error("Failed to GET data from ".$geturl." with HTTP error code: ".$resp->code);
-    $log->error("Failed to GET data from ".$geturl." with HTTP error message: ".$resp->message);
+	}
+	if ($apiendpoint eq '/brocade-fibrechannel-logical-switch/fibrechannel-logical-switch' and $resp->code == 400) {
+		$log->info("Failed to GET data from ".$geturl." with HTTP error: ".$resp->code." - ".$resp->message);
+		$log->info("Check for Virtual Fabric returned 400 Bad Request which indicates that Virtual Fabric is not enabled on ".$fqdn);
+		return(@returnarray);
+	}
+    $log->error("Failed to GET data from ".$geturl." with HTTP error: ".$resp->code." - ".$resp->message);
     $log->debug("Trying to logout from ".$switch);
     restLogout($switch,$token);
     $log->error("Exit fos2grahite due to failed HTTP GET Operation! Please check URL!");
@@ -481,15 +495,15 @@ sub getCredential {
 	}
 	if($@) {
 		if($@ eq "timeout\n") {
-			$log->error("The credential provider script didn't respond within the time out of ".$ccptimeout);			
+			$log->error("The credential provider script didn't respond within the timeout of ".$ccptimeout);
 		} else {
-			$log->error("The credential provider script died without any good reponse code!");		
+			$log->error("The credential provider script died without any good reponse code!");
 		}
 		exit(1);
 	}
 	chomp($passwd);
 	if(length($passwd)<1) {
-		$log->error("Credential provider script returned an empty password if called with command: ".$cpcmd);
+		$log->error("Credential provider script returned an empty password while running command: ".$cpcmd);
 		exit(1);
 	}
 	return($passwd);
@@ -525,6 +539,21 @@ sub getFabricSwitches {
             $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"NAME"} = $switchattr{"name"};
             $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"CHASSISNAME"} = $switchattr{"chassis-user-friendly-name"};
             $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"DOMAINID"} = $switchattr{"domain-id"};
+			# looking if fabric switch is logical switch of virtual fabric
+			my $vfpasswd = "";
+			if(defined $fabricdetails{$fabric}{"cp"}) {
+				$vfpasswd = getCredential($fabric, $dnsname);
+			} else {
+				$vfpasswd = $fabricdetails{$fabric}{"password"};
+			}
+
+			my $fabricswitchtoken = restLogin($dnsname,$fabricdetails{$fabric}{"user"},$vfpasswd);
+			my @logicalswitches = http_get($fabric,$dnsname,$fabricswitchtoken,'/brocade-fibrechannel-logical-switch/fibrechannel-logical-switch');
+			if(scalar(@logicalswitches) > 0) {
+				$log->info($switchattr{"switch-user-friendly-name"}." uses Virtual Fabric queries will be done via: ".$dnsname);
+				$fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"VFID"} = $fabricdetails{$fabric}{virtual_fabric};
+			}
+			restLogout($dnsname,$fabricswitchtoken);
         }
     }
     $log->debug("Logout from seed switch".$fabric." / ".$seedswitch);
@@ -568,7 +597,7 @@ sub getFCPortCounters {
                 }
                 $log->trace($switch." => Name: ".$portattr{"name"}." : Key: ".$keyname." => ".$portattr{$keyname});
                 my $metricstring = "";
-                
+
                 # skip collection if port is not used and collect_uports is not enabled
                 if (($porttype eq "U_PORT")&&(!$fabricdetails{$fabric}{'collect_uports'})) {
                     next;
