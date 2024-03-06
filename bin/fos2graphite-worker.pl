@@ -203,7 +203,7 @@ sub readconfig {
                 }
             }
             when('graphite') {
-                if ($line =~ "^graphite_host^") {
+                if ($line =~ "^graphite_host") {
                     my @values = split("=",$line);
                     $graphitehost = $values[1];
                 }
