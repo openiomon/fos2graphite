@@ -139,7 +139,7 @@ sub parseCmdArgs{
     }
     readconfig();
     if (!defined($fabricdetails{$fabric})) {
-        print "Specified fabric is defined in config file ".$conf." ! Please check!\n";
+        print "Specified fabric is not defined in config file ".$conf." ! Please check!\n";
         exit(1);
     }
 }
@@ -1034,7 +1034,7 @@ sub initsocket {
         PeerPort => $graphiteport,
         Proto => 'tcp',
     );
-    $log->logdie("Cannot connect to the graphite server $!") unless $socket;
+    $log->logdie("Cannot connect to the graphite server $graphitehost using port $graphiteport. Returned error message: $!") unless $socket;
     setsockopt($socket, SOL_SOCKET, SO_KEEPALIVE, 1);
     $log->debug("Opening socket from ".$socket->sockhost().":".$socket->sockport()." to target ".$socket->peerhost().":".$socket->peerport());
 }
