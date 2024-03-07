@@ -45,8 +45,8 @@ restorecon -Rv /opt/fos2graphite/log/
 `host = 127.0.0.1`  
 `port = 2003`  
 Option to selet the metric format  
-graphite-dot - Classic graphite/carbon format, Example: "brocade.fos.switch.NAME.metric"  
-graphite-tag - Tag style format, tested with [VictoriaMetrics](https://github.com/VictoriaMetrics/VictoriaMetrics), Example: "my_series;tag1=value1;tag2=value2"  
+graphite-dot - Classic graphite/carbon format, Example: `brocade.fos.switch.NAME.metric`  
+graphite-tag - Tag style format, tested with [VictoriaMetrics](https://github.com/VictoriaMetrics/VictoriaMetrics), Example: `my_series;tag1=value1;tag2=value2`  
 `metric_format = graphite-dot`   
 
 * Specifiy each fabric that should be polled  
@@ -120,6 +120,10 @@ Alternatively, there is a simple shell script to import all dashboards at once.
    `/opt/fos2graphite/bin/import_grafana_dashboards.sh https://grafana.company.com:3000 /opt/fos2graphite/dashboards/graphite MyGraphiteDatasource`  
 
 ## Changelog
+### 0.4.1
+* fix graphite_host configuration parameter not working, it was broken since initial commit
+* improved logging of failed graphite connection
+
 ### 0.4.0
 * add credential provider support
 * add support for FOS 9.1
