@@ -60,6 +60,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %post
 ln -s -f /opt/fos2graphite/bin/fos2graphite.pl /bin/fos2graphite
 
+# edit the changelog only for changes in the RPM package
 %changelog
 * Wed Jan 25 2023 Timo Drach <timo.drach@openiomon.org>
 - corrected package versioning scheme
