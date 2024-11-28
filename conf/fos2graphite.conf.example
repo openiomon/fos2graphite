@@ -62,9 +62,11 @@ credential_provider_script = /usr/local/bin/your_credential_script.sh
 credential_provider_retrievetimeout = 20s
 # Password will be cached for the amount of time specified
 credential_provider_cachetimeout = 24h
-
-
-
+#
+# The reuse_rest_session_timeout parameter will define the time a single HTTPrest session will be used before renewing a session.
+# Setting this parameter to 0 will use a new HTTPrest-session for each collection interval which can lead to many entries in the auditlog of the switch.
+reuse_rest_session_timeout = 60m
+#
 
 [Virtual_Fabric_22]
 seedswitch = 192.168.1.3
@@ -79,3 +81,4 @@ IT_collection = alias
 refresh_offset = 30s
 vFID = 22
 monitor_switchhardware = 1
+reuse_rest_session_timeout = 60m

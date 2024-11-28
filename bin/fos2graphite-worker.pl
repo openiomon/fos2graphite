@@ -145,29 +145,29 @@ sub parseCmdArgs{
 }
 
 sub parseTimerange {
-	my %Units = ( 	map(($_,             1), qw(s second seconds sec secs)),
-					map(($_,            60), qw(m minute minutes min mins)),
-					map(($_,         60*60), qw(h hr hrs hour hours)),
-					map(($_,      60*60*24), qw(d day days)),
-					map(($_,    60*60*24*7), qw(w week weeks)),
-					map(($_,   60*60*24*30), qw(M month months mo mon mons)),
-					map(($_,  60*60*24*365), qw(y year years))
-	);
+    my %Units = ( 	map(($_,             1), qw(s second seconds sec secs)),
+                    map(($_,            60), qw(m minute minutes min mins)),
+                    map(($_,         60*60), qw(h hr hrs hour hours)),
+                    map(($_,      60*60*24), qw(d day days)),
+                    map(($_,    60*60*24*7), qw(w week weeks)),
+                    map(($_,   60*60*24*30), qw(M month months mo mon mons)),
+                    map(($_,  60*60*24*365), qw(y year years))
+    );
 
-	my $value = $_[0];
-	$value =~ s/^\s*\+\s*//;
-	if($value =~ /^\d*$/) {
-		return($value);
-	}
-	my ($datevalue,$dateunit) = split(/(?=[a-zA-Z])/i, $value, 2);
-	my $factor = 1;
-	if(defined $Units{$dateunit}) {
-		$factor = $Units{$dateunit};
-	} else {
-		print "Invalid unit for timerange specified: ".$dateunit."\n";
-		exit(1);
-	}
-	return($datevalue * $factor);
+    my $value = $_[0];
+    $value =~ s/^\s*\+\s*//;
+    if($value =~ /^\d*$/) {
+        return($value);
+    }
+    my ($datevalue,$dateunit) = split(/(?=[a-zA-Z])/i, $value, 2);
+    my $factor = 1;
+    if(defined $Units{$dateunit}) {
+        $factor = $Units{$dateunit};
+    } else {
+        print "Invalid unit for timerange specified: ".$dateunit."\n";
+        exit(1);
+    }
+    return($datevalue * $factor);
 }
 
 sub readconfig {
@@ -230,14 +230,17 @@ sub readconfig {
                 if ($line =~ "^password") {
                     $fabricdetails{$section}{'password'} = $values[1];
                 }
-				if ($line =~ "^credential_provider_script") {
+                if ($line =~ "^credential_provider_script") {
                     $fabricdetails{$section}{'cp'} = $values[1];
                 }
-				if ($line =~ "^credential_provider_cachetimeout") {
+                if ($line =~ "^credential_provider_cachetimeout") {
                     $fabricdetails{$section}{'cp_timeout'} = parseTimerange($values[1]);
                 }
-				if ($line =~ "^credential_provider_retrievetimeout") {
+                if ($line =~ "^credential_provider_retrievetimeout") {
                     $fabricdetails{$section}{'cp_retrievetimeout'} = parseTimerange($values[1]);
+                }
+                if ($line =~ "^reuse_rest_session_timeout") {
+                    $fabricdetails{$section}{'reuse_rest_session_timeout'} = parseTimerange($values[1]);
                 }
                 if ($line =~ "^collect_uports") {
                     $fabricdetails{$section}{'collect_uports'} = $values[1];
@@ -397,12 +400,12 @@ sub http_get {
     }
     my $geturl = 'https://'.$fqdn.'/rest/running'.$apiendpoint;
     if(($apiendpoint ne '/brocade-maps/system-resources/') and ($apiendpoint ne '/brocade-fibrechannel-logical-switch/fibrechannel-logical-switch')){
-		if(($apiendpoint eq '/brocade-fabric/fabric-switch') && (defined($fabricdetails{$fabric}{virtual_fabric}))) {
-			$geturl .= '?vf-id='.$fabricdetails{$fabric}{"virtual_fabric"};
-		}
-		if(defined($fabricdetails{$fabric}{"switches"}{$switch}) and defined($fabricdetails{$fabric}{"switches"}{$switch}{"VFID"}))  {
-			$geturl .= '?vf-id='.$fabricdetails{$fabric}{"switches"}{$switch}{"VFID"};
-		}
+        if(($apiendpoint eq '/brocade-fabric/fabric-switch') && (defined($fabricdetails{$fabric}{virtual_fabric}))) {
+            $geturl .= '?vf-id='.$fabricdetails{$fabric}{"virtual_fabric"};
+        }
+        if(defined($fabricdetails{$fabric}{"switches"}{$switch}) and defined($fabricdetails{$fabric}{"switches"}{$switch}{"VFID"}))  {
+            $geturl .= '?vf-id='.$fabricdetails{$fabric}{"switches"}{$switch}{"VFID"};
+        }
     }
     my $req = HTTP::Request->new(GET => $geturl);
     $req->header('Accept' => 'application/yang-data+json');
@@ -435,15 +438,15 @@ sub http_get {
             # using - (dash) as regex delimiter to make it more readable
             $responsecontent =~ s-(?<!\\)\\(?![\\"bfnrt])-\\\\-g;
         }
-		my %json;
-		eval {
-			%json = %{decode_json($responsecontent)};
-		};
+        my %json;
+        eval {
+            %json = %{decode_json($responsecontent)};
+        };
 
-		if($@) {
-			$log->error("Unable to decode response json from URL query: ".$geturl);
-			$log->debug("JSON-Data: ".$responsecontent);
-		}
+        if($@) {
+            $log->error("Unable to decode response json from URL query: ".$geturl);
+            $log->debug("JSON-Data: ".$responsecontent);
+        }
         @returnarray = $json{"Response"}{$queryname};
         return(@returnarray);
     }
@@ -453,12 +456,12 @@ sub http_get {
         $log->warn("Failed to GET data from ".$geturl." with HTTP error: ".$resp->code." - ".$resp->message);
         $log->warn("This might be caused by a switch with no name-server entries, or no aliases or zoning active. So trying to continue...");
         return (@returnarray);
-	}
-	if ($apiendpoint eq '/brocade-fibrechannel-logical-switch/fibrechannel-logical-switch' and $resp->code == 400) {
-		$log->info("Failed to GET data from ".$geturl." with HTTP error: ".$resp->code." - ".$resp->message);
-		$log->info("Check for Virtual Fabric returned 400 Bad Request which indicates that Virtual Fabric is not enabled on ".$fqdn);
-		return(@returnarray);
-	}
+    }
+    if ($apiendpoint eq '/brocade-fibrechannel-logical-switch/fibrechannel-logical-switch' and $resp->code == 400) {
+        $log->info("Failed to GET data from ".$geturl." with HTTP error: ".$resp->code." - ".$resp->message);
+        $log->info("Check for Virtual Fabric returned 400 Bad Request which indicates that Virtual Fabric is not enabled on ".$fqdn);
+        return(@returnarray);
+    }
     $log->error("Failed to GET data from ".$geturl." with HTTP error: ".$resp->code." - ".$resp->message);
     $log->debug("Trying to logout from ".$switch);
     restLogout($switch,$token);
@@ -467,46 +470,46 @@ sub http_get {
 }
 
 sub getCredential {
-	my $ccptimeout = 10;
-	my $fabric = $_[0];
-	my $switch = $_[1];
-	my $cpcmd = $fabricdetails{$fabric}{"cp"};
-	my $user = $fabricdetails{$fabric}{"user"};
-	my $passwd = "";
+    my $ccptimeout = 10;
+    my $fabric = $_[0];
+    my $switch = $_[1];
+    my $cpcmd = $fabricdetails{$fabric}{"cp"};
+    my $user = $fabricdetails{$fabric}{"user"};
+    my $passwd = "";
 
     my $fqdn = $switch;
     if (defined($switchfqdns{$switch})) {
         $fqdn = $switchfqdns{$switch};
     }
-	if (defined $fabricdetails{$fabric}{'cp_retrievetimeout'}) {
-		$ccptimeout = $fabricdetails{$fabric}{'cp_retrievetimeout'};
-	}
-	$cpcmd .= " ".$fqdn." ".$user;
-	$log->debug("Query ".$user." for ".$switch." from credential provider using script: ".$fabricdetails{$fabric}{"cp"}." with command: ".$cpcmd);
-	eval {
-		local $SIG{ALRM} = sub { die "timeout\n" };
-		alarm $ccptimeout;
-		$passwd = `$cpcmd`;
-		alarm 0;
-	};
-	if($?) {
-		$log->error("The credential provider script returned a non zero returncode while running command: ".$cpcmd);
-		exit(1);
-	}
-	if($@) {
-		if($@ eq "timeout\n") {
-			$log->error("The credential provider script didn't respond within the timeout of ".$ccptimeout);
-		} else {
-			$log->error("The credential provider script died without any good reponse code!");
-		}
-		exit(1);
-	}
-	chomp($passwd);
-	if(length($passwd)<1) {
-		$log->error("Credential provider script returned an empty password while running command: ".$cpcmd);
-		exit(1);
-	}
-	return($passwd);
+    if (defined $fabricdetails{$fabric}{'cp_retrievetimeout'}) {
+        $ccptimeout = $fabricdetails{$fabric}{'cp_retrievetimeout'};
+    }
+    $cpcmd .= " ".$fqdn." ".$user;
+    $log->debug("Query ".$user." for ".$switch." from credential provider using script: ".$fabricdetails{$fabric}{"cp"}." with command: ".$cpcmd);
+    eval {
+        local $SIG{ALRM} = sub { die "timeout\n" };
+        alarm $ccptimeout;
+        $passwd = `$cpcmd`;
+        alarm 0;
+    };
+    if($?) {
+        $log->error("The credential provider script returned a non zero returncode while running command: ".$cpcmd);
+        exit(1);
+    }
+    if($@) {
+        if($@ eq "timeout\n") {
+            $log->error("The credential provider script didn't respond within the timeout of ".$ccptimeout);
+        } else {
+            $log->error("The credential provider script died without any good reponse code!");
+        }
+        exit(1);
+    }
+    chomp($passwd);
+    if(length($passwd)<1) {
+        $log->error("Credential provider script returned an empty password while running command: ".$cpcmd);
+        exit(1);
+    }
+    return($passwd);
 }
 
 sub getFabricSwitches {
@@ -514,12 +517,12 @@ sub getFabricSwitches {
     my $seedswitch = $_[1];
     servicestatus("Discovering fabric...");
     $log->debug("Login to seed switch ".$fabric." / ".$seedswitch);
-	my $passwd = "";
-	if(defined $fabricdetails{$fabric}{"cp"}) {
-		$passwd = getCredential($fabric, $seedswitch);
-	} else {
-		$passwd = $fabricdetails{$fabric}{"password"};
-	}
+    my $passwd = "";
+    if(defined $fabricdetails{$fabric}{"cp"}) {
+        $passwd = getCredential($fabric, $seedswitch);
+    } else {
+        $passwd = $fabricdetails{$fabric}{"password"};
+    }
     initsocket();
     my $token = restLogin($seedswitch,$fabricdetails{$fabric}{"user"},$passwd);
     my @fabricswitches = http_get($fabric,$seedswitch,$token,'/brocade-fabric/fabric-switch');
@@ -539,21 +542,21 @@ sub getFabricSwitches {
             $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"NAME"} = $switchattr{"name"};
             $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"CHASSISNAME"} = $switchattr{"chassis-user-friendly-name"};
             $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"DOMAINID"} = $switchattr{"domain-id"};
-			# looking if fabric switch is logical switch of virtual fabric
-			my $vfpasswd = "";
-			if(defined $fabricdetails{$fabric}{"cp"}) {
-				$vfpasswd = getCredential($fabric, $dnsname);
-			} else {
-				$vfpasswd = $fabricdetails{$fabric}{"password"};
-			}
+            # looking if fabric switch is logical switch of virtual fabric
+            my $vfpasswd = "";
+            if(defined $fabricdetails{$fabric}{"cp"}) {
+                $vfpasswd = getCredential($fabric, $dnsname);
+            } else {
+                $vfpasswd = $fabricdetails{$fabric}{"password"};
+            }
 
-			my $fabricswitchtoken = restLogin($dnsname,$fabricdetails{$fabric}{"user"},$vfpasswd);
-			my @logicalswitches = http_get($fabric,$dnsname,$fabricswitchtoken,'/brocade-fibrechannel-logical-switch/fibrechannel-logical-switch');
-			if(scalar(@logicalswitches) > 0) {
-				$log->info($switchattr{"switch-user-friendly-name"}." uses Virtual Fabric queries will be done via: ".$dnsname);
-				$fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"VFID"} = $fabricdetails{$fabric}{virtual_fabric};
-			}
-			restLogout($dnsname,$fabricswitchtoken);
+            my $fabricswitchtoken = restLogin($dnsname,$fabricdetails{$fabric}{"user"},$vfpasswd);
+            my @logicalswitches = http_get($fabric,$dnsname,$fabricswitchtoken,'/brocade-fibrechannel-logical-switch/fibrechannel-logical-switch');
+            if(scalar(@logicalswitches) > 0) {
+                $log->info($switchattr{"switch-user-friendly-name"}." uses Virtual Fabric queries will be done via: ".$dnsname);
+                $fabricdetails{$fabric}{"switches"}{$switchattr{"switch-user-friendly-name"}}{"VFID"} = $fabricdetails{$fabric}{virtual_fabric};
+            }
+            restLogout($dnsname,$fabricswitchtoken);
         }
     }
     $log->debug("Logout from seed switch".$fabric." / ".$seedswitch);
@@ -898,13 +901,21 @@ sub reportmetrics {
     my $switch = $_[1];
     my $conftime = 0;
     my $statstime = 0;
-	my $credprovtime = 0;
-	my $passwd = "";
+    my $credprovtime = 0;
+    my $sessiontime = 0;
+    my $passwd = "";
+    my $token = "";
+
     $polltime = time();
     $polltime = $polltime - ($polltime % 60);
     if (defined($fabricdetails{$fabric}{'refresh_offset'})) {
         $polltime = $polltime - ($polltime % 60)+$fabricdetails{$fabric}{'refresh_offset'};
     }
+    
+    if (!defined($fabricdetails{$fabric}{'reuse_rest_session_timeout'})) {
+        $fabricdetails{$fabric}{'reuse_rest_session_timeout'} = 0;
+    }
+
     while(true) {
         my $curtime = time();
         if (($curtime - $polltime)>=$fabricdetails{$fabric}{'perf_interval'}) {
@@ -912,15 +923,18 @@ sub reportmetrics {
             $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
             initsocket();
             $log->info("Login to ".$fabric." / ".$switch);
-			if(defined ($fabricdetails{$fabric}{"cp"})) {
-				if(($curtime - $credprovtime) >= $fabricdetails{$fabric}{'cp_timeout'}) {
-					$passwd = getCredential($fabric,$switch);
-					$credprovtime = $curtime;
-				}
-			} else {
-				$passwd = $fabricdetails{$fabric}{"password"};
-			}
-            my $token = restLogin($switch,$fabricdetails{$fabric}{"user"},$passwd);
+            if(defined ($fabricdetails{$fabric}{"cp"})) {
+                if(($curtime - $credprovtime) >= $fabricdetails{$fabric}{'cp_timeout'}) {
+                    $passwd = getCredential($fabric,$switch);
+                    $credprovtime = $curtime;
+                }
+            } else {
+                $passwd = $fabricdetails{$fabric}{"password"};
+            }
+            if($token eq "") {
+                $token = restLogin($switch,$fabricdetails{$fabric}{"user"},$passwd);
+                $sessiontime = $curtime;
+            }
             if (($curtime - $conftime)>=$fabricdetails{$fabric}{'config_interval'}) {
                 $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
                 $log->info("Getting nameserver and alias configuration");
@@ -944,7 +958,10 @@ sub reportmetrics {
                 getMediaCounters($fabric,$switch,$token,'perf');
             }
             $log->info("Logout from ".$fabric." / ".$switch);
-            restLogout($switch,$token);
+            if(($curtime-$sessiontime) >= $fabricdetails{$fabric}{'reuse_rest_session_timeout'}) {
+                restLogout($switch,$token);
+                $token = "";
+            }
             $polltime = $polltime + $fabricdetails{$fabric}{'perf_interval'};
             closesocket();
         }
