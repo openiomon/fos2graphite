@@ -957,8 +957,9 @@ sub reportmetrics {
                 getFCPortCounters($fabric,$switch,$token,'perf');
                 getMediaCounters($fabric,$switch,$token,'perf');
             }
-            $log->info("Logout from ".$fabric." / ".$switch);
+            
             if(($curtime-$sessiontime) >= $fabricdetails{$fabric}{'reuse_rest_session_timeout'}) {
+                $log->info("Logout from ".$fabric." / ".$switch);
                 restLogout($switch,$token);
                 $token = "";
             }
