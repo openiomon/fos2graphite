@@ -96,6 +96,11 @@ Timeout for the credential provider script call
 Password will be cached for the amount of time specified  
 `credential_provider_cachetimeout = 24h`  
 
+Instead of opening a new HTTPrest-session for each collection interval a session can be reused for a defined time interval.
+This reduces the amount of auditlog messages on the SAN switch or director.
+If the parameter is omitted or set to 0 for each collection interval a new session is started.
+`reuse_rest_session_timeout = 30m`
+
 2. Create a service
 `/opt/fos2graphite/bin/fos2graphite.pl -register <fabricname>`   
 
