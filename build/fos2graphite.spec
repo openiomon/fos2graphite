@@ -1,6 +1,6 @@
 Summary: fos2graphite is a module of openiomon which is used to transfer statistics from the Brocade SAN swtches to a graphite system to be able to display this statistics in Grafana.
 Name: fos2graphite
-Version: 0.4.1
+Version: 0.4.2
 prefix: /opt
 Release: 1
 URL: https://github.com/openiomon/%{name}
