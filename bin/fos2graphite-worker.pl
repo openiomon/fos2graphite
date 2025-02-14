@@ -649,6 +649,7 @@ sub getPortSettings {
     $log->debug("Getting port settings for ".$fabric." ".$switch."!");
     my $now = time;
     my @portstatistics = http_get($fabric,$switch,$token,'/brocade-interface/fibrechannel/');
+    my %portcounter = ();
     foreach my $portarray (@portstatistics) {
         my @ports = @{$portarray};
         foreach my $port (@ports) {
@@ -663,6 +664,13 @@ sub getPortSettings {
             if ($porttype eq "E_PORT") {
                     $porttype = $distancemodes{$portattr{"long-distance"}};
             }
+
+            if(defined($portcounter{$porttype})) {
+                $portcounter{$porttype} += 1;
+            } else {
+                $portcounter{$porttype} = 1;
+            }
+
             my @wwns=();
             if (defined($portattr{"neighbor"}{"wwn"})) {
                 @wwns = @{$portattr{"neighbor"}{"wwn"}};
@@ -686,6 +694,16 @@ sub getPortSettings {
                 toGraphite($metricstring);
             }
         }
+        $log->debug("Logging portcounter stats for ".$fabric." ".$switch."!");
+
+    }
+    foreach my $porttype (keys %portcounter) {
+        my $metricstring = "";
+        $metricstring = "brocade.fos.stats.portcount.".$fabric.".".$switch.".".$porttype.".count ".$portcounter{$porttype}." ".$now;
+        if ($usetag) {
+            $metricstring = "fosports_portcount;fabric=".$fabric.";category=stats;switch=".$switch.";porttype=".$porttype." ".$portcounter{$porttype}." ".$now;
+        }
+        toGraphite($metricstring);
     }
     $log->debug("Finished getting port settings for ".$fabric." ".$switch."!");
 }
@@ -922,8 +940,8 @@ sub reportmetrics {
             my $printtime = strftime('%m/%d/%Y %H:%M:%S',localtime($curtime));
             $log->info("Collecting new set of data for ".$fabric." - ".$switch." at ".$printtime);
             initsocket();
-            $log->info("Login to ".$fabric." / ".$switch);
             if(defined ($fabricdetails{$fabric}{"cp"})) {
+                $log->info("Retrieve password from credential provider for ".$fabric." / ".$switch);
                 if(($curtime - $credprovtime) >= $fabricdetails{$fabric}{'cp_timeout'}) {
                     $passwd = getCredential($fabric,$switch);
                     $credprovtime = $curtime;
@@ -932,6 +950,7 @@ sub reportmetrics {
                 $passwd = $fabricdetails{$fabric}{"password"};
             }
             if($token eq "") {
+                $log->info("Login to ".$fabric." / ".$switch);
                 $token = restLogin($switch,$fabricdetails{$fabric}{"user"},$passwd);
                 $sessiontime = $curtime;
             }
