@@ -12,7 +12,7 @@
 A tool to retrieve Broadcom (former Brocade) SAN Switch Performance counters from the SAN switches / directors using REST API and write them to a Carbon/Graphite backend.
 * Written in Perl.
 * tested on RHEL / CentOS 7 & 8
-* works with FOS 8.2.x & 9.1.x
+* works with FOS 8.2.x, 9.1.x, 9.2.x
 * RPM package available
 
 ## Features
@@ -73,7 +73,7 @@ none - no collection
 alias - collection based on zoning alias names of WWPNs  
 wwpn - collection based on WWPNs  
 `IT_collection = alias`  
-
+   
 Option to specify offset in seconds (between 0 and 30) to the full minute to start polling of the fabric
 Can be used to avoid collision with other tools polling switches every full minute
 Can also be used to reduce load to carbon by usings different settings for each fabric  
@@ -96,10 +96,10 @@ Timeout for the credential provider script call
 Password will be cached for the amount of time specified  
 `credential_provider_cachetimeout = 24h`  
 
-Instead of opening a new HTTPrest-session for each collection interval a session can be reused for a defined time interval.
+Instead of opening a new REST API session for each collection interval a session can be reused for a defined time interval.
 This reduces the amount of auditlog messages on the SAN switch or director.
-If the parameter is omitted or set to 0 for each collection interval a new session is started.
-`reuse_rest_session_timeout = 30m`
+If the parameter is omitted or set to 0 for each collection interval a new session is started.  
+`reuse_rest_session_timeout = 30m`  
 
 2. Create a service
 `/opt/fos2graphite/bin/fos2graphite.pl -register <fabricname>`   
@@ -125,6 +125,10 @@ Alternatively, there is a simple shell script to import all dashboards at once.
    `/opt/fos2graphite/bin/import_grafana_dashboards.sh https://grafana.company.com:3000 /opt/fos2graphite/dashboards/graphite MyGraphiteDatasource`  
 
 ## Changelog
+### 0.4.2
+* change session handling to reuse REST API sessions instead of creating a new session for each collection interval
+* add collection of port count statistics per port type for each switch
+
 ### 0.4.1
 * fix graphite_host configuration parameter not working, it was broken since initial commit
 * improved logging of failed graphite connection
@@ -152,7 +156,7 @@ Alternatively, there is a simple shell script to import all dashboards at once.
 
 ### 0.2.1
 * fix bugs for datasource renaming in import script
-* fix initialization of sockettimer in RHEL8
+* fix initialization of socket timer in RHEL8
 * change systemd service configuration to log output in journal
 
 ### 0.2.0
